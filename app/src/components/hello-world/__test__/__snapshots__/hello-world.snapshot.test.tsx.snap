@@ -1,9 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`Snapshot testing of HelloWorld component renders correctly 1`] = `
-<div
-  className="styled__StyledDiv-sc-16b63n2-0 eFJbCQ"
->
-  Hello World!
-</div>
-`;
