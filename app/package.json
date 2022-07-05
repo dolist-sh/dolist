@@ -18,8 +18,8 @@
     "next-routes": "^1.4.2",
     "react": "16.14.0",
     "react-dom": "16.14.0",
-    "styled-components": "^5.2.1",
-    "styled-reset": "^4.3.3"
+    "styled-components": "^5.3.5",
+    "styled-reset": "^4.4.2"
   },
   "devDependencies": {
     "@types/enzyme": "^3.10.8",
@@ -27,12 +27,12 @@
     "@types/jest": "^28.1.4",
     "@types/node": "^18.0.1",
     "@types/react": "^17.0.0",
-    "@types/styled-components": "^5.1.7",
+    "@types/styled-components": "^5.1.25",
     "@typescript-eslint/eslint-plugin": "^5.30.5",
     "@typescript-eslint/parser": "^5.30.5",
     "babel-core": "^6.26.3",
     "babel-jest": "^28.1.2",
-    "babel-plugin-styled-components": "^1.12.0",
+    "babel-plugin-styled-components": "^2.0.7",
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
     "enzyme": "^3.11.0",
