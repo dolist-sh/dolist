@@ -1,11 +1,12 @@
 import React from 'react';
-import { HelloWorld } from '../components/shared';
+import type { NextPage } from 'next';
+import { HelloWorld } from '../components/hello-world';
 
-const Homepage: React.FunctionComponent = () => {
+const Homepage: NextPage = () => {
   return (
-    <>
+    <div>
       <HelloWorld />
-    </>
+    </div>
   );
 };
 
