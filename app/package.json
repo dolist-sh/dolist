@@ -17,8 +17,7 @@
     "next": "12.2.0",
     "next-routes": "^1.4.2",
     "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "regenerator-runtime": "^0.13.9"
+    "react-dom": "18.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.18.6",
