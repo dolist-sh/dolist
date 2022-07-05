@@ -1,0 +1,14 @@
+version: "3.7"
+services:
+  app:
+    build: 
+      context: ./app/. 
+      network: host
+    ports: 
+      - 3000:3000
+  server:
+    build: 
+      context: ./server/.
+      network: host
+    ports: 
+      - 8000:80

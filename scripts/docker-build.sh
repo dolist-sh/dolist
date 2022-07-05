@@ -1,4 +1,4 @@
 !#bin/bash
 
-docker build -t app ./app/. --network=host  # Use host network to prevent issue when running in VPN
-docker build -t server ./server/. --network=host
+docker build -t app ./app/. --no-cache --network=host 
+docker build -t server ./server/. --no-cache --network=host
