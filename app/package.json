@@ -13,7 +13,7 @@
     "lint:fix": "eslint src --ext ts --ext tsx --fix"
   },
   "dependencies": {
-    "@material-ui/core": "^4.11.2",
+    "@material-ui/core": "^4.12.4",
     "next": "10.0.3",
     "next-routes": "^1.4.2",
     "react": "16.14.0",
