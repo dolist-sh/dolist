@@ -1,0 +1,14 @@
+# CI/CD configs
+.github
+
+# Static sitemap output
+public/sitemap.xml
+
+# node_modules in local file system
+.node_modules
+
+# nextjs build output in local file system
+.next
+
+# local env variables
+.env
