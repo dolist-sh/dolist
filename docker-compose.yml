@@ -1,4 +1,4 @@
-version: "3.7"
+version: "3.8"
 services:
   app:
     build: 
@@ -6,9 +6,16 @@ services:
       network: host
     ports: 
       - 3000:3000
+    networks:
+      - app-networks
   server:
     build: 
       context: ./server/.
       network: host
     ports: 
       - 8000:80
+    networks:
+      - app-networks
+networks:
+  app-networks:
+    driver: bridge
