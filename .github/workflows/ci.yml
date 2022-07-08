@@ -62,3 +62,21 @@ jobs:
           source .venv/bin/activate
           pytest tests/
         # coverage report | NOT using coverage.py atm | More: https://pypi.org/project/coverage/
+
+  test-app:
+    name: test app ui
+    needs: test-server
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+        run: |
+          yarn install
+          yarn test:coverage
