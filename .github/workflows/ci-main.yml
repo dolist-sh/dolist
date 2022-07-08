@@ -98,13 +98,14 @@ jobs:
       - name: Checkout the repository
         uses: actions/checkout@v2
       - name: Deploy the code to EC2
-        uses: easingthemes/ssh-deploy@main
+        uses: easingthemes/ssh-deploy@v2
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
-          ARGS: "-rltgoDzvO"
+          SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }} # https://zellwk.com/blog/github-actions-deploy/
+          ARGS: "-rltgoDzvO --delete"
           SOURCE: "/"
           REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
           REMOTE_USER: ${{ secrets.REMOTE_USER }}
+          TARGET: ${{ secrets.REMOTE_USER }}/dolist
           EXCLUDE: "/.next/, /node_modules/, /__pycache__/"
       - name: Run a command
         run: |
