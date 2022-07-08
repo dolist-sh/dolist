@@ -105,7 +105,7 @@ jobs:
           REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
           REMOTE_USER: ${{ secrets.REMOTE_USER }}
           TARGET: /var/dolist
-          EXCLUDE: "/.next/, /node_modules/, /__pycache__/"
+          EXCLUDE: "/.next/, /node_modules/, /__pycache__/ /.git/ /docs/ "
       - name: Run a command
         run: |
           echo "Hello World" 
