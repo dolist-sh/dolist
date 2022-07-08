@@ -5,12 +5,14 @@ on:
     paths-ignore:
       - "docs/**"
       - "scripts/**"
+      - ".github/**"
     branches:
       - "main"
   pull_request:
     paths-ignore:
     - "docs/**"
     - "scripts/**"
+    - ".github/**"
     branches:
       - "main"
 jobs:
@@ -91,12 +93,21 @@ jobs:
       - name: Run tests
         run: yarn test:coverage
   deploy-to-dev:
-    name: deploy to dev EC2 instance
+    name: deploy to dev env
     needs: [test-server, test-app]
     runs-on: ubuntu-latest
     steps: 
       - name: Checkout the repository
         uses: actions/checkout@v2
+      - name: Deploy the code to EC2
+        uses: easingthemes/ssh-deploy@main
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
+          ARGS: "-rltgoDzvO"
+          SOURCE: "/"
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+          REMOTE_USER: ${{ secrets.REMOTE_USER }}
+          EXCLUDE: "/.next/, /node_modules/, /__pycache__/"
       - name: Run a command
         run: |
           echo "Hello World" 
