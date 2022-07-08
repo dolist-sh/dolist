@@ -65,7 +65,6 @@ jobs:
 
   test-app:
     name: test app ui
-    needs: test-server
     runs-on: ubuntu-latest
     defaults:
       run:
