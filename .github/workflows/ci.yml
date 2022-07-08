@@ -73,10 +73,17 @@ jobs:
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v2
+      #----------------------------------------------
+      #     Setup Node and install dependencies
+      #----------------------------------------------
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: 16
-        run: |
-          yarn install
-          yarn test:coverage
+      - name: Install dependencies
+        run: yarn install
+      #----------------------------------------------
+      #              run test suite
+      #----------------------------------------------
+      - name: Run tests
+        run: yarn test:coverage
