@@ -5,14 +5,12 @@ on:
     paths-ignore:
       - "docs/**"
       - "scripts/**"
-      - ".github/**"
     branches:
       - "main"
   pull_request:
     paths-ignore:
     - "docs/**"
     - "scripts/**"
-    - ".github/**"
     branches:
       - "main"
 jobs:
