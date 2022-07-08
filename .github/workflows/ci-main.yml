@@ -104,6 +104,7 @@ jobs:
           ARGS: "-rltgoDzvO --delete"
           REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
           REMOTE_USER: ${{ secrets.REMOTE_USER }}
+          TARGET: /var/dolist
           EXCLUDE: "/.next/, /node_modules/, /__pycache__/"
       - name: Run a command
         run: |
