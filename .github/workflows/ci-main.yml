@@ -105,7 +105,6 @@ jobs:
           SOURCE: "/"
           REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
           REMOTE_USER: ${{ secrets.REMOTE_USER }}
-          TARGET: ${{ secrets.REMOTE_USER }}/dolist
           EXCLUDE: "/.next/, /node_modules/, /__pycache__/"
       - name: Run a command
         run: |
