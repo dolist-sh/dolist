@@ -102,7 +102,6 @@ jobs:
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }} # https://zellwk.com/blog/github-actions-deploy/
           ARGS: "-rltgoDzvO --delete"
-          SOURCE: "/"
           REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
           REMOTE_USER: ${{ secrets.REMOTE_USER }}
           EXCLUDE: "/.next/, /node_modules/, /__pycache__/"
