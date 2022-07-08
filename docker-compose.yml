@@ -1,21 +1,30 @@
 version: "3.8"
 services:
+  proxy:
+    image: nginx
+    volumes:
+      - ./proxy/nginx_docker.conf:/etc/nginx/nginx.conf
+    ports:
+      - 80:80
+    restart: always
+    networks:
+      - app-networks
   app:
     build: 
       context: ./app/. 
       network: host
-    ports: 
-      - 3000:3000
     networks:
       - app-networks
+    depends_on:
+      - proxy
   server:
     build: 
       context: ./server/.
       network: host
-    ports: 
-      - 8000:80
     networks:
       - app-networks
+    depends_on:
+      - proxy
 networks:
   app-networks:
     driver: bridge
