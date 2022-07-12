@@ -11,7 +11,7 @@ const TaskItem: React.FC = () => {
 
 const TaskArea: React.FC = () => {
   return (
-    <div className="flex flex-col justify-start h-full border border-gray-200">
+    <div className="flex flex-col justify-start border border-gray-200">
       <div className="basis-1/12 p-7 border-b border-gray-200">
         <p>{"Today's focus"}</p>
       </div>

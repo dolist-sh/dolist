@@ -88,7 +88,7 @@ const DayGrid: React.FC = () => {
 
 const DayPlanView: React.FC = () => {
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex flex-col h-full overflow-scroll">
       <DayHeader />
       <DayGrid />
     </div>
