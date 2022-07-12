@@ -13,7 +13,7 @@ const Homepage: NextPage = () => {
             <div className="w-1/2 h-[440px] mt-6 mb-6 mr-4 overflow-hidden border-2 border-black">
               <DayPlanView />
             </div>
-            <div className="w-1/2 h-[440px] mt-6 mr-4 overflow-hidden border-2 border-black">
+            <div className="w-1/2 h-[440px] mt-6 mb-6 mr-4 overflow-hidden border-2 border-black">
               <TaskArea />
             </div>
           </div>
