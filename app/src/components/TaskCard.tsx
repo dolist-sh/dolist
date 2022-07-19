@@ -17,7 +17,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ title, type, fullComment, path, lin
   const language = getLanguage(path);
 
   return (
-    <div className="w-[680px] h-auto border-0 border-dolist-lightgray rounded m-auto mt-14 mb-14 bg-dolist-cream">
+    <div className="w-[680px] h-auto border-0 border-dolist-lightgray rounded m-auto mt-4 mb-4 bg-dolist-cream">
       <div className="w-5/6 h-full m-auto pt-3 pb-3">
         <div className="pt-4 pb-2">
           <h3 className="text-lg font-bold">{`${title}`}</h3>
