@@ -2,18 +2,18 @@
 
 exports[`Snapshot testing of TaskCard component renders correctly 1`] = `
 <div
-  className="w-[560px] h-auto border-0 border-dolist-lightgray rounded m-auto mt-5 mb-5 bg-dolist-cream"
+  className="w-[680px] h-auto border-0 border-dolist-lightgray rounded m-auto mt-14 mb-14 bg-dolist-cream"
 >
   <div
-    className="w-11/12 h-full m-auto pt-3 pb-3"
+    className="w-5/6 h-full m-auto pt-3 pb-3"
   >
     <div
-      className="pt-2 pb-2"
+      className="pt-4 pb-2"
     >
       <h3
         className="text-lg font-bold"
       >
-        Add typing to createPerson method
+        This should be parsed
       </h3>
     </div>
     <div
@@ -34,17 +34,104 @@ exports[`Snapshot testing of TaskCard component renders correctly 1`] = `
         <p
           className="text-xs"
         >
-          Path: /src/input/example.py
+          Path: /Users/yunjae/Desktop/engineering/comment-parser/input/folder_b/folder_b.ts
         </p>
         <p
           className="text-xs"
         >
-          Line: 18
+          Line: 1
         </p>
       </div>
     </div>
-    <div>
-      Code block here
+    <div
+      className="pb-3"
+    >
+      <pre
+        style={
+          Object {
+            "MozHyphens": "none",
+            "MozTabSize": "4",
+            "OTabSize": "4",
+            "WebkitHyphens": "none",
+            "background": "#011627",
+            "color": "white",
+            "fontFamily": "Consolas, Monaco, \\"Andale Mono\\", \\"Ubuntu Mono\\", monospace",
+            "fontSize": "1em",
+            "hyphens": "none",
+            "lineHeight": "1.5",
+            "margin": "0.5em 0",
+            "msHyphens": "none",
+            "overflow": "auto",
+            "padding": "1em",
+            "tabSize": "4",
+            "textAlign": "left",
+            "whiteSpace": "pre",
+            "wordBreak": "normal",
+            "wordSpacing": "normal",
+            "wordWrap": "normal",
+          }
+        }
+      >
+        <code
+          className="language-javascript"
+          style={
+            Object {
+              "MozHyphens": "none",
+              "MozTabSize": "4",
+              "OTabSize": "4",
+              "WebkitHyphens": "none",
+              "color": "#d6deeb",
+              "fontFamily": "Consolas, Monaco, \\"Andale Mono\\", \\"Ubuntu Mono\\", monospace",
+              "fontSize": "1em",
+              "hyphens": "none",
+              "lineHeight": "1.5",
+              "msHyphens": "none",
+              "tabSize": "4",
+              "textAlign": "left",
+              "whiteSpace": "pre-wrap",
+              "wordBreak": "normal",
+              "wordSpacing": "normal",
+              "wordWrap": "normal",
+            }
+          }
+        >
+          <span
+            style={
+              Object {
+                "display": "flex",
+              }
+            }
+          >
+            <span
+              className="linenumber react-syntax-highlighter-line-number"
+              style={
+                Object {
+                  "color": "rgb(99, 119, 119)",
+                  "display": "inline-block",
+                  "fontStyle": "italic",
+                  "minWidth": "1.25em",
+                  "paddingRight": "1em",
+                  "textAlign": "right",
+                  "userSelect": "none",
+                }
+              }
+            >
+              1
+            </span>
+            <span
+              className="token"
+              style={
+                Object {
+                  "color": "rgb(99, 119, 119)",
+                  "fontStyle": "italic",
+                }
+              }
+            >
+              // TODO: This should be parsed
+            </span>
+          </span>
+        </code>
+      </pre>
     </div>
   </div>
 </div>

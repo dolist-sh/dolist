@@ -9,8 +9,8 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "lint": "eslint src --ext ts --ext tsx",
-    "lint:fix": "eslint src --ext ts --ext tsx --fix"
+    "lint": "eslint . --ext ts --ext tsx",
+    "lint:fix": "eslint . --ext ts --ext tsx --fix"
   },
   "dependencies": {
     "@headlessui/react": "^1.6.6",
