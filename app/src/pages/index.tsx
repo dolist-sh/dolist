@@ -1,26 +1,16 @@
 import React from 'react';
 import type { NextPage } from 'next';
-import json_data from '../.data/output-2022-7-18-1658164458.json';
-import { TaskCard } from '../components';
 
-const Homepage: NextPage = () => {
-  console.log(json_data);
-
+const HomePage: NextPage = () => {
   return (
-    <div className="flex flex-col w-11/12 m-auto">
-      {json_data.map((comment, index) => (
-        <TaskCard
-          key={index}
-          type={comment.type}
-          title={comment.title}
-          commentStyle={comment.commentStyle}
-          fullComment={comment.fullComment}
-          path={comment.path}
-          lineNumber={comment.lineNumber}
-        />
-      ))}
+    <div className="flex flex-col justify-center w-11/12 h-screen m-auto">
+      <div className="flex flex-row justify-center align-middle">
+        <button className=" px-3 py-2 border-2 text-sm border-dolist-darkblue rounded" type="button">
+          {'Auth with Github'}
+        </button>
+      </div>
     </div>
   );
 };
 
-export default Homepage;
+export default HomePage;
