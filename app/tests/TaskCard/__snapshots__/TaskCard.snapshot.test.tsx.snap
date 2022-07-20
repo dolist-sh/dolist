@@ -1,0 +1,138 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Snapshot testing of TaskCard component renders correctly 1`] = `
+<div
+  className="w-[680px] h-auto border-0 border-dolist-lightgray rounded m-auto mt-4 mb-4 bg-dolist-cream"
+>
+  <div
+    className="w-5/6 h-full m-auto pt-3 pb-3"
+  >
+    <div
+      className="pt-4 pb-2"
+    >
+      <h3
+        className="text-lg font-bold"
+      >
+        This should be parsed
+      </h3>
+    </div>
+    <div
+      className="flex flex-row justify-between pt-5 pb-5"
+    >
+      <div
+        className="text-left"
+      >
+        <p
+          className="text-xs"
+        >
+          Type: TODO
+        </p>
+      </div>
+      <div
+        className="text-right"
+      >
+        <p
+          className="text-xs"
+        >
+          Path: /Users/yunjae/Desktop/engineering/comment-parser/input/folder_b/folder_b.ts
+        </p>
+        <p
+          className="text-xs"
+        >
+          Line: 1
+        </p>
+      </div>
+    </div>
+    <div
+      className="pb-3"
+    >
+      <pre
+        style={
+          Object {
+            "MozHyphens": "none",
+            "MozTabSize": "4",
+            "OTabSize": "4",
+            "WebkitHyphens": "none",
+            "background": "#011627",
+            "color": "white",
+            "fontFamily": "Consolas, Monaco, \\"Andale Mono\\", \\"Ubuntu Mono\\", monospace",
+            "fontSize": "1em",
+            "hyphens": "none",
+            "lineHeight": "1.5",
+            "margin": "0.5em 0",
+            "msHyphens": "none",
+            "overflow": "auto",
+            "padding": "1em",
+            "tabSize": "4",
+            "textAlign": "left",
+            "whiteSpace": "pre",
+            "wordBreak": "normal",
+            "wordSpacing": "normal",
+            "wordWrap": "normal",
+          }
+        }
+      >
+        <code
+          className="language-javascript"
+          style={
+            Object {
+              "MozHyphens": "none",
+              "MozTabSize": "4",
+              "OTabSize": "4",
+              "WebkitHyphens": "none",
+              "color": "#d6deeb",
+              "fontFamily": "Consolas, Monaco, \\"Andale Mono\\", \\"Ubuntu Mono\\", monospace",
+              "fontSize": "1em",
+              "hyphens": "none",
+              "lineHeight": "1.5",
+              "msHyphens": "none",
+              "tabSize": "4",
+              "textAlign": "left",
+              "whiteSpace": "pre-wrap",
+              "wordBreak": "normal",
+              "wordSpacing": "normal",
+              "wordWrap": "normal",
+            }
+          }
+        >
+          <span
+            style={
+              Object {
+                "display": "flex",
+              }
+            }
+          >
+            <span
+              className="linenumber react-syntax-highlighter-line-number"
+              style={
+                Object {
+                  "color": "rgb(99, 119, 119)",
+                  "display": "inline-block",
+                  "fontStyle": "italic",
+                  "minWidth": "1.25em",
+                  "paddingRight": "1em",
+                  "textAlign": "right",
+                  "userSelect": "none",
+                }
+              }
+            >
+              1
+            </span>
+            <span
+              className="token"
+              style={
+                Object {
+                  "color": "rgb(99, 119, 119)",
+                  "fontStyle": "italic",
+                }
+              }
+            >
+              // TODO: This should be parsed
+            </span>
+          </span>
+        </code>
+      </pre>
+    </div>
+  </div>
+</div>
+`;
