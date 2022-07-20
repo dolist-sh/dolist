@@ -9,6 +9,7 @@ const TaskListPage: NextPage = () => {
 
   return (
     <div className="flex flex-col w-11/12 m-auto">
+      <h1>Welcome to DoList.sh</h1>
       {json_data.map((comment, index) => (
         <TaskCard
           key={index}
