@@ -13,7 +13,7 @@ interface TaskCardProps {
 }
 
 const TaskCard: React.FC<TaskCardProps> = ({ title, type, fullComment, path, lineNumber }: TaskCardProps) => {
-  const codeStrings = fullComment.join('\n');
+  const codeStrings = fullComment.join('');
   const language = getLanguage(path);
 
   return (
@@ -32,6 +32,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ title, type, fullComment, path, lin
           </div>
         </div>
         <div className="pb-3">
+          {/** TODO: fix multiline highlighting issue */}
           <SyntaxHighlighter
             showLineNumbers
             wrapLongLines
