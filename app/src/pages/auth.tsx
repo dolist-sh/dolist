@@ -1,7 +1,7 @@
 import React from 'react';
 import type { NextPage } from 'next';
 
-const HomePage: NextPage = () => {
+const AuthPage: NextPage = () => {
   return (
     <div className="flex flex-col justify-center w-11/12 h-screen m-auto">
       <div className="flex flex-row justify-center align-middle">
@@ -13,4 +13,4 @@ const HomePage: NextPage = () => {
   );
 };
 
-export default HomePage;
+export default AuthPage;
