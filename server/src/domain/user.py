@@ -2,13 +2,21 @@
 This module contains the Pydantic models that define the core data structure (input, output, core models).
 """
 from uuid import UUID
-from typing_extensions import Literal
+from typing import List
+from typing_extensions import Literal, TypedDict
 from pydantic import BaseModel
+
+
+class OAuth(TypedDict):
+    type: Literal["github"]
+    token: str # TODO: Token need to be encrypted
 
 
 class User(BaseModel):
     id: UUID  # uuid v4
-    email: str  # unique value
     type: Literal["admin"]
-    connected: Literal[Literal["github", "gitlab"]]
-    createdAt: int  # TODO: Find the right type definition for Unix timestamp
+    email: str  # unique value
+    name: str
+    profileUrl: str
+    oauth: List[OAuth]
+    createdAt: int  # Unix timestamp
