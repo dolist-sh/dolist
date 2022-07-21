@@ -9,7 +9,9 @@ const AuthPage: NextPage = () => {
     <div className="flex flex-col justify-center w-11/12 h-screen m-auto">
       <div className="flex flex-row justify-center align-middle">
         <button className=" px-3 py-2 border-2 text-sm border-dolist-darkblue rounded" type="button">
-          <a href={`https://github.com/login/oauth/authorize/?client_id=${clientId}&redirect_uri=${redirectUri}`}>
+          <a
+            href={`https://github.com/login/oauth/authorize/?client_id=${clientId}&redirect_uri=${redirectUri}&scope=repo read:user user:email`}
+          >
             {'Auth with Github'}
           </a>
         </button>

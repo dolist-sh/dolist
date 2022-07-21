@@ -8,7 +8,7 @@ from pydantic import BaseModel
 
 class User(BaseModel):
     id: UUID  # uuid v4
-    email: str # unique value
+    email: str  # unique value
     type: Literal["admin"]
     connected: Literal[Literal["github", "gitlab"]]
     createdAt: int  # TODO: Find the right type definition for Unix timestamp

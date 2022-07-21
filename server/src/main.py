@@ -31,7 +31,6 @@ def read_root():
 
 @app.post("/auth/")
 def handle_auth(session_code: str):
-    print(session_code)
 
     payload = {
         "client_id": GITHUB_OAUTH_CLIENT_ID,
@@ -46,5 +45,26 @@ def handle_auth(session_code: str):
         f"https://github.com/login/oauth/access_token/", headers=headers, params=payload
     )
     data = res.json()
+
+    # call /user/emails endpoint
+    # check if the user account exist with the email
+
+    # if not call the user endpoint to fetch information
+    # And create a new account
+
+    # return json web token with esstential information to call API
+
+    # if data:
+
+    # second_headers = {"Authorization": f"token {data['access_token']}"}
+
+    # print(second_headers)
+
+    # second_res = requests.get("https://api.github.com/user", headers=second_headers)
+
+    # print(second_res)
+
+    # second_res_json = second_res.json()
+    # print(second_res_json)
 
     return data
