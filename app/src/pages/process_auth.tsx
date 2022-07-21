@@ -6,31 +6,17 @@ const ProcessAuthPage: NextPage = () => {
   const { query } = useRouter();
 
   useEffect(() => {
-    console.log('Effect hook called');
     const redirect = query.redirect;
     const tempCode = query.code;
 
     if (redirect && tempCode) {
       const fetchAccessCode = async (sessionCode: string) => {
-        //TOOD: Call the auth handling proxy at our own backend: https://stackoverflow.com/questions/43262121/trying-to-use-fetch-and-pass-in-mode-no-cors
+        const response = await fetch(`http://localhost:8000/auth?session_code=${sessionCode}`, {
+          method: 'POST',
+          mode: 'cors',
+        });
 
-        const clientId = process.env.GITHUB_OAUTH_CLIENT_ID;
-        const clientSecret = process.env.GITHUB_OAUTH_CLIENT_SECRET;
-        const confirmUri = process.env.GITHUB_OAUTH_CONFIRM_URI;
-
-        const response = await fetch(
-          `https://github.com/login/oauth/access_token?client_id=${clientId}&client_secret=${clientSecret}&redirect_uri=${confirmUri}&code=${sessionCode}`,
-          {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: {
-              'Content-Type': 'application/json',
-              Accept: 'application/json',
-            },
-          },
-        );
-
-        return response;
+        return response.json();
       };
 
       fetchAccessCode(tempCode as string).then((data) => console.log(data));
