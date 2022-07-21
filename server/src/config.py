@@ -9,5 +9,5 @@ GITHUB_OAUTH_REDIRECT_URI = os.environ.get("GITHUB_OAUTH_REDIRECT_URI")
 GITHUB_OAUTH_CONFIRM_URI = os.environ.get("GITHUB_OAUTH_CONFIRM_URI")
 
 DB_HOST = "localhost"
-DB_USER =  os.environ.get("POSTGRES_USERNAME")
+DB_USER = os.environ.get("POSTGRES_USERNAME")
 DB_PWD = os.environ.get("POSTGRES_PASSWORD")

@@ -9,7 +9,14 @@ from pydantic import BaseModel
 
 class OAuth(TypedDict):
     type: Literal["github"]
-    token: str # TODO: Token need to be encrypted
+    token: str  # TODO: Token need to be encrypted
+
+
+class CreateUserInput(TypedDict):
+    email: str
+    name: str
+    profileUrl: str
+    oauthInUse: OAuth
 
 
 class User(BaseModel):

@@ -9,7 +9,7 @@ from .db import engine
 
 metadata_obj = MetaData()
 
-episode_schema = Table(
+user_schema = Table(
     "user",
     metadata_obj,
     Column("id", UUID(as_uuid=True), primary_key=True, default=uuid.uuid4()),
@@ -22,4 +22,4 @@ episode_schema = Table(
 )
 
 # Create a new table if doens't exist
-episode_schema.create(engine, checkfirst=True)
+user_schema.create(engine, checkfirst=True)
