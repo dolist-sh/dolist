@@ -1,7 +1,7 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 
-from auth.jwt import issue_token
+from auth.jwt import issue_token, get_email_from_token
 from auth.github import get_github_access_token, get_github_user, get_github_user_email
 from storage.userrepo import read_user_by_email, create_user
 
@@ -25,11 +25,20 @@ def read_root():
     return {"data": "stay present, be in the flow..!"}
 
 
-"""
- TODO: Think how to make this code cleaner and optimize the performance
-"""
+# TODO: Replace this call with get_user_repo
+@app.get("/user")
+async def get_user(email: str = Depends(get_email_from_token), status_code=200):
+    try:
+
+        user = await read_user_by_email(email)
+        return user
+
+    except Exception as e:
+        print(f"Unexpected exceptions: {str(e)}")
+        raise e
 
 
+# TODO: Make this call properly return the Token model
 @app.post("/auth/")
 async def handle_auth(session_code: str, status_code=200):
     try:

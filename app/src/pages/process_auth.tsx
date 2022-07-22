@@ -26,8 +26,7 @@ const ProcessAuthPage: NextPage = () => {
       fetchAccessCode(tempCode as string).then((token) => {
         if (token) {
           localStorage.setItem('token', token);
-          //TODO: Below routhe should be replaced to first page of app
-          push('/process_auth/confirm');
+          push('/', '/main');
         } else {
           push('/signin');
         }
