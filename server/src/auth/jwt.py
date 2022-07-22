@@ -1,6 +1,7 @@
 import jwt
 from datetime import datetime, timedelta, timezone
 
+
 def issue_token(email: str) -> str:
     from config import JWT_SECRET
 

@@ -45,12 +45,12 @@ async def handle_auth(session_code: str):
         # TODO: Check if user exists in DB
 
         # TODO: Create actual User object
-        #user = dict(
+        # user = dict(
         #    email=email,
         #    name=name,
         #    profileUrl=profile_url,
         #    githubUsername=github_username,
-        #)
+        # )
         return issue_token(email)
     except e as error:
         # TODO: Proper logging and error handling
