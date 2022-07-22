@@ -5,6 +5,8 @@ const AuthPage: NextPage = () => {
   const clientId = process.env.GITHUB_OAUTH_CLIENT_ID;
   const redirectUri = process.env.GITHUB_OAUTH_REDIRECT_URI;
 
+  // TODO: Use next/router for redirect upon clicking the button instead of href on the anchor tag
+
   return (
     <div className="flex flex-col justify-center w-11/12 h-screen m-auto">
       <div className="flex flex-row justify-center align-middle">
