@@ -3,23 +3,35 @@ import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 
 const ProcessAuthPage: NextPage = () => {
-  const { query } = useRouter();
+  const { query, push } = useRouter();
 
   useEffect(() => {
     const redirect = query.redirect;
     const tempCode = query.code;
 
     if (redirect && tempCode) {
-      const fetchAccessCode = async (sessionCode: string) => {
+      const fetchAccessCode = async (sessionCode: string): Promise<string | null> => {
         const response = await fetch(`http://localhost:8000/auth?session_code=${sessionCode}`, {
           method: 'POST',
           mode: 'cors',
         });
 
-        return response.json();
+        if (response.status === 200) {
+          return response.json();
+        }
+
+        return null;
       };
 
-      fetchAccessCode(tempCode as string).then((data) => console.log(data));
+      fetchAccessCode(tempCode as string).then((token) => {
+        if (token) {
+          localStorage.setItem('token', token);
+          //TODO: Below routhe should be replaced to first page of app
+          push('/process_auth/confirm');
+        } else {
+          push('/signin');
+        }
+      });
     }
   }, [query]);
 
