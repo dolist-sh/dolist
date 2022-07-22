@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
+import { getAuthCode } from '../api';
 
 const ProcessAuthPage: NextPage = () => {
   const { query, push } = useRouter();
@@ -10,20 +11,7 @@ const ProcessAuthPage: NextPage = () => {
     const tempCode = query.code;
 
     if (redirect && tempCode) {
-      const fetchAccessCode = async (sessionCode: string): Promise<string | null> => {
-        const response = await fetch(`http://localhost:8000/auth?session_code=${sessionCode}`, {
-          method: 'POST',
-          mode: 'cors',
-        });
-
-        if (response.status === 200) {
-          return response.json();
-        }
-
-        return null;
-      };
-
-      fetchAccessCode(tempCode as string).then((token) => {
+      getAuthCode(tempCode as string).then((token) => {
         if (token) {
           localStorage.setItem('token', token);
           push('/', '/main');

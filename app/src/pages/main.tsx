@@ -1,18 +1,10 @@
 import React, { useEffect } from 'react';
 import type { NextPage } from 'next';
+import { getUser } from '../api';
 
 const AppMainPage: NextPage = () => {
   useEffect(() => {
     const token = localStorage.getItem('token');
-
-    const getUser = async (token: string) => {
-      const response = await fetch(`http://localhost:8000/user`, {
-        method: 'GET',
-        mode: 'cors',
-        headers: { Authorization: `token ${token}` },
-      });
-      return response.json();
-    };
 
     getUser(token).then((data) => {
       // TODO: Do something with the data
