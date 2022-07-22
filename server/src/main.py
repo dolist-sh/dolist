@@ -25,13 +25,18 @@ def read_root():
     return {"data": "stay present, be in the flow..!"}
 
 
+"""
+ TODO: Think how to make this code cleaner and optimize the performance
+"""
+
+
 @app.post("/auth/")
 async def handle_auth(session_code: str):
     try:
         access_token_res = await get_github_access_token(session_code)
-        token = access_token_res["access_token"]
+        github_token = access_token_res["access_token"]
 
-        user_res = await get_github_user(token)
+        user_res = await get_github_user(github_token)
 
         email = user_res["email"]
         name = user_res["name"]
@@ -39,14 +44,14 @@ async def handle_auth(session_code: str):
         github_username = user_res["login"]
 
         if email is None:
-            email = await get_github_user_email(github_username, token)
+            email = await get_github_user_email(github_username, github_token)
 
         user_check_result = await read_user_by_email(email)
 
         if user_check_result is None:
             """Sign-up case"""
 
-            oauth_payload = dict(type="github", token=token)
+            oauth_payload = dict(type="github", token=github_token)
             user_payload = dict(
                 email=email, name=name, profileUrl=profile_url, oauthInUse=oauth_payload
             )
