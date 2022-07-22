@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
 from auth.jwt import issue_token
@@ -31,19 +31,26 @@ def read_root():
 
 
 @app.post("/auth/")
-async def handle_auth(session_code: str):
+async def handle_auth(session_code: str, status_code=200):
     try:
-        access_token_res = await get_github_access_token(session_code)
-        github_token = access_token_res["access_token"]
+        github_token = await get_github_access_token(session_code)
 
-        user_res = await get_github_user(github_token)
+        if github_token is None:
+            raise HTTPException(status_code=401, detail="Invalid session code")
 
-        email = user_res["email"]
-        name = user_res["name"]
-        profile_url = user_res["avatar_url"]
-        github_username = user_res["login"]
+        github_user = await get_github_user(github_token)
+
+        email = github_user["email"]
+        name = github_user["name"]
+        profile_url = github_user["avatar_url"]
+        github_username = github_user["login"]
 
         if email is None:
+            """
+            Fetch email address for user who marked their email as private.
+            This step is requred as email field from get_github_user method returns null,
+            When user have marked their email private.
+            """
             email = await get_github_user_email(github_username, github_token)
 
         user_check_result = await read_user_by_email(email)
@@ -58,14 +65,10 @@ async def handle_auth(session_code: str):
 
             new_user = await create_user(user_payload)
 
-            print("This is a new user object")
-            print(new_user)
-
             return issue_token(new_user.email)
 
         else:
             """Sign-in case"""
-            print("This is a sign-in case")
             return issue_token(user_check_result.email)
 
     except Exception as e:
