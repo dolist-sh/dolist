@@ -9,7 +9,6 @@ from config import (
 
 async def get_github_access_token(session_code: str) -> str:
     try:
-
         payload = {
             "client_id": GITHUB_OAUTH_CLIENT_ID,
             "client_secret": GITHUB_OAUTH_CLIENT_SECRET,
@@ -35,7 +34,6 @@ async def get_github_access_token(session_code: str) -> str:
 
 async def get_github_user(access_token: str):
     try:
-
         headers = {"Authorization": f"token {access_token}"}
         host = "https://api.github.com/user"
 
