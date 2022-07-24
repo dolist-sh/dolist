@@ -1,4 +1,5 @@
 //TODO: Add return data type
+
 export const getUser = async (token: string) => {
   const response = await fetch(`http://localhost:8000/user`, {
     method: 'GET',
