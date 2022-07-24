@@ -26,15 +26,15 @@ const AppMainPage: NextPage = () => {
     });
   }, []);
 
-  console.log(repos);
-
   return (
     <div className="flex flex-col w-11/12 h-screen m-auto mt-10">
       <div className="flex flex-row justify-center align-middle">
         <p>{'App Main Page'}</p>
       </div>
       <div className="flex flex-col">
-        <RepoCard name="test" />
+        {repos.map((repo) => (
+          <RepoCard key={repo.id} name={repo.name} />
+        ))}
       </div>
     </div>
   );
