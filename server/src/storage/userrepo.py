@@ -36,13 +36,23 @@ async def create_user(payload: CreateUserInput) -> User:
         print(f"Unexpected exceptions: {str(e)}")
         raise e
 
+
 async def write_github_token(email: str, new_token: str) -> str:
     try:
-        #update = user_db.update().where(user_db.c.email == email)
-        return
+
+        oauth = dict(type="github", token=new_token)
+
+        update = user_db.update().where(user_db.c.email == email).values(oauth=[oauth])
+        db.execute(update)
+
+        updated_user = await read_user_by_email(email)
+
+        return updated_user.oauth[0]["token"]
+
     except Exception as e:
         print(f"Unexpected exceptions: {str(e)}")
         raise e
+
 
 async def read_user(id: UUID) -> User:
     try:

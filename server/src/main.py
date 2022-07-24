@@ -45,8 +45,8 @@ async def get_user_repos(email: str = Depends(get_email_from_token), status_code
     try:
 
         user = await read_user_by_email(email)
-        github_token = user.oauth[0]['token']  # TODO: Replace this with find call
-        print(github_token)
+        github_token = user.oauth[0]["token"]  # TODO: Replace this with find call
+
         github_repos = await get_github_repos(github_token)
 
         return github_repos
@@ -97,8 +97,8 @@ async def handle_auth(session_code: str, status_code=200):
 
         else:
             """Sign-in case"""
-            # TODO: Store a new github token
-            # await write_github_token(email, github_token)
+            await write_github_token(email, github_token)
+
             return issue_token(user_check_result.email)
 
     except Exception as e:
