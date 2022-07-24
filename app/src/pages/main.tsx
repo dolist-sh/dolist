@@ -19,7 +19,7 @@ const AppMainPage: NextPage = () => {
           defaultBranch: repo.default_branch,
           url: repo.url,
           language: repo.language,
-          //TODO: add private field
+          visibility: repo.visibility,
         };
       });
       setRepos(repos);
@@ -33,7 +33,7 @@ const AppMainPage: NextPage = () => {
       </div>
       <div className="flex flex-col">
         {repos.map((repo) => (
-          <RepoCard key={repo.id} name={repo.name} />
+          <RepoCard key={repo.id} name={repo.name} url={repo.url} />
         ))}
       </div>
     </div>

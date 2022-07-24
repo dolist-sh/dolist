@@ -4,4 +4,5 @@ export type Repo = {
   defaultBranch: string;
   language: string;
   url: string;
+  visibility: 'private' | 'public';
 };
