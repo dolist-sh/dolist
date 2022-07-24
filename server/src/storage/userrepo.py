@@ -41,9 +41,8 @@ async def write_github_token(email: str, new_token: str) -> str:
     try:
         oauth = dict(type="github", token=new_token)
 
-        update = (
-            user_db.update().where(user_db.c.email == email).values(oauth=[oauth])
-        )  # TODO: oauth list should be re-constructred
+        # TODO: oauth list should be re-constructred
+        update = user_db.update().where(user_db.c.email == email).values(oauth=[oauth])
         db.execute(update)
 
         updated_user = await read_user_by_email(email)
