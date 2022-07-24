@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from auth.jwt import issue_token, get_email_from_token
 from auth.github import get_github_access_token, get_github_user, get_github_user_email
 from integration.github import get_github_repos
-from storage.userrepo import read_user_by_email, create_user
+from storage.userrepo import read_user_by_email, create_user, write_github_token
 
 from typing import Union
 
@@ -82,10 +82,11 @@ async def handle_auth(session_code: str, status_code=200):
 
         user_check_result = await read_user_by_email(email)
 
+        oauth_payload = dict(type="github", token=github_token)
+
         if user_check_result is None:
             """Sign-up case"""
 
-            oauth_payload = dict(type="github", token=github_token)
             user_payload = dict(
                 email=email, name=name, profileUrl=profile_url, oauthInUse=oauth_payload
             )
@@ -97,6 +98,7 @@ async def handle_auth(session_code: str, status_code=200):
         else:
             """Sign-in case"""
             # TODO: Store a new github token
+            # await write_github_token(email, github_token)
             return issue_token(user_check_result.email)
 
     except Exception as e:
