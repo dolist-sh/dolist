@@ -4,7 +4,7 @@ import { RepoCard } from '../../src/components';
 
 describe('Snapshot testing of RepoCard component', () => {
   test('renders correctly', () => {
-    const component = renderer.create(<RepoCard name="test" />);
+    const component = renderer.create(<RepoCard name="test" fullName="test/yunjae" />);
     const tree = component.toJSON();
     expect(tree).toMatchSnapshot();
   });
