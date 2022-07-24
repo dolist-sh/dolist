@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 import type { NextPage } from 'next';
-import { getUser } from '../api';
+import { getUserRepos } from '../api';
 
 const AppMainPage: NextPage = () => {
   useEffect(() => {
     const token = localStorage.getItem('token');
 
-    getUser(token).then((data) => {
+    getUserRepos(token).then((data) => {
       // TODO: Do something with the data
       console.log(data);
     });

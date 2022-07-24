@@ -20,3 +20,12 @@ export const getAuthCode = async (sessionCode: string): Promise<string | null> =
 
   return null;
 };
+
+export const getUserRepos = async (token: string) => {
+  const response = await fetch(`http://localhost:8000/user/repos`, {
+    method: 'GET',
+    mode: 'cors',
+    headers: { Authorization: `token ${token}` },
+  });
+  return response.json();
+};

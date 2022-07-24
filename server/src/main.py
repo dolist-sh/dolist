@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from auth.jwt import issue_token, get_email_from_token
 from auth.github import get_github_access_token, get_github_user, get_github_user_email
+from integration.github import get_github_repos
 from storage.userrepo import read_user_by_email, create_user
 
 from typing import Union
@@ -32,6 +33,23 @@ async def get_user(email: str = Depends(get_email_from_token), status_code=200):
 
         user = await read_user_by_email(email)
         return user
+
+    except Exception as e:
+        print(f"Unexpected exceptions: {str(e)}")
+        raise e
+
+
+# TODO: Add type definition for reponse
+@app.get("/user/repos")
+async def get_user_repos(email: str = Depends(get_email_from_token), status_code=200):
+    try:
+
+        user = await read_user_by_email(email)
+        github_token = user.oauth[0]['token']  # TODO: Replace this with find call
+        print(github_token)
+        github_repos = await get_github_repos(github_token)
+
+        return github_repos
 
     except Exception as e:
         print(f"Unexpected exceptions: {str(e)}")
@@ -78,6 +96,7 @@ async def handle_auth(session_code: str, status_code=200):
 
         else:
             """Sign-in case"""
+            # TODO: Store a new github token
             return issue_token(user_check_result.email)
 
     except Exception as e:
