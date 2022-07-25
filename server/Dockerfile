@@ -14,6 +14,9 @@ RUN poetry export -f requirements.txt --output requirements.txt --without-hashes
 
 FROM python:3.8
 
+ARG GIT_ACCESS_TOKEN
+RUN git config --global url."https://${GIT_ACCESS_TOKEN}@github.com".insteadOf "ssh://git@github.com"
+
 WORKDIR /app
 
 COPY --from=builder /tmp/requirements.txt /app/requirements.txt
