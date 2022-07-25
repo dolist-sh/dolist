@@ -60,11 +60,7 @@ jobs:
       # install your root project, if required
       #----------------------------------------------
       - name: Install library
-        env:
-          GIT_ACCESS_TOKEN: ${{ secrets.GIT_ACCESS_TOKEN }}
-        run: |
-          git config --global url."https://$GIT_ACCESS_TOKEN@github.com".insteadOf "ssh://git@github.com"
-          poetry install --no-interaction
+        run: poetry install --no-interaction
     #----------------------------------------------
     #              run test suite
     #----------------------------------------------
