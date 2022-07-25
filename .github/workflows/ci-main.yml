@@ -51,7 +51,11 @@ jobs:
       #----------------------------------------------
       - name: Install dependencies
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-        run: poetry install --no-interaction --no-root
+        env:
+          GIT_ACCESS_TOKEN: ${{ secrets.GIT_ACCESS_TOKEN }}
+        run: |
+            git config --global url."https://$GIT_ACCESS_TOKEN@github.com".insteadOf "ssh://git@github.com"
+            poetry install --no-interaction --no-root
             #----------------------------------------------
       # install your root project, if required
       #----------------------------------------------
