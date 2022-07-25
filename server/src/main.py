@@ -20,9 +20,22 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.get("/")
 def read_root():
     return {"data": "stay present, be in the flow..!"}
+
+
+@app.get("/repo/tasks/")
+async def get_repo_tasks(
+    repo_name: str, email: str = Depends(get_email_from_token), status_code=200
+):
+    try:
+        # Call the GitHub content endpoint that returns task list
+        return repo_name
+    except Exception as e:
+        print(f"Unexpected exceptions: {str(e)}")
+        raise e
 
 
 # TODO: Replace this call with get_user_repo

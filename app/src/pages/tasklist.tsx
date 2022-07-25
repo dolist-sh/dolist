@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { TaskCard } from '../components';
+import { getRepoTasks } from '../api';
 
 //import json_data from '../.data/output-2022-7-18-1658164458.json';
 
@@ -10,7 +11,13 @@ const TaskListPage: NextPage = () => {
   const json_data = [];
 
   useEffect(() => {
-    //TODO: call server to fetch the tasks
+    const token = localStorage.getItem('token');
+
+    if (query.repo) {
+      getRepoTasks(token, query.repo as string).then((data) => {
+        console.log(data);
+      });
+    }
   }, [query]);
 
   return (
