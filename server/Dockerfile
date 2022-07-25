@@ -14,6 +14,7 @@ RUN poetry export -f requirements.txt --output requirements.txt --without-hashes
 
 FROM python:3.8
 
+# TODO: Rotate the git access token on regular basis, script needed
 ARG GIT_ACCESS_TOKEN
 RUN git config --global url."https://${GIT_ACCESS_TOKEN}@github.com".insteadOf "ssh://git@github.com"
 
