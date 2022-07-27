@@ -6,7 +6,9 @@ from auth.github import get_github_access_token, get_github_user, get_github_use
 from integration.github import get_github_repos, parse_github_repo
 from storage.userrepo import read_user_by_email, create_user, write_github_token
 
-from typing import Union
+from domain.user import User
+from dolist_parser.dolist_parser import ParsedComment
+from typing import Union, List
 
 app = FastAPI()
 
@@ -32,6 +34,7 @@ async def get_repo_tasks(
     branch: str,
     email: str = Depends(get_email_from_token),
     status_code=200,
+    response_model=List[ParsedComment],
 ):
     try:
 
@@ -48,7 +51,9 @@ async def get_repo_tasks(
 
 # TODO: Replace this call with get_user_repo
 @app.get("/user")
-async def get_user(email: str = Depends(get_email_from_token), status_code=200):
+async def get_user(
+    email: str = Depends(get_email_from_token), status_code=200, response_model=User
+):
     try:
 
         user = await read_user_by_email(email)
