@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { TaskCard } from '../components';
@@ -8,14 +8,14 @@ import { getRepoTasks } from '../api';
 
 const TaskListPage: NextPage = () => {
   const { query } = useRouter();
-  const json_data = [];
+  const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
 
     if (query.repo) {
-      getRepoTasks(token, query.repo as string).then((data) => {
-        console.log(data);
+      getRepoTasks(token, query.repo as string, query.branch as string).then((data) => {
+        setTasks(data);
       });
     }
   }, [query]);
@@ -23,7 +23,7 @@ const TaskListPage: NextPage = () => {
   return (
     <div className="flex flex-col w-11/12 m-auto">
       <h1>Welcome to DoList.sh</h1>
-      {json_data.map((comment, index) => (
+      {tasks.map((comment, index) => (
         <TaskCard
           key={index}
           type={comment.type}

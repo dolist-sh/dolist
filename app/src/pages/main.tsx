@@ -34,7 +34,7 @@ const AppMainPage: NextPage = () => {
       </div>
       <div className="flex flex-col">
         {repos.map((repo) => (
-          <RepoCard key={repo.id} name={repo.name} fullName={repo.fullName} />
+          <RepoCard key={repo.id} name={repo.name} fullName={repo.fullName} branch={repo.defaultBranch} />
         ))}
       </div>
     </div>

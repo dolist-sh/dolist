@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from auth.jwt import issue_token, get_email_from_token
 from auth.github import get_github_access_token, get_github_user, get_github_user_email
-from integration.github import get_github_repos
+from integration.github import get_github_repos, parse_github_repo
 from storage.userrepo import read_user_by_email, create_user, write_github_token
 
 from typing import Union
@@ -28,11 +28,19 @@ def read_root():
 
 @app.get("/repo/tasks/")
 async def get_repo_tasks(
-    repo_name: str, email: str = Depends(get_email_from_token), status_code=200
+    repo_name: str,
+    branch: str,
+    email: str = Depends(get_email_from_token),
+    status_code=200,
 ):
     try:
-        # Call the GitHub content endpoint that returns task list
-        return repo_name
+
+        user = await read_user_by_email(email)
+        github_token = user.oauth[0]["token"]
+
+        tasks = await parse_github_repo(github_token, repo_name, branch)
+
+        return tasks
     except Exception as e:
         print(f"Unexpected exceptions: {str(e)}")
         raise e
