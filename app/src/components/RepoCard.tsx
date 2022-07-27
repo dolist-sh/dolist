@@ -3,12 +3,13 @@ import * as React from 'react';
 interface RepoCardProps {
   name: string;
   fullName: string;
+  branch: string;
 }
 
-const RepoCard: React.FC<RepoCardProps> = ({ name, fullName }: RepoCardProps) => {
+const RepoCard: React.FC<RepoCardProps> = ({ name, fullName, branch }: RepoCardProps) => {
   const clickHandler = (event) => {
     event.preventDefault();
-    window.location.assign(`/tasklist/?repo=${fullName}`);
+    window.location.assign(`/tasklist/?repo=${fullName}&branch=${branch}`);
   };
 
   return (

@@ -30,3 +30,12 @@ export const getUserRepos = async (token: string) => {
   });
   return response.json();
 };
+
+export const getRepoTasks = async (token: string, repoFullName: string, branch: string) => {
+  const response = await fetch(`http://localhost:8000/repo/tasks/?repo_name=${repoFullName}&branch=${branch}`, {
+    method: 'GET',
+    mode: 'cors',
+    headers: { Authorization: `token ${token}` },
+  });
+  return response.json();
+};
