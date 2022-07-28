@@ -7,7 +7,7 @@ from integration.github import get_github_repos, parse_github_repo
 from storage.userrepo import read_user_by_email, create_user, write_github_token
 
 from domain.user import User
-from dolist_parser.dolist_parser import ParsedComment
+from dolistparser import ParsedComment
 from typing import Union, List
 
 app = FastAPI()
