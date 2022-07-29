@@ -1,7 +1,7 @@
 import requests
 import re
 import base64
-from dolist_parser.dolist_parser import js_gh_parser, py_gh_parser, ParsedComment
+from dolistparser import js_gh_parser, py_gh_parser, ParsedComment
 from typing import List
 
 
@@ -68,7 +68,7 @@ async def parse_github_repo(
                     parsed = js_gh_parser.parse(content_to_parse, file_path)
 
                 if re.search(r"(\.py$)", file_path, re.IGNORECASE):
-                    parsed = js_gh_parser.parse(content_to_parse, file_path)
+                    parsed = py_gh_parser.parse(content_to_parse, file_path)
 
                 result = result + parsed
 

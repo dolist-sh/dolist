@@ -7,12 +7,17 @@ from integration.github import get_github_repos, parse_github_repo
 from storage.userrepo import read_user_by_email, create_user, write_github_token
 
 from domain.user import User
-from dolist_parser.dolist_parser import ParsedComment
+from dolistparser import ParsedComment
 from typing import Union, List
 
 app = FastAPI()
 
-origins = ["http://localhost", "http://localhost:3000"]
+origins = [
+    "http://localhost",
+    "http://localhost:3000",
+    "http://15.188.137.121",
+    "http://ec2-15-188-137-121.eu-west-3.compute.amazonaws.com",
+]
 
 app.add_middleware(
     CORSMiddleware,
@@ -28,7 +33,7 @@ def read_root():
     return {"data": "stay present, be in the flow..!"}
 
 
-@app.get("/repo/tasks/")
+@app.get("/repo/tasks")
 async def get_repo_tasks(
     repo_name: str,
     branch: str,
@@ -82,7 +87,7 @@ async def get_user_repos(email: str = Depends(get_email_from_token), status_code
 
 
 # TODO: Make this call properly return the Token model
-@app.post("/auth/")
+@app.get("/auth")
 async def handle_auth(session_code: str, status_code=200):
     try:
         github_token = await get_github_access_token(session_code)

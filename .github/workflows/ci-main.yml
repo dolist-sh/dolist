@@ -15,8 +15,6 @@ jobs:
   test-server:
     name: test server
     runs-on: ubuntu-latest
-    env:
-      GIT_ACCESS_TOKEN: ${{ secrets.GIT_ACCESS_TOKEN }}
     defaults:
       run: 
         working-directory: server
@@ -53,16 +51,12 @@ jobs:
       #----------------------------------------------
       - name: Install dependencies
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-        run: |
-            git config --global url."https://$GIT_ACCESS_TOKEN@github.com".insteadOf "ssh://git@github.com"
-            poetry install --no-interaction --no-root
+        run: poetry install --no-interaction --no-root
             #----------------------------------------------
       # install your root project, if required
       #----------------------------------------------
       - name: Install library
-        run: |
-            git config --global url."https://$GIT_ACCESS_TOKEN@github.com".insteadOf "ssh://git@github.com"
-            poetry install --no-interaction
+        run: poetry install --no-interaction
     #----------------------------------------------
     #              run test suite
     #----------------------------------------------

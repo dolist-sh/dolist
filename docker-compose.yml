@@ -6,25 +6,51 @@ services:
       - ./proxy/nginx_docker.conf:/etc/nginx/nginx.conf
     ports:
       - 80:80
+    depends_on:
+      - app
+      - server
     restart: always
+    networks:
+      - app-networks
+  postgres:
+    image: postgres:12
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-d", "${POSTGRES_USER}", "-U", "${POSTGRES_PASSWORD}" ]
+      timeout: 45s
+      interval: 10s
+      retries: 10
+    restart: always
+    environment:
+      - POSTGRES_USER 
+      - POSTGRES_PASSWORD
     networks:
       - app-networks
   app:
     build: 
       context: ./app/. 
       network: host
+    env_file:
+      - ./app/.env.local #TODO: Replace this with env var injected at build time
+    environment:
+      - RUN_DOCKER=True
+    restart: always
     networks:
       - app-networks
     depends_on:
-      - proxy
+      - server
   server:
     build: 
       context: ./server/.
       network: host
+    env_file:
+      - ./server/.env #TODO: Replace this with env var injected at build time
+    environment:
+      - RUN_DOCKER=True
+    restart: always
     networks:
       - app-networks
     depends_on:
-      - proxy
+      - postgres
 networks:
   app-networks:
     driver: bridge

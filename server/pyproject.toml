@@ -6,7 +6,7 @@ authors = ["Yunjae <yunjae.oh.nl@gmail.com>"]
 
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.8"
 fastapi = "^0.78.0"
 uvicorn = {extras = ["standard"], version = "^0.17.6"}
 requests = "^2.28.1"
@@ -15,7 +15,8 @@ SQLAlchemy = "^1.4.39"
 PyJWT = "^2.4.0"
 SQLAlchemy-Utils = "^0.38.3"
 psycopg2-binary = "^2.9.3"
-dolist-parser = { git = "ssh://git@github.com/dolist-sh/comment-parser.git", branch = "main" }
+dolistparser = "^0.2.2"
+
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
