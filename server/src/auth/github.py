@@ -3,7 +3,6 @@ import requests
 from config import (
     GITHUB_OAUTH_CLIENT_ID,
     GITHUB_OAUTH_CLIENT_SECRET,
-    GITHUB_OAUTH_CONFIRM_URI,
 )
 
 
@@ -12,7 +11,6 @@ async def get_github_access_token(session_code: str) -> str:
         payload = {
             "client_id": GITHUB_OAUTH_CLIENT_ID,
             "client_secret": GITHUB_OAUTH_CLIENT_SECRET,
-            "redirect_uri": GITHUB_OAUTH_CONFIRM_URI,  # TODO: Check if this is necessary
             "code": session_code,
         }
 
@@ -29,6 +27,7 @@ async def get_github_access_token(session_code: str) -> str:
         return None
 
     except Exception as e:
+        print(e)
         raise e
 
 

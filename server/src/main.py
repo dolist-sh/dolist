@@ -121,9 +121,9 @@ async def handle_auth(session_code: str, status_code=200):
                 email=email, name=name, profileUrl=profile_url, oauthInUse=oauth_payload
             )
 
-            new_user = await create_user(user_payload)
+            await create_user(user_payload)
 
-            return issue_token(new_user.email)
+            return issue_token(user_payload.email)
 
         else:
             """Sign-in case"""
