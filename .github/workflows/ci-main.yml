@@ -104,18 +104,18 @@ jobs:
           POSTGRES_USERNAME: ${{ secrets.POSTGRES_USERNAME }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
         run: |
-          touch ./app/src/.env.local ./server/src/.env
+          touch ./app/.env.local ./server/.env
 
-          echo "GITHUB_OAUTH_CLIENT_ID=$GITHUB_OAUTH_CLIENT_ID" >> ./app/src/.env.local
-          echo "GITHUB_OAUTH_CLIENT_SECRET=$GITHUB_OAUTH_CLIENT_SECRET" >> ./app/src/.env.local
-          echo "GITHUB_OAUTH_REDIRECT_URI=$GITHUB_OAUTH_REDIRECT_URI" >> ./app/src/.env.local
-          echo "ENV=dev" >> ./app/src/.env.local
+          echo "GITHUB_OAUTH_CLIENT_ID=$GITHUB_OAUTH_CLIENT_ID" >> ./app/.env.local
+          echo "GITHUB_OAUTH_CLIENT_SECRET=$GITHUB_OAUTH_CLIENT_SECRET" >> ./app/.env.local
+          echo "GITHUB_OAUTH_REDIRECT_URI=$GITHUB_OAUTH_REDIRECT_URI" >> ./app/.env.local
+          echo "ENV=dev" >> ./app/.env.local
 
-          echo "GITHUB_OAUTH_CLIENT_ID=$GITHUB_OAUTH_CLIENT_ID" >> ./server/src/.env
-          echo "GITHUB_OAUTH_CLIENT_SECRET=$GITHUB_OAUTH_CLIENT_SECRET" >> ./server/src/.env
-          echo "POSTGRES_USERNAME=$POSTGRES_USERNAME" >> ./server/src/.env
-          echo "POSTGRES_PASSWORD=$POSTGRES_PASSWORD" >> ./server/src/.env
-          echo "JWT_SECRET=$JWT_SECRET" >> ./server/src/.env
+          echo "GITHUB_OAUTH_CLIENT_ID=$GITHUB_OAUTH_CLIENT_ID" >> ./server/.env
+          echo "GITHUB_OAUTH_CLIENT_SECRET=$GITHUB_OAUTH_CLIENT_SECRET" >> ./server/.env
+          echo "POSTGRES_USERNAME=$POSTGRES_USERNAME" >> ./server/.env
+          echo "POSTGRES_PASSWORD=$POSTGRES_PASSWORD" >> ./server/.env
+          echo "JWT_SECRET=$JWT_SECRET" >> ./server/.env
       - name: Deploy the code to EC2
         uses: easingthemes/ssh-deploy@v2
         env:
