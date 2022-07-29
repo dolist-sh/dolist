@@ -31,8 +31,6 @@ services:
       network: host
     env_file:
       - ./app/.env.local #TODO: Replace this with env var injected at build time
-    environment:
-      - RUN_DOCKER=True
     restart: always
     networks:
       - app-networks
