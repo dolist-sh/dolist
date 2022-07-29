@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import type { NextPage } from 'next';
 
 import { RepoCard } from '../components';
@@ -7,9 +8,12 @@ import { Repo } from '../types';
 
 const AppMainPage: NextPage = () => {
   const [repos, setRepos] = useState([]);
+  const { push } = useRouter();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
+
+    !token ? push('/signin') : null;
 
     getUserRepos(token).then((data) => {
       const repos: Repo[] = data.map((repo) => {
