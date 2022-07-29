@@ -95,6 +95,10 @@ jobs:
     steps: 
       - name: Checkout the repository
         uses: actions/checkout@v2
+      - name: Inject .env files
+        run: |
+          ls -al
+          echo "Write the env variable files here"
       - name: Deploy the code to EC2
         uses: easingthemes/ssh-deploy@v2
         env:
