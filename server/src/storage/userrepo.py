@@ -28,7 +28,7 @@ async def create_user(payload: CreateUserInput) -> User:
         insert = user_db.insert()
         db.execute(insert, new_user_data)
 
-        new_user_obj = read_user(new_id)
+        new_user_obj = await read_user(new_id)
 
         return new_user_obj
 
