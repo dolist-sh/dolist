@@ -135,3 +135,9 @@ async def handle_auth(session_code: str, status_code=200):
         # TODO: Proper logging and error handling
         print(f"Unexpected exceptions: {str(e)}")
         raise e
+
+
+@app.post("/webhook")
+def process_hook(payload):
+    print(payload)
+    return "okay"
