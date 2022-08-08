@@ -8,5 +8,5 @@ if (
   localStorage.theme = 'dark';
 } else {
   document.documentElement.classList.remove('dark');
-  localStorage.removeItem('theme');
+  localStorage.theme = 'light';
 }

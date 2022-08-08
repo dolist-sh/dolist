@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
+import { GlobalContext } from '../contexts/global';
 import type { NextPage } from 'next';
 
 interface GithubAuthBtnProps {
@@ -21,7 +22,49 @@ const GithubAuthBtn: React.FC<GithubAuthBtnProps> = ({ oauthUri, logoUri }: Gith
   );
 };
 
+const ColorThemeBtn: React.FC = () => {
+  const globalcontext = useContext(GlobalContext);
+  const [iconUri, setIconUri] = useState(null);
+
+  useEffect(() => {
+    if (globalcontext.theme === 'dark') {
+      setIconUri('/images/lightmode_cream.png');
+    }
+
+    if (globalcontext.theme === 'light') {
+      setIconUri('/images/nightmode.png');
+    }
+  }, [globalcontext.theme]);
+
+  const clickHandler = (event: React.MouseEvent) => {
+    event.preventDefault();
+
+    if (globalcontext.theme === 'dark') {
+      setIconUri('/images/nightmode.png');
+      globalcontext.switchToLight();
+    }
+
+    if (globalcontext.theme === 'light') {
+      setIconUri('/images/lightmode_cream.png');
+      globalcontext.switchToDark();
+    }
+  };
+
+  return (
+    <button
+      onClick={clickHandler}
+      className="inline-flex w-[120px] h-[35px] bg-dolist-cream dark:bg-dolist-darkblue text-sm border-dolist-darkblue dark:border-dolist-cream border-2 rounded-md justify-center items-center"
+    >
+      <p className="pr-2 text-xs text-dolist-darkblue dark:text-dolist-cream font-bold">
+        {globalcontext.theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+      </p>
+      <img src={iconUri} className="w-[12px] h-[12px]" />
+    </button>
+  );
+};
+
 const AuthPage: NextPage = () => {
+  const globalcontext = useContext(GlobalContext);
   const [logoUri, setLogoUri] = useState(null);
   const [githubLogoUri, setGithubLogoUri] = useState(null);
 
@@ -30,25 +73,22 @@ const AuthPage: NextPage = () => {
   const oauthUri = `https://github.com/login/oauth/authorize/?client_id=${clientId}&redirect_uri=${redirectUri}&scope=repo read:user user:email`;
 
   useEffect(() => {
-    if (localStorage.getItem('theme') === 'dark') {
+    if (globalcontext.theme === 'dark') {
       setLogoUri('/images/logo_dark_multiline.png');
       setGithubLogoUri('/images/github_white.png');
-    } else {
+    }
+    if (globalcontext.theme === 'light') {
       setLogoUri('/images/logo_light_multiline.png');
       setGithubLogoUri('/images/github_black.png');
     }
-  }, []);
+  }, [globalcontext.theme]);
 
   // TODO: Use next/router for redirect upon clicking the button instead of href on the anchor tag
 
   return (
     <div className="bg-dolist-bg-light dark:bg-dolist-bg-dark flex flex-col h-screen">
       <div className="flex flex-row justify-end content-start mt-6 mr-14">
-        {/** TODO: color theme button should be a separate component */}
-        <button className="inline-flex w-[120px] h-[35px] text-sm bg-dolist-cream border-2 border-dolist-darkblue rounded-md justify-center items-center">
-          <p className="pr-2 text-xs font-bold">{`Dark Mode`}</p>
-          <img src="/images/night-mode.png" alt="light_mode_icon_sun" className="w-[12px] h-[12px]" />
-        </button>
+        <ColorThemeBtn />
       </div>
       <div className="flex flex-col justify-center w-11/12  m-auto">
         <div className="flex flex-row justify-center align-middle">

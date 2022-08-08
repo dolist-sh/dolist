@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import React from 'react';
 import '../styles/globals.css';
+import { GlobalContextProvider } from '../contexts/global';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 
@@ -10,7 +11,9 @@ function MyApp({ Component, pageProps }: AppProps) {
       <Head>
         <script src="/scripts/getTheme.js"></script>
       </Head>
-      <Component {...pageProps} />;
+      <GlobalContextProvider>
+        <Component {...pageProps} />;
+      </GlobalContextProvider>
     </div>
   );
 }
