@@ -65,6 +65,7 @@ const ColorThemeBtn: React.FC = () => {
 
 const AuthPage: NextPage = () => {
   const globalcontext = useContext(GlobalContext);
+
   const [logoUri, setLogoUri] = useState(null);
   const [githubLogoUri, setGithubLogoUri] = useState(null);
 
