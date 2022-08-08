@@ -18,6 +18,9 @@ module.exports = {
           'dolist-green': '#069B15',
         }
       },
+      fontFamily: {
+        'std': ['Inter', 'sans-serif']
+      },
     },
     plugins: [],
 }

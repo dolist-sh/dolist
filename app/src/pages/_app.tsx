@@ -7,14 +7,19 @@ import Head from 'next/head';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <div className="bg-dolist-bg-light dark:bg-dolist-bg-dark">
+    <>
       <Head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet" />
         <script src="/scripts/getTheme.js"></script>
       </Head>
-      <GlobalContextProvider>
-        <Component {...pageProps} />;
-      </GlobalContextProvider>
-    </div>
+      <div className="bg-dolist-bg-light dark:bg-dolist-bg-dark">
+        <GlobalContextProvider>
+          <Component {...pageProps} />;
+        </GlobalContextProvider>
+      </div>
+    </>
   );
 }
 

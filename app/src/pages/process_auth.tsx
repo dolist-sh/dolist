@@ -54,8 +54,8 @@ const ProcessAuthPage: NextPage = () => {
       <div className="w-full h-20 content-center">
         <Spinner />
       </div>
-      <p className="w-full text-center pl-6 text-dolist-darkblue dark:text-dolist-cream">
-        {'Busy processing, hang tight..'}
+      <p className="w-full text-center pl-6 text-dolist-darkblue dark:text-dolist-cream font-std">
+        {'busy processing, hang tight..'}
       </p>
     </div>
   );

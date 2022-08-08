@@ -15,7 +15,7 @@ const GithubAuthBtn: React.FC<GithubAuthBtnProps> = ({ oauthUri, logoUri }: Gith
     >
       <img src={logoUri} alt="github_logo_black_color" className="w-[28px] h-[28px]" />
       {/** TODO: change this to p tag when click handler is implemented */}
-      <a href={oauthUri} className="pl-4 text-xs text-black dark:text-white font-bold">
+      <a href={oauthUri} className="pl-4 text-xs text-black dark:text-white font-std font-bold">
         {'Continue with Github'}
       </a>
     </button>
@@ -55,7 +55,7 @@ const ColorThemeBtn: React.FC = () => {
       onClick={clickHandler}
       className="inline-flex w-[120px] h-[35px] bg-dolist-cream dark:bg-dolist-darkblue text-sm border-dolist-darkblue dark:border-dolist-cream border-2 rounded-md justify-center items-center"
     >
-      <p className="pr-2 text-xs text-dolist-darkblue dark:text-dolist-cream font-bold">
+      <p className="pr-2 text-xs text-dolist-darkblue dark:text-dolist-cream font-std font-bold">
         {globalcontext.theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
       </p>
       <img src={iconUri} className="w-[12px] h-[12px]" />
@@ -95,7 +95,7 @@ const AuthPage: NextPage = () => {
           {logoUri ? <img src={logoUri} className="w-24 h-24" /> : null}
         </div>
         <div className="flex flex-row justify-center align-middle mt-8 mb-8">
-          <h1 className="text-black dark:text-dolist-cream font-bold">{`Monitor TODOs & technical debts with dolist.sh`}</h1>
+          <h1 className="text-black dark:text-dolist-cream font-std font-bold">{`Monitor TODOs & technical debts with dolist.sh`}</h1>
         </div>
         <div className="flex flex-row justify-center align-middle">
           {githubLogoUri ? <GithubAuthBtn logoUri={githubLogoUri} oauthUri={oauthUri} /> : null}
