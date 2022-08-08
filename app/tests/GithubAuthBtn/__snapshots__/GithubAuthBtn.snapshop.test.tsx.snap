@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Snapshot testing of GithubAuthBtn component renders correctly 1`] = `
+<button
+  className="inline-flex w-[220px] h-[45px] px-3 py-2 bg-dolist-cream dark:bg-dolist-darkblue border text-sm border-black dark:border-dolist-cream rounded  justify-center items-center"
+  type="button"
+>
+  <img
+    alt="github_logo_black_color"
+    className="w-[28px] h-[28px]"
+    src="/images/logo.png"
+  />
+  <a
+    className="pl-4 text-xs text-black dark:text-white font-std font-bold"
+    href="http://test.oauth"
+  >
+    Continue with Github
+  </a>
+</button>
+`;

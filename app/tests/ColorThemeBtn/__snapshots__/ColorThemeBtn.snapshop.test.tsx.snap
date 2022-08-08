@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Snapshot testing of ColorThemeBtn component renders correctly 1`] = `
+<button
+  className="inline-flex w-[120px] h-[35px] bg-dolist-cream dark:bg-dolist-darkblue text-sm border-dolist-darkblue dark:border-dolist-cream border-2 rounded-md justify-center items-center"
+  onClick={[Function]}
+>
+  <p
+    className="pr-2 text-xs text-dolist-darkblue dark:text-dolist-cream font-std font-bold"
+  >
+    Light Mode
+  </p>
+  <img
+    className="w-[12px] h-[12px]"
+    src="/images/nightmode.png"
+  />
+</button>
+`;
