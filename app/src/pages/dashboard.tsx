@@ -8,6 +8,7 @@ const DashboardPage: NextPage = () => {
 
   const [logoUri, setLogoUri] = useState(null);
   const [colorThemeIconUri, setcolorThemeIconUri] = useState(null);
+  const [githubLogoUri, setGithubLogoUri] = useState(null);
   const [settingIconUri, setSettingIconUri] = useState(null);
   const [logoutIconUri, setLogoutIconUri] = useState(null);
 
@@ -15,12 +16,14 @@ const DashboardPage: NextPage = () => {
     if (globalcontext.theme === 'dark') {
       setLogoUri('/images/logo_dark_multiline.png');
       setcolorThemeIconUri('/images/lightmode_cream.png');
+      setGithubLogoUri('/images/github_white.png');
       setLogoutIconUri('/images/logout_light.png');
       setSettingIconUri('/images/settings_light.png');
     }
     if (globalcontext.theme === 'light') {
       setLogoUri('/images/logo_light_multiline.png');
       setcolorThemeIconUri('/images/nightmode.png');
+      setGithubLogoUri('/images/github_black.png');
       setLogoutIconUri('/images/logout_dark.png');
       setSettingIconUri('/images/settings_dark.png');
     }
@@ -66,10 +69,14 @@ const DashboardPage: NextPage = () => {
       <div className="w-full h-1/4 mt-14 mb-5">
         <div className="w-5/6 h-full m-auto mt-0 mb-0">
           <h2 className="font-std font-bold text-black dark:text-dolist-cream">{`Start monitoring the repositories`}</h2>
-          <div className="flex flex-row h-auto mt-5 justify-evenly border-2">
-            <button>{`GH btn`}</button>
-            <button>{`GL btn`}</button>
-            <button>{`BicBucket BTN`}</button>
+          <div className="flex flex-row h-auto mt-5 ml-3 justify-start">
+            <button className="flex flex-col w-[23%] h-full p-5 bg-dolist-cream dark:bg-dolist-darkblue border-[0.5px] border-dashed border-black dark:border-dolist-cream rounded">
+              <div className="w-1/4 h-1/4 m-auto relative">
+                <img src={githubLogoUri} className="w-7 h-7 ml-2" />
+                <a className="absolute top-4 left-8 text-black dark:text-white">&#43;</a>
+              </div>
+              <p className="font-std font-bold text-xs text-black dark:text-dolist-cream pt-3">{`Monitor GitHub Repo`}</p>
+            </button>
           </div>
         </div>
       </div>
