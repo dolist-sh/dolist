@@ -15,6 +15,7 @@ module.exports = {
           'dolist-cream': '#E8E7E0',
           'dolist-brown': '#362F24',
           'dolist-lightgray': '#848484',
+          'dolist-gray': '#666464',
           'dolist-green': '#069B15',
         }
       },
