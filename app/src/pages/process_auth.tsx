@@ -18,7 +18,7 @@ const ProcessAuthPage: NextPage = () => {
       getAuthCode(tempCode as string).then((token) => {
         if (token) {
           localStorage.setItem('token', token);
-          push('/', '/main');
+          push('/', '/dashboard');
         } else {
           push('/signin');
         }

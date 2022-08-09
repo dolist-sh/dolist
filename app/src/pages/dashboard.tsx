@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { GlobalContext } from '../contexts/global';
 import type { NextPage } from 'next';
+import { useRouter } from 'next/router';
 import { ColorThemeBtn } from '../components';
 
 interface RepoOverviewProps {
@@ -61,6 +62,8 @@ const RepoOverview: React.FC<RepoOverviewProps> = ({ githubLogoUri }: RepoOvervi
 };
 
 const DashboardPage: NextPage = () => {
+  const { push } = useRouter();
+
   const globalcontext = useContext(GlobalContext);
 
   const [logoUri, setLogoUri] = useState(null);
@@ -69,6 +72,11 @@ const DashboardPage: NextPage = () => {
   const [githubLogoUri, setGithubLogoUri] = useState(null);
   const [settingIconUri, setSettingIconUri] = useState(null);
   const [logoutIconUri, setLogoutIconUri] = useState(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    !token ? push('/signin') : null;
+  }, []);
 
   useEffect(() => {
     if (globalcontext.theme === 'dark') {
