@@ -109,6 +109,13 @@ const DashboardPage: NextPage = () => {
     }
   };
 
+  const logoutHandler = (event: React.MouseEvent) => {
+    event.preventDefault();
+
+    localStorage.removeItem('token');
+    window.location.assign('/signin');
+  };
+
   // TODO: Wrap the page structure with Layout component
   return (
     <div className="flex flex-col w-full min-h-screen h-auto overflow-hidden justify-start content-center">
@@ -126,12 +133,12 @@ const DashboardPage: NextPage = () => {
               />
             </div>
             <img src="/images/profile.jpeg" className="w-10 h-10 rounded-full ml-12 self-center" />
-            <a className="self-center pl-5 cursor-pointer">
+            <span className="self-center pl-5 cursor-pointer">
               <img src={settingIconUri} className="w-6 h-6" />
-            </a>
-            <a className="self-center pl-3 cursor-pointer">
-              <img src={logoutIconUri} className="w-6 h-6" />
-            </a>
+            </span>
+            <span className="self-center pl-3 cursor-pointer">
+              <img onClick={logoutHandler} src={logoutIconUri} className="w-6 h-6" />
+            </span>
           </div>
         </header>
       </div>
