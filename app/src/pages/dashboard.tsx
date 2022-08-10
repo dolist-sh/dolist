@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import { GlobalContext } from '../contexts/global';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { Layout } from '../components';
+import { Layout, AddRepoModal } from '../components';
 
 interface RepoOverviewProps {
   githubLogoUri: string;
@@ -72,6 +72,7 @@ const DashboardPage: NextPage = () => {
   const [githubLogoUri, setGithubLogoUri] = useState(null);
   const [settingIconUri, setSettingIconUri] = useState(null);
   const [logoutIconUri, setLogoutIconUri] = useState(null);
+  const [modalOpenCounter, setModalOpenCounter] = useState(0);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -116,6 +117,12 @@ const DashboardPage: NextPage = () => {
     window.location.assign('/signin');
   };
 
+  const modalOpenHandler = (event: React.MouseEvent) => {
+    event.preventDefault();
+    const counter = modalOpenCounter + 1;
+    setModalOpenCounter(counter);
+  };
+
   const layoutProps = {
     logoUri,
     theme: globalcontext.theme,
@@ -128,12 +135,17 @@ const DashboardPage: NextPage = () => {
 
   return (
     <Layout {...layoutProps}>
+      <AddRepoModal githubLogoUri={githubLogoUri} openCounter={modalOpenCounter} />
       <div className="w-full h-1/4 pt-10 pb-5">
         <div className="w-5/6 h-full m-auto mt-0 mb-0">
           <h2 className="font-std font-bold text-black dark:text-dolist-cream">{`Start monitoring the repositories`}</h2>
           <div className="flex flex-row h-auto mt-5 ml-3 justify-start z-10">
-            <button className="flex flex-col w-[30%] h-full p-5 pt-7 pb-7 bg-dolist-cream dark:bg-dolist-darkblue border-[0.5px] border-dashed border-black dark:border-dolist-cream rounded">
-              <div className="flex flex-col w-1/4 h-1/4 m-auto z-10">
+            <button
+              type="button"
+              onClick={modalOpenHandler}
+              className="flex flex-col w-[30%] h-full p-5 pt-7 pb-7 bg-dolist-cream dark:bg-dolist-darkblue border-[0.5px] border-dashed border-black dark:border-dolist-cream rounded"
+            >
+              <div className="flex flex-col w-1/4 h-1/4 m-auto">
                 <img src={addGithubLogoUri} className="w-7 h-7 ml-2 self-center" />
               </div>
               <p className="font-std font-bold text-xs text-black dark:text-dolist-cream pt-3">{`Monitor GitHub Repo`}</p>
