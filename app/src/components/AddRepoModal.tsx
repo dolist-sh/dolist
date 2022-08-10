@@ -14,12 +14,12 @@ const AddRepoModal: React.FC<AddRepoModalProps> = ({ openCounter, githubLogoUri 
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    setOpen(!open);
+    openCounter > 0 ? setOpen(!open) : null;
   }, [openCounter]);
 
   return (
     <Transition.Root show={open} as={Fragment}>
-      <div className="relative z-10">
+      <div onClick={() => setOpen(false)} className="relative z-10">
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
