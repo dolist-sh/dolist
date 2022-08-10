@@ -135,7 +135,7 @@ const DashboardPage: NextPage = () => {
 
   return (
     <Layout {...layoutProps}>
-      <AddRepoModal openCounter={modalOpenCounter} />
+      <AddRepoModal githubLogoUri={githubLogoUri} openCounter={modalOpenCounter} />
       <div className="w-full h-1/4 pt-10 pb-5">
         <div className="w-5/6 h-full m-auto mt-0 mb-0">
           <h2 className="font-std font-bold text-black dark:text-dolist-cream">{`Start monitoring the repositories`}</h2>
