@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as renderer from 'react-test-renderer';
-import { TaskCard } from '../../src/components';
+import { TaskCard } from '../../../src/components';
 
 describe('Snapshot testing of TaskCard component', () => {
   const testData = {

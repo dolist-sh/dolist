@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as renderer from 'react-test-renderer';
-import { ColorThemeBtn } from '../../src/components';
+import { ColorThemeBtn } from '../../../src/components';
 
 describe('Snapshot testing of ColorThemeBtn component', () => {
   test('renders correctly', () => {

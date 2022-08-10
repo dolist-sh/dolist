@@ -1,9 +1,7 @@
 import * as React from 'react';
 
 interface RepoCardProps {
-  //name: string;
   fullName: string;
-  //branch: string;
   githubLogoUri: string;
 }
 
