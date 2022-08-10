@@ -1,6 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 
 module.exports = {
+  plugins: [
+    // ...
+    require('@tailwindcss/forms'),
+  ],
     content: [
       './src/pages/**/*.{js,ts,jsx,tsx}',
       './src/components/**/*.{js,ts,jsx,tsx}',
@@ -23,5 +27,7 @@ module.exports = {
         'std': ['Inter', 'sans-serif']
       },
     },
-    plugins: [],
+    plugins: [
+      require('@tailwindcss/forms'),
+    ],
 }
