@@ -1,6 +1,16 @@
 from uuid import UUID
 from pydantic import BaseModel
-from typing_extensions import Literal
+from typing import List
+from typing_extensions import Literal, TypedDict
+
+
+class CreateMonitoredReposInput(TypedDict):
+    fullName: str
+    provider: Literal["github"]
+
+
+class AddMonitoredReposInput(BaseModel):
+    repos: List[CreateMonitoredReposInput]
 
 
 class MonitoredRepo(BaseModel):

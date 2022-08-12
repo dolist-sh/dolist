@@ -1,4 +1,4 @@
-"""Database access module for user."""
+"""Database access module for User."""
 
 from uuid import UUID
 from time import time

@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Fragment, useState, useEffect } from 'react';
 import { Transition } from '@headlessui/react';
 import { XIcon } from '@heroicons/react/outline';
-import { getUserRepos } from '../api';
+import { getGithubRepos, postMonitoredRepos } from '../api';
 import RepoCard from './RepoCard';
 
 interface AddRepoModalProps {
@@ -23,11 +23,18 @@ const AddRepoModal: React.FC<AddRepoModalProps> = ({ openCounter, githubLogoUri 
     const token = localStorage.getItem('token') as string;
 
     if (open) {
-      getUserRepos(token).then((data) => {
+      getGithubRepos(token).then((data) => {
         setRepos(data);
       });
     }
   }, [open]);
+
+  // TODO: Implement the handler with API call
+  const addRepoSubmitHandler = async (event: React.MouseEvent) => {
+    event.preventDefault();
+    const token = localStorage.getItem('token');
+    await postMonitoredRepos(token);
+  };
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -92,7 +99,10 @@ const AddRepoModal: React.FC<AddRepoModalProps> = ({ openCounter, githubLogoUri 
                 <button
                   type="button"
                   className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-dolist-darkblue dark:bg-dolist-green text-base font-std font-bold text-white focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm"
-                  onClick={() => setOpen(false)}
+                  onClick={async (e) => {
+                    await addRepoSubmitHandler(e);
+                    setOpen(false);
+                  }}
                 >
                   Confirm
                 </button>

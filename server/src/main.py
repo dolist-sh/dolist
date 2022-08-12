@@ -1,14 +1,19 @@
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, Request, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 
 from auth.jwt import issue_token, get_email_from_token
 from auth.github import get_github_access_token, get_github_user, get_github_user_email
 from integration.github import get_github_repos, parse_github_repo
-from storage.userrepo import read_user_by_email, create_user, write_github_token
+
+from storage.userdb import read_user_by_email, create_user, write_github_token
+from storage.mrepodb import create_monitored_repo
 
 from domain.user import User
+from domain.mrepo import MonitoredRepo, AddMonitoredReposInput
 from dolistparser import ParsedComment
 from typing import Union, List
+
+import json
 
 app = FastAPI()
 
@@ -26,6 +31,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+async def get_json_body(request: Request):
+    body = await request.body()
+    return json.loads(body)
 
 
 @app.get("/")
@@ -71,7 +81,9 @@ async def get_user(
 
 # TODO: Add type definition for reponse
 @app.get("/user/repos")
-async def get_user_repos(email: str = Depends(get_email_from_token), status_code=200):
+async def get_user_github_repos(
+    email: str = Depends(get_email_from_token), status_code=200
+):
     try:
 
         user = await read_user_by_email(email)
@@ -81,6 +93,29 @@ async def get_user_repos(email: str = Depends(get_email_from_token), status_code
 
         return github_repos
 
+    except Exception as e:
+        print(f"Unexpected exceptions: {str(e)}")
+        raise e
+
+
+# TODO: Rename this endpoint to improve readability of uri, using different term for monitored repo might be good idea
+@app.post("/user/monitoredrepo")
+async def add_monitored_repos(
+    payload: AddMonitoredReposInput = Depends(get_json_body),
+    email: str = Depends(get_email_from_token),
+    status_code=201,
+    response_model=List[MonitoredRepo],
+):
+    try:
+        user = await read_user_by_email(email)
+        user_id = user.id
+
+        for repo in payload["repos"]:
+            new_repo = await create_monitored_repo(dict(repo), user_id)
+
+        # publish message to the queue
+        # return the result to client
+        return "okay"
     except Exception as e:
         print(f"Unexpected exceptions: {str(e)}")
         raise e
