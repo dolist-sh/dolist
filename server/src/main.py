@@ -54,7 +54,6 @@ async def get_repo_tasks(
     response_model=List[ParsedComment],
 ):
     try:
-
         user = await read_user_by_email(email)
         github_token = user.oauth[0]["token"]
 
@@ -72,7 +71,6 @@ async def get_user(
     email: str = Depends(get_email_from_token), status_code=200, response_model=User
 ):
     try:
-
         user = await read_user_by_email(email)
         return user
 
@@ -87,7 +85,6 @@ async def get_user_github_repos(
     email: str = Depends(get_email_from_token), status_code=200
 ):
     try:
-
         user = await read_user_by_email(email)
         github_token = user.oauth[0]["token"]  # TODO: Replace this with find call
 
