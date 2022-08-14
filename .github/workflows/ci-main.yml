@@ -103,6 +103,8 @@ jobs:
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           POSTGRES_USERNAME: ${{ secrets.POSTGRES_USERNAME }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+          AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
         run: |
           touch ./app/.env.local ./server/.env
 
@@ -116,6 +118,8 @@ jobs:
           echo "POSTGRES_USERNAME=$POSTGRES_USERNAME" >> ./server/.env
           echo "POSTGRES_PASSWORD=$POSTGRES_PASSWORD" >> ./server/.env
           echo "JWT_SECRET=$JWT_SECRET" >> ./server/.env
+          echo "AWS_ACCESS_KEY=$AWS_ACCESS_KEY" >> ./server/.env
+          echo "AWS_SECRET_KEY=$AWS_SECRET_KEY" >> ./server/.env
       - name: Deploy the code to EC2
         uses: easingthemes/ssh-deploy@v2
         env:

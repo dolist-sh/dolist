@@ -1,14 +1,21 @@
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, Request, Response, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 
 from auth.jwt import issue_token, get_email_from_token
 from auth.github import get_github_access_token, get_github_user, get_github_user_email
+
 from integration.github import get_github_repos, parse_github_repo
-from storage.userrepo import read_user_by_email, create_user, write_github_token
+
+from storage.userdb import read_user_by_email, create_user, write_github_token
+from storage.mrepodb import create_monitored_repo
 
 from domain.user import User
+from domain.mrepo import AddMonitoredReposInput, MonitoredRepo
 from dolistparser import ParsedComment
+
 from typing import Union, List
+import json
+
 
 app = FastAPI()
 
@@ -28,6 +35,11 @@ app.add_middleware(
 )
 
 
+async def get_json_body(request: Request):
+    body = await request.body()
+    return json.loads(body)
+
+
 @app.get("/")
 def read_root():
     return {"data": "stay present, be in the flow..!"}
@@ -42,7 +54,6 @@ async def get_repo_tasks(
     response_model=List[ParsedComment],
 ):
     try:
-
         user = await read_user_by_email(email)
         github_token = user.oauth[0]["token"]
 
@@ -60,7 +71,6 @@ async def get_user(
     email: str = Depends(get_email_from_token), status_code=200, response_model=User
 ):
     try:
-
         user = await read_user_by_email(email)
         return user
 
@@ -71,15 +81,50 @@ async def get_user(
 
 # TODO: Add type definition for reponse
 @app.get("/user/repos")
-async def get_user_repos(email: str = Depends(get_email_from_token), status_code=200):
+async def get_user_github_repos(
+    email: str = Depends(get_email_from_token), status_code=200
+):
     try:
-
         user = await read_user_by_email(email)
         github_token = user.oauth[0]["token"]  # TODO: Replace this with find call
 
         github_repos = await get_github_repos(github_token)
 
         return github_repos
+
+    except Exception as e:
+        print(f"Unexpected exceptions: {str(e)}")
+        raise e
+
+
+# TODO: Rename this endpoint to improve readability of uri, using different term for monitored repo might be good idea
+@app.post("/user/monitoredrepo", status_code=200)
+async def add_monitored_repos(
+    response: Response,
+    payload: AddMonitoredReposInput = Depends(get_json_body),
+    email: str = Depends(get_email_from_token),
+):
+    try:
+        from pub.sqs import parse_queue
+
+        user = await read_user_by_email(email)
+        user_id = user.id
+
+        if len(payload["repos"]) > 0:
+
+            batch = []
+
+            for repo in payload["repos"]:
+                new_repo = await create_monitored_repo(dict(repo), user_id)
+                batch.append(new_repo)
+
+            msgs = [dict(Id=str(mrepo.id), MessageBody=str(mrepo)) for mrepo in batch]
+            parse_queue.send_messages(Entries=msgs)
+
+            response.status_code = 201
+            return
+        else:
+            return
 
     except Exception as e:
         print(f"Unexpected exceptions: {str(e)}")

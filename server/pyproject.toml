@@ -16,6 +16,7 @@ PyJWT = "^2.4.0"
 SQLAlchemy-Utils = "^0.38.3"
 psycopg2-binary = "^2.9.3"
 dolistparser = "^0.2.2"
+boto3 = "^1.24.51"
 
 
 [tool.poetry.dev-dependencies]

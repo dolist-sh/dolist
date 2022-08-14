@@ -11,3 +11,6 @@ DB_USER = os.environ.get("POSTGRES_USERNAME")
 DB_PWD = os.environ.get("POSTGRES_PASSWORD")
 
 JWT_SECRET = os.environ.get("JWT_SECRET")
+
+AWS_ACCESS_KEY = os.environ.get("AWS_ACCESS_KEY")
+AWS_SECRET_KEY = os.environ.get("AWS_SECRET_KEY")

@@ -3,8 +3,9 @@ import * as React from 'react';
 import { Fragment, useState, useEffect } from 'react';
 import { Transition } from '@headlessui/react';
 import { XIcon } from '@heroicons/react/outline';
-import { getUserRepos } from '../api';
+import { getGithubRepos, postMonitoredRepos } from '../api';
 import RepoCard from './RepoCard';
+import { Repo } from '../types';
 
 interface AddRepoModalProps {
   openCounter: number;
@@ -14,6 +15,7 @@ interface AddRepoModalProps {
 const AddRepoModal: React.FC<AddRepoModalProps> = ({ openCounter, githubLogoUri }: AddRepoModalProps) => {
   const [open, setOpen] = useState(false);
   const [repos, setRepos] = useState(null);
+  const [selectedRepos, setSelectedRepos] = useState<Repo[]>([]);
 
   useEffect(() => {
     openCounter > 0 ? setOpen(!open) : null;
@@ -23,11 +25,37 @@ const AddRepoModal: React.FC<AddRepoModalProps> = ({ openCounter, githubLogoUri 
     const token = localStorage.getItem('token') as string;
 
     if (open) {
-      getUserRepos(token).then((data) => {
+      getGithubRepos(token).then((data) => {
         setRepos(data);
       });
     }
   }, [open]);
+
+  const repoSelectHandler = (repository: Repo) => {
+    const found = selectedRepos.find((repo) => repo.id === repository.id);
+
+    let newState;
+
+    if (found) {
+      newState = selectedRepos.filter((repo) => repo.id !== repository.id);
+    }
+
+    if (!found) {
+      newState = [...selectedRepos, repository];
+    }
+
+    setSelectedRepos(newState);
+  };
+
+  // TODO: Implement the handler with API call
+  const addRepoSubmitHandler = async (event: React.MouseEvent) => {
+    event.preventDefault();
+
+    const token = localStorage.getItem('token');
+    await postMonitoredRepos(token, selectedRepos);
+
+    setSelectedRepos([]);
+  };
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -82,7 +110,26 @@ const AddRepoModal: React.FC<AddRepoModalProps> = ({ openCounter, githubLogoUri 
                   {/** TODO: Add Loader */}
                   {repos
                     ? repos.map((repo, index) => {
-                        return <RepoCard key={index} fullName={repo.full_name} githubLogoUri={githubLogoUri} />;
+                        const repository: Repo = {
+                          id: repo.id,
+                          name: repo.name,
+                          fullName: repo.full_name,
+                          defaultBranch: repo.default_branch,
+                          language: repo.language,
+                          url: repo.url,
+                          visibility: repo.visibility,
+                          provider: 'github',
+                        };
+                        const selected = selectedRepos.find((repo) => repo.id === repository.id);
+                        return (
+                          <RepoCard
+                            key={index}
+                            isSelected={selected ? true : false}
+                            repository={repository}
+                            githubLogoUri={githubLogoUri}
+                            selectHandler={repoSelectHandler}
+                          />
+                        );
                       })
                     : null}
                   {}
@@ -92,7 +139,10 @@ const AddRepoModal: React.FC<AddRepoModalProps> = ({ openCounter, githubLogoUri 
                 <button
                   type="button"
                   className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-dolist-darkblue dark:bg-dolist-green text-base font-std font-bold text-white focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm"
-                  onClick={() => setOpen(false)}
+                  onClick={async (e) => {
+                    await addRepoSubmitHandler(e);
+                    setOpen(false);
+                  }}
                 >
                   Confirm
                 </button>
