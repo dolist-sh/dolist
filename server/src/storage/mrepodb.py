@@ -6,7 +6,7 @@ from sqlalchemy import sql
 from storage.model import monitored_repo_schema
 from storage.db import engine
 
-from domain.mrepo import MonitoredRepo, MonitoredReposInput
+from domain.mrepo import MonitoredRepo, CreateMonitoredReposInput
 
 mrepo_db = monitored_repo_schema
 db = engine
@@ -32,7 +32,7 @@ async def create_monitored_repo(
         )
 
         insert = mrepo_db.insert()
-        db.execute(insert, new_m_repo_data)
+        db.execute(insert, new_monitored_repo_data)
 
         new_monitored_repo_obj = await read_monitored_repo(new_id)
 
