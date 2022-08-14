@@ -1,5 +1,5 @@
 //TODO: Add return data type
-
+import { Repo } from '../types';
 import { getApiHost } from '../utils';
 
 export const getUser = async (token: string) => {
@@ -50,7 +50,7 @@ export const getRepoTasks = async (token: string, repoFullName: string, branch: 
   return response.json();
 };
 
-export const postMonitoredRepos = async (token: string) => {
+export const postMonitoredRepos = async (token: string, repos: Repo[]) => {
   const host = getApiHost();
 
   const response = await fetch(`${host}/user/monitoredrepo`, {
@@ -58,10 +58,7 @@ export const postMonitoredRepos = async (token: string) => {
     mode: 'cors',
     headers: { Authorization: `token ${token}` },
     body: JSON.stringify({
-      repos: [
-        { fullName: 'whathecker/api', provider: 'github' },
-        { fullName: 'whathecker/api', provider: 'github' },
-      ],
+      repos: repos,
     }),
   });
   return response.json();

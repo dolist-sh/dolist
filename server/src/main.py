@@ -125,10 +125,9 @@ async def add_monitored_repos(
             parse_queue.send_messages(Entries=msgs)
 
             response.status_code = 201
-            # TODO: Return a url for the get monitored_repo endpoint
-            return "okay"
+            return
         else:
-            return "okay, but nothing created"
+            return
 
     except Exception as e:
         print(f"Unexpected exceptions: {str(e)}")

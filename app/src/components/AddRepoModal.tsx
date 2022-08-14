@@ -5,6 +5,7 @@ import { Transition } from '@headlessui/react';
 import { XIcon } from '@heroicons/react/outline';
 import { getGithubRepos, postMonitoredRepos } from '../api';
 import RepoCard from './RepoCard';
+import { Repo } from '../types';
 
 interface AddRepoModalProps {
   openCounter: number;
@@ -14,6 +15,7 @@ interface AddRepoModalProps {
 const AddRepoModal: React.FC<AddRepoModalProps> = ({ openCounter, githubLogoUri }: AddRepoModalProps) => {
   const [open, setOpen] = useState(false);
   const [repos, setRepos] = useState(null);
+  const [selectedRepos, setSelectedRepos] = useState<Repo[]>([]);
 
   useEffect(() => {
     openCounter > 0 ? setOpen(!open) : null;
@@ -29,11 +31,30 @@ const AddRepoModal: React.FC<AddRepoModalProps> = ({ openCounter, githubLogoUri 
     }
   }, [open]);
 
+  const repoSelectHandler = (repository: Repo) => {
+    const found = selectedRepos.find((repo) => repo.id === repository.id);
+
+    let newState;
+
+    if (found) {
+      newState = selectedRepos.filter((repo) => repo.id !== repository.id);
+    }
+
+    if (!found) {
+      newState = [...selectedRepos, repository];
+    }
+
+    setSelectedRepos(newState);
+  };
+
   // TODO: Implement the handler with API call
   const addRepoSubmitHandler = async (event: React.MouseEvent) => {
     event.preventDefault();
+
     const token = localStorage.getItem('token');
-    await postMonitoredRepos(token);
+    await postMonitoredRepos(token, selectedRepos);
+
+    setSelectedRepos([]);
   };
 
   return (
@@ -89,7 +110,26 @@ const AddRepoModal: React.FC<AddRepoModalProps> = ({ openCounter, githubLogoUri 
                   {/** TODO: Add Loader */}
                   {repos
                     ? repos.map((repo, index) => {
-                        return <RepoCard key={index} fullName={repo.full_name} githubLogoUri={githubLogoUri} />;
+                        const repository: Repo = {
+                          id: repo.id,
+                          name: repo.name,
+                          fullName: repo.full_name,
+                          defaultBranch: repo.default_branch,
+                          language: repo.language,
+                          url: repo.url,
+                          visibility: repo.visibility,
+                          provider: 'github',
+                        };
+                        const selected = selectedRepos.find((repo) => repo.id === repository.id);
+                        return (
+                          <RepoCard
+                            key={index}
+                            isSelected={selected ? true : false}
+                            repository={repository}
+                            githubLogoUri={githubLogoUri}
+                            selectHandler={repoSelectHandler}
+                          />
+                        );
                       })
                     : null}
                   {}

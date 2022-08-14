@@ -5,5 +5,6 @@ export type Repo = {
   defaultBranch: string;
   language: string;
   url: string;
+  provider: 'github';
   visibility: 'private' | 'public';
 };
