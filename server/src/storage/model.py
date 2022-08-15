@@ -25,11 +25,13 @@ monitored_repo_schema = Table(
     "monitoredrepo",
     metadata_obj,
     Column("id", UUID(as_uuid=True), primary_key=True, default=uuid.uuid4()),
+    Column("name", String(50), nullable=False),
     Column("fullName", String(50), nullable=False),
-    Column(
-        "userId", UUID(as_uuid=True), nullable=False
-    ),  # TODO: Research if this should be made foreign key
+    Column("defaultBranch", String(50), nullable=False),
+    Column("language", String(50), nullable=False),
+    Column("userId", UUID(as_uuid=True), nullable=False),
     Column("provider", String(30), nullable=False),
+    Column("visibility", String(20), nullable=False),
     Column("status", String(20), nullable=False),
     Column("createdAt", Integer, nullable=False),
     Column("lastUpdated", Integer, nullable=False),

@@ -23,9 +23,13 @@ async def create_monitored_repo(
 
         new_monitored_repo_data = dict(
             id=new_id,
+            name=payload["name"],
             fullName=payload["fullName"],
+            defaultBranch=payload["defaultBranch"],
+            language=payload["language"],
             userId=user_id,
             provider=payload["provider"],
+            visibility=payload["visibility"],
             status="active",
             createdAt=timestamp,
             lastUpdated=timestamp,

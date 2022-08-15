@@ -49,6 +49,15 @@ services:
       - app-networks
     depends_on:
       - postgres
+  worker:
+    build:
+      context: ./worker/.
+      network: host
+    env_file:
+     - ./worker/.env
+    restart: always
+    networks:
+      - app-networks
 networks:
   app-networks:
     driver: bridge

@@ -118,7 +118,21 @@ async def add_monitored_repos(
                 new_repo = await create_monitored_repo(dict(repo), user_id)
                 batch.append(new_repo)
 
-            msgs = [dict(Id=str(mrepo.id), MessageBody=str(mrepo)) for mrepo in batch]
+            oauth_token = user.oauth[0]["token"]
+            msgs = [
+                dict(
+                    Id=str(mrepo.id),
+                    MessageBody=str(
+                        dict(
+                            token=oauth_token,
+                            repoName=mrepo.fullName,
+                            branch=mrepo.defaultBranch,
+                            provider=mrepo.provider,
+                        ),
+                    ),
+                )
+                for mrepo in batch
+            ]
             parse_queue.send_messages(Entries=msgs)
 
             response.status_code = 201
