@@ -9,6 +9,8 @@ from integration.github import get_github_repos, parse_github_repo
 from storage.userdb import read_user_by_email, create_user, write_github_token
 from storage.mrepodb import create_monitored_repo
 
+from pubsub.pub import publish_parse_req
+
 from domain.user import User
 from domain.mrepo import AddMonitoredReposInput, MonitoredRepo
 from dolistparser import ParsedComment
@@ -105,36 +107,22 @@ async def add_monitored_repos(
     email: str = Depends(get_email_from_token),
 ):
     try:
-        from pub.sqs import parse_queue
+        # from pubsub.sqs import parse_queue
 
         user = await read_user_by_email(email)
         user_id = user.id
 
         if len(payload["repos"]) > 0:
 
-            batch = []
+            batch: List[MonitoredRepo] = []
 
             for repo in payload["repos"]:
                 new_repo = await create_monitored_repo(dict(repo), user_id)
                 batch.append(new_repo)
 
             oauth_token = user.oauth[0]["token"]
-            msgs = [
-                dict(
-                    Id=str(mrepo.id),
-                    MessageBody=str(
-                        dict(
-                            token=oauth_token,
-                            repoName=mrepo.fullName,
-                            branch=mrepo.defaultBranch,
-                            provider=mrepo.provider,
-                        ),
-                    ),
-                )
-                for mrepo in batch
-            ]
-            parse_queue.send_messages(Entries=msgs)
 
+            publish_parse_req(batch, oauth_token)
             response.status_code = 201
             return
         else:
