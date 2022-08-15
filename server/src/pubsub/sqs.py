@@ -1,9 +1,6 @@
 import boto3
 from config import AWS_ACCESS_KEY, AWS_SECRET_KEY
 
-from typing import List
-from domain.mrepo import MonitoredRepo
-
 sqs = boto3.resource(
     "sqs",
     region_name="eu-west-3",

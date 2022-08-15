@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from auth.jwt import issue_token, get_email_from_token
 from auth.github import get_github_access_token, get_github_user, get_github_user_email
 
-from integration.github import get_github_repos, parse_github_repo
+from integration.github import get_github_repos
 
 from storage.userdb import read_user_by_email, create_user, write_github_token
 from storage.mrepodb import create_monitored_repo
@@ -13,9 +13,8 @@ from pubsub.pub import publish_parse_req
 
 from domain.user import User
 from domain.mrepo import AddMonitoredReposInput, MonitoredRepo
-from dolistparser import ParsedComment
 
-from typing import Union, List
+from typing import List
 import json
 
 
@@ -45,26 +44,6 @@ async def get_json_body(request: Request):
 @app.get("/")
 def read_root():
     return {"data": "stay present, be in the flow..!"}
-
-
-@app.get("/repo/tasks")
-async def get_repo_tasks(
-    repo_name: str,
-    branch: str,
-    email: str = Depends(get_email_from_token),
-    status_code=200,
-    response_model=List[ParsedComment],
-):
-    try:
-        user = await read_user_by_email(email)
-        github_token = user.oauth[0]["token"]
-
-        tasks = await parse_github_repo(github_token, repo_name, branch)
-
-        return tasks
-    except Exception as e:
-        print(f"Unexpected exceptions: {str(e)}")
-        raise e
 
 
 # TODO: Replace this call with get_user_repo
@@ -107,8 +86,6 @@ async def add_monitored_repos(
     email: str = Depends(get_email_from_token),
 ):
     try:
-        # from pubsub.sqs import parse_queue
-
         user = await read_user_by_email(email)
         user_id = user.id
 
@@ -122,6 +99,7 @@ async def add_monitored_repos(
 
             oauth_token = user.oauth[0]["token"]
 
+            # TODO: Register the gh webhook
             publish_parse_req(batch, oauth_token)
             response.status_code = 201
             return
@@ -163,7 +141,6 @@ async def handle_auth(session_code: str, status_code=200):
 
         if user_check_result is None:
             """Sign-up case"""
-
             user_payload = dict(
                 email=email, name=name, profileUrl=profile_url, oauthInUse=oauth_payload
             )
