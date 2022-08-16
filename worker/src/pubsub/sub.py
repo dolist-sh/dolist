@@ -5,6 +5,7 @@ from core.github import parse_github_repo
 from core.definition import ParseRequestMsg, ParseCompleteMsg
 
 from config import JWT_SECRET
+from helpers.logger import logger
 import json, jwt
 
 
@@ -55,11 +56,11 @@ def consume_parse_queue():
             result = publish_result(payload)
 
             if result == "success":
+                logger.info(f"Parsing complete for message: ${msg.body}")
                 msg.delete()
 
             is_worker_busy = False
 
     except Exception as e:
         is_worker_busy = False
-        # TODO: Log the error
-        print(f"Error occured while attemping to process the message: {str(e)}")
+        logger.error(f"Unexpected issuewhile attemping to process the message: {str(e)}")

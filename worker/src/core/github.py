@@ -1,8 +1,8 @@
 from dolistparser import js_gh_parser, py_gh_parser, ParsedComment
 from typing import List
-import requests
-import re
-import base64
+
+from helpers.logger import logger
+import requests, re, base64
 
 
 def parse_github_repo(
@@ -30,8 +30,6 @@ def parse_github_repo(
         result = []
 
         for data in data_tree["tree"]:
-            # if data['type'] == 'tree':
-            # tree type is directory
 
             if data["type"] == "blob":
                 file_path = data["path"]
@@ -58,4 +56,4 @@ def parse_github_repo(
 
         return result
     except Exception as e:
-        raise e
+        logger.critical(f"Parsing GitHub repo has failed: ${str(e)}")

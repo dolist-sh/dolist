@@ -1,7 +1,9 @@
 from pubsub.sqs import parse_complete_queue
+from helpers.logger import logger
+import ast
+
 from core.definition import ParseCompleteMsg
 from typing_extensions import Literal
-import ast
 
 # TODO: Add test for this
 def publish_result(payload: ParseCompleteMsg) -> Literal["success", "failed"]:
@@ -17,4 +19,4 @@ def publish_result(payload: ParseCompleteMsg) -> Literal["success", "failed"]:
         else:
             return "failed"
     except Exception as e:
-        print(f"Unexpected exceptions: {str(e)}")
+        logger.error(f"Unexpected issue while publishing the parsing result: {str(e)}")
