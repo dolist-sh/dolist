@@ -18,4 +18,3 @@ def publish_result(payload: ParseCompleteMsg) -> Literal["success", "failed"]:
             return "failed"
     except Exception as e:
         print(f"Unexpected exceptions: {str(e)}")
-        raise e

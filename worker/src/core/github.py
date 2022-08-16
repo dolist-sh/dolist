@@ -4,6 +4,7 @@ import requests
 import re
 import base64
 
+
 def parse_github_repo(
     access_token: str, repo_name: str, branch: str
 ) -> List[ParsedComment]:

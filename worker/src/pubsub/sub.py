@@ -9,16 +9,19 @@ import json, jwt
 
 
 def consume_parse_queue():
+    global is_worker_busy
+
     try:
         for msg in parse_queue.receive_messages(MaxNumberOfMessages=1):
             print("Received a message from Parse queue")
             print("------------------")
-            print(msg.body)
+            print(f"Message body: ${msg.body}")
             print("------------------")
+
+            is_worker_busy = True
 
             data: ParseRequestMsg = json.loads(msg.body)
 
-            # TODO: Gracefully handle the KeyError due to malformed message body
             userId = data["userId"]
             token = data["token"]
             repo_name = data["repoName"]
@@ -54,6 +57,9 @@ def consume_parse_queue():
             if result == "success":
                 msg.delete()
 
+            is_worker_busy = False
+
     except Exception as e:
-        print(f"Unexpected exceptions: {str(e)}")
-        raise e
+        is_worker_busy = False
+        # TODO: Log the error
+        print(f"Error occured while attemping to process the message: {str(e)}")
