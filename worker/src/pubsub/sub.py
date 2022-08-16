@@ -9,7 +9,7 @@ from helpers.logger import logger
 import json, jwt
 
 
-def consume_parse_queue():
+async def consume_parse_queue():
     global is_worker_busy
 
     try:
@@ -30,22 +30,22 @@ def consume_parse_queue():
             provider = data["provider"]
 
             # TODO: Add provider check when more integration are in place
-            result = parse_github_repo(token, repo_name, branch)
+            parse_output = parse_github_repo(token, repo_name, branch)
 
             print("------------------")
-            print("Parse result: ")
-            print(result)
+            print("Parse output: ")
+            print(parse_output)
             print("------------------")
 
-            payload = {"result": result}
-            encoded = jwt.encode(payload, JWT_SECRET, algorithm="HS256")
+            encode_payload = {"result": parse_output}
+            encoded = jwt.encode(encode_payload, JWT_SECRET, algorithm="HS256")
 
             print("------------------")
-            print("Encoded result: ")
+            print("Encoded output: ")
             print(encoded)
             print("------------------")
 
-            payload: ParseCompleteMsg = dict(
+            msg_payload: ParseCompleteMsg = dict(
                 userId=userId,
                 repoName=repo_name,
                 branch=branch,
@@ -53,9 +53,9 @@ def consume_parse_queue():
                 hashedResult=encoded,
             )
 
-            result = publish_result(payload)
+            pub_result = await publish_result(msg_payload)
 
-            if result == "success":
+            if pub_result == "success":
                 logger.info(f"Parsing complete for message: ${msg.body}")
                 msg.delete()
 
@@ -63,4 +63,4 @@ def consume_parse_queue():
 
     except Exception as e:
         is_worker_busy = False
-        logger.error(f"Unexpected issuewhile attemping to process the message: {str(e)}")
+        logger.critical(f"Unexpected issuewhile attemping to process the message: {str(e)}")

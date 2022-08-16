@@ -6,7 +6,7 @@ from core.definition import ParseCompleteMsg
 from typing_extensions import Literal
 
 # TODO: Add test for this
-def publish_result(payload: ParseCompleteMsg) -> Literal["success", "failed"]:
+async def publish_result(payload: ParseCompleteMsg) -> Literal["success", "failed"]:
     try:
         msg_body = str(payload)
         result = parse_complete_queue.send_message(MessageBody=msg_body)
@@ -19,4 +19,5 @@ def publish_result(payload: ParseCompleteMsg) -> Literal["success", "failed"]:
         else:
             return "failed"
     except Exception as e:
-        logger.error(f"Unexpected issue while publishing the parsing result: {str(e)}")
+        logger.critical(f"Unexpected issue while publishing the parsing result: {str(e)}")
+
