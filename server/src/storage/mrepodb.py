@@ -47,17 +47,17 @@ async def create_monitored_repo(
         raise e
 
 
-async def read_user_monitored_repo_by_fullname(
-    full_name: str, user_id: UUID
+async def read_monitored_repo_by_fullname(
+    full_name: str, provider: str
 ) -> Union[MonitoredRepo, None]:
     try:
-        duplicate_check = mrepo_db.select().where(
-            and_(mrepo_db.c.userId == user_id, mrepo_db.c.fullName == full_name)
+        select = mrepo_db.select().where(
+            and_(mrepo_db.c.provider == provider, mrepo_db.c.fullName == full_name)
         )
 
-        duplicate_check_result = db.execute(duplicate_check).fetchone()
+        repo = db.execute(select).fetchone()
 
-        return duplicate_check_result
+        return repo
     except Exception as e:
         print(f"Unexpected exceptions: {str(e)}")
         raise e

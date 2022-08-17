@@ -28,7 +28,7 @@ monitored_repo_schema = Table(
     Column("name", String(50), nullable=False),
     Column("fullName", String(50), nullable=False),
     Column("defaultBranch", String(50), nullable=False),
-    Column("language", String(50)),  # Language field can be null from GH
+    Column("language", String(50), nullable=True),
     Column("userId", UUID(as_uuid=True), nullable=False),
     Column("provider", String(30), nullable=False),
     Column("visibility", String(20), nullable=False),

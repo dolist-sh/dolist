@@ -5,14 +5,18 @@ from auth.jwt import issue_token, get_email_from_token
 from auth.github import get_github_access_token, get_github_user, get_github_user_email
 
 from storage.userdb import read_user_by_email, create_user, write_github_token
-from storage.mrepodb import create_monitored_repo, read_user_monitored_repo_by_fullname
+from storage.mrepodb import (
+    create_monitored_repo,
+    read_monitored_repo_by_fullname,
+)
 
 from integration.github import (
     get_github_repo,
     get_github_repo_list,
     register_push_github_repo,
 )
-from pubsub.pub import publish_parse_req
+
+from pubsub.pub import publish_parse_msg
 
 from domain.user import User
 from domain.mrepo import AddMonitoredReposInput, MonitoredRepo
@@ -101,7 +105,7 @@ async def add_monitored_repos(
         user = await read_user_by_email(email)
         user_id = user.id
 
-        batch: List[MonitoredRepo] = []
+        created_repos: List[MonitoredRepo] = []
         oauth_token = user.oauth[0]["token"]
 
         if len(payload["repos"]) > 0:
@@ -114,25 +118,24 @@ async def add_monitored_repos(
                     logger.warning(f"Non-existing GitHub repository was requested for monitoring | user_id: {user_id} | repo_fullname: {repo['fullName']}")
 
                 if github_repo_check["status"] == "success":
-                    duplication_check_result = await read_user_monitored_repo_by_fullname(repo["fullName"], user_id )
+                    duplication_check_result = await read_monitored_repo_by_fullname(repo["fullName"], "github")
 
                     # TODO: Handle the case of inactive repository included in the request
                     if duplication_check_result is None:
                         """ New repository """
                         new_repo = await create_monitored_repo(repo, user_id)
-                        batch.append(new_repo)
+                        created_repos.append(new_repo)
                         await register_push_github_repo(oauth_token, repo["fullName"])
                     else:
                         """ Already monitored repository """
                         logger.warning(f"Already monitored repository was included in the {add_monitored_repos.__name__} | user_id: {user_id} | repo_name: {repo['fullName']}")
                 # fmt: on
 
-        if len(batch) > 0:
-            # TODO: Remove this, github will send push webhook as soon as it's registered
-            publish_parse_req(batch, oauth_token)
+        if len(created_repos) > 0:
+            logger.info(f"{len(created_repos)} repositories added for monitoring")
             response.status_code = 201
             return
-        elif (len(batch) == 0) and (len(payload["repos"]) > 0):
+        elif (len(created_repos) == 0) and (len(payload["repos"]) > 0):
             """When nothing to process from the requested list of repositories"""
             raise HTTPException(
                 status_code=422, detail="No repository to process from the payload"
@@ -196,10 +199,12 @@ async def handle_auth(session_code: str, status_code=200):
 
 
 @app.post("/webhook/github/push")
-def process_gh_push_hook(payload=Depends(get_json_body), status_code=200):
+async def process_gh_push_hook(payload=Depends(get_json_body), status_code=200):
     try:
-        print(payload)
-        return "okay"
+        repo_fullname = payload["repository"]["full_name"]
+
+        await publish_parse_msg(repo_fullname, "github")
+        return "success"
     except Exception as e:
         logger.critical(
             f"Unexpected exceptions at {process_gh_push_hook.__name__}: {str(e)}"
