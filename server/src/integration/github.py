@@ -1,5 +1,5 @@
 import requests
-from helpers.logger import logger
+from logger import logger
 
 from typing import Union, List
 from typing_extensions import Literal, TypedDict
@@ -24,7 +24,9 @@ async def get_github_repos(access_token: str):
         output: RegisterPushGitHubRepoOutput
 
         if res.status_code == 200:
-            logger.info(f"List of GitHub repositories for authenticated user successfully returned")
+            logger.info(
+                f"List of GitHub repositories for authenticated user successfully returned"
+            )
             output = dict(status="success", data=res.json())
         else:
             error_msg = f"Retrieving Github repos failed | status code: {str(res.status_code)} | response: {str(res)}"
@@ -65,7 +67,9 @@ async def register_push_github_repos(
         output: RegisterPushGitHubRepoOutput
 
         if res.status_code == 204:
-            logger.info(f"GitHub webhook for push event successfully registered | {repo_fullname}")
+            logger.info(
+                f"GitHub webhook for push event successfully registered | {repo_fullname}"
+            )
             output = dict(status="success")
         else:
             error_msg = f"Github webhook registration failed | status code: {str(res.status_code)} | repo name: {repo_fullname}"

@@ -4,11 +4,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from auth.jwt import issue_token, get_email_from_token
 from auth.github import get_github_access_token, get_github_user, get_github_user_email
 
-from integration.github import get_github_repos, register_push_github_repos
-
 from storage.userdb import read_user_by_email, create_user, write_github_token
 from storage.mrepodb import create_monitored_repo
 
+from integration.github import get_github_repos, register_push_github_repos
 from pubsub.pub import publish_parse_req
 
 from domain.user import User
@@ -58,7 +57,6 @@ async def get_user(
     except Exception as e:
         print(f"Unexpected exceptions: {str(e)}")
         raise e
-
 
 # TODO: Add type definition for reponse
 @app.get("/user/repos")
