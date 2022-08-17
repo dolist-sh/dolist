@@ -1,5 +1,8 @@
 import requests
-from typing_extensions import Literal
+from helpers.logger import logger
+
+from typing import Union
+from typing_extensions import Literal, TypedDict
 
 
 async def get_github_repos(access_token: str):
@@ -16,13 +19,18 @@ async def get_github_repos(access_token: str):
         return res.json()
 
     except Exception as e:
-        print(str(e))
+        logger.error(f"Unexpected issue at {get_github_repos.__name__} | {str(e)}")
         raise e
+
+
+class RegisterPushGitHubRepoOutput(TypedDict):
+    status: Literal["success", "failed"]
+    error: Union[str, None]
 
 
 async def register_push_github_repos(
     access_token: str, repo_fullname: str
-) -> Literal["success"]:
+) -> RegisterPushGitHubRepoOutput:
     try:
         payload = {
             "hub.mode": "subscribe",
@@ -38,12 +46,16 @@ async def register_push_github_repos(
 
         res = requests.post(host, headers=headers, data=payload)
 
-        if res.status_code != 204:
-            raise Exception(
-                f"Github webhook registration failed | status code: {str(res.status_code)}"
-            )
+        output: RegisterPushGitHubRepoOutput
 
-        return "success"
+        if res.status_code == 204:
+            output = dict(status="success")
+        else:
+            error_msg = f"Github webhook registration failed | status code: {str(res.status_code)} | response: {str(res)}"
+            output = dict(status="failed", error=error_msg)
+
+        return output
     except Exception as e:
-        print(str(e))
-        raise e
+        logger.error(
+            f"Unexpected error occured at {register_push_github_repos.__name__} | {str(e)}"
+        )

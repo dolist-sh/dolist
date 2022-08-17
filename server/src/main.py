@@ -99,7 +99,7 @@ async def add_monitored_repos(
                 # TODO Register can fail if the repo doesn't exsit, it should be handled
                 # TODO Consider to decouple this as a separate async queue?
                 await register_push_github_repos(oauth_token, repo["fullName"])
-            
+
                 # TODO Existing repo should be filtered out
                 new_repo = await create_monitored_repo(dict(repo), user_id)
                 batch.append(new_repo)
