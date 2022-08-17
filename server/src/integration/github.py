@@ -24,9 +24,11 @@ async def get_github_repos(access_token: str):
         output: RegisterPushGitHubRepoOutput
 
         if res.status_code == 200:
+            logger.info(f"List of GitHub repositories for authenticated user successfully returned")
             output = dict(status="success", data=res.json())
         else:
             error_msg = f"Retrieving Github repos failed | status code: {str(res.status_code)} | response: {str(res)}"
+            logger.warning(error_msg)
             output = dict(status="failed", error=error_msg)
 
         return output
@@ -63,14 +65,14 @@ async def register_push_github_repos(
         output: RegisterPushGitHubRepoOutput
 
         if res.status_code == 204:
+            logger.info(f"GitHub webhook for push event successfully registered | {repo_fullname}")
             output = dict(status="success")
         else:
-            error_msg = f"Github webhook registration failed | status code: {str(res.status_code)} | response: {str(res)}"
+            error_msg = f"Github webhook registration failed | status code: {str(res.status_code)} | repo name: {repo_fullname}"
+            logger.warning(error_msg)
             output = dict(status="failed", error=error_msg)
 
         return output
     except Exception as e:
-        logger.error(
-            f"Unexpected error occured at {register_push_github_repos.__name__} | {str(e)}"
-        )
+        logger.error(f"Error at {register_push_github_repos.__name__} | {str(e)}")
         raise e
