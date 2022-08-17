@@ -95,7 +95,7 @@ async def add_monitored_repos(
             oauth_token = user.oauth[0]["token"]
 
             for repo in payload["repos"]:
-                # TODO: Check the provider before calling github API
+                # TODO Check the provider before calling github API
                 # TODO Register can fail if the repo doesn't exsit, it should be handled
                 # TODO Consider to decouple this as a separate async queue?
                 await register_push_github_repos(oauth_token, repo["fullName"])
