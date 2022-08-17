@@ -5,14 +5,19 @@ from auth.jwt import issue_token, get_email_from_token
 from auth.github import get_github_access_token, get_github_user, get_github_user_email
 
 from storage.userdb import read_user_by_email, create_user, write_github_token
-from storage.mrepodb import create_monitored_repo
+from storage.mrepodb import create_monitored_repo, read_user_monitored_repo_by_fullname
 
-from integration.github import get_github_repos, register_push_github_repos
+from integration.github import (
+    get_github_repo,
+    get_github_repo_list,
+    register_push_github_repo,
+)
 from pubsub.pub import publish_parse_req
 
 from domain.user import User
 from domain.mrepo import AddMonitoredReposInput, MonitoredRepo
 
+from logger import logger
 from typing import List
 import json
 
@@ -55,8 +60,9 @@ async def get_user(
         return user
 
     except Exception as e:
-        print(f"Unexpected exceptions: {str(e)}")
+        logger.critical(f"Unexpected exceptions at {get_user.__name__}: {str(e)}")
         raise e
+
 
 # TODO: Add type definition for reponse
 @app.get("/user/repos")
@@ -67,9 +73,9 @@ async def get_user_github_repos(
         user = await read_user_by_email(email)
         github_token = user.oauth[0]["token"]  # TODO: Replace this with find call
 
-        from src.integration.github import GetGitHubReposOutput
+        from src.integration.github import GetGitHubRepoListOutput
 
-        output: GetGitHubReposOutput = await get_github_repos(github_token)
+        output: GetGitHubRepoListOutput = await get_github_repo_list(github_token)
 
         if output["status"] == "success":
             return output["data"]
@@ -77,7 +83,9 @@ async def get_user_github_repos(
             raise HTTPException(status_code=422, detail=output["error"])
 
     except Exception as e:
-        print(f"Unexpected exceptions: {str(e)}")
+        logger.critical(
+            f"Unexpected exceptions at {get_user_github_repos.__name__}: {str(e)}"
+        )
         raise e
 
 
@@ -88,33 +96,50 @@ async def add_monitored_repos(
     payload: AddMonitoredReposInput = Depends(get_json_body),
     email: str = Depends(get_email_from_token),
 ):
+    """Add GitHub repositories are monitored repos"""
     try:
         user = await read_user_by_email(email)
         user_id = user.id
 
+        batch: List[MonitoredRepo] = []
+        oauth_token = user.oauth[0]["token"]
+
         if len(payload["repos"]) > 0:
-
-            batch: List[MonitoredRepo] = []
-            oauth_token = user.oauth[0]["token"]
-
             for repo in payload["repos"]:
-                # TODO Check the provider before calling github API
-                # TODO Register can fail if the repo doesn't exsit, it should be handled
-                # TODO Consider to decouple this as a separate async queue?
-                await register_push_github_repos(oauth_token, repo["fullName"])
+                repo = dict(repo)
+                github_repo_check = await get_github_repo(oauth_token, repo["fullName"])
 
-                # TODO Existing repo should be filtered out
-                new_repo = await create_monitored_repo(dict(repo), user_id)
-                batch.append(new_repo)
+                # fmt: off
+                if github_repo_check["status"] == "fail":
+                    logger.warning(f"Non-existing GitHub repository was requested for monitoring | user_id: {user_id} | repo_fullname: {repo['fullName']}")
 
+                if github_repo_check["status"] == "success":
+                    duplication_check_result = await read_user_monitored_repo_by_fullname(repo["fullName"], user_id )
+
+                    # TODO: Handle the case of inactive repository included in the request
+                    if duplication_check_result is None:
+                        """ New repository """
+                        new_repo = await create_monitored_repo(repo, user_id)
+                        batch.append(new_repo)
+                        await register_push_github_repo(oauth_token, repo["fullName"])
+                    else:
+                        """ Already monitored repository """
+                        logger.warning(f"Already monitored repository was included in the {add_monitored_repos.__name__} | user_id: {user_id} | repo_name: {repo['fullName']}")
+                # fmt: on
+
+        if len(batch) > 0:
             publish_parse_req(batch, oauth_token)
             response.status_code = 201
             return
-        else:
-            return
-
+        elif (len(batch) == 0) and (len(payload["repos"]) > 0):
+            """When nothing to process from the requested list of repositories"""
+            raise HTTPException(
+                status_code=422, detail="No repository to process from the payload"
+            )
     except Exception as e:
-        print(f"Unexpected exceptions: {str(e)}")
+        logger.critical(
+            f"Unexpected exceptions at {add_monitored_repos.__name__}: {str(e)}"
+        )
         raise e
 
 
@@ -163,8 +188,7 @@ async def handle_auth(session_code: str, status_code=200):
             return issue_token(user_check_result.email)
 
     except Exception as e:
-        # TODO: Proper logging and error handling
-        print(f"Unexpected exceptions: {str(e)}")
+        logger.critical(f"Unexpected exceptions at {handle_auth.__name__}: {str(e)}")
         raise e
 
 

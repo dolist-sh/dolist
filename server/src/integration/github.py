@@ -5,13 +5,50 @@ from typing import Union, List
 from typing_extensions import Literal, TypedDict
 
 
-class GetGitHubReposOutput(TypedDict):
+class GetGitHubRepoOutput(TypedDict):
+    status: Literal["success", "failed"]
+    data: str  # JSON object
+    error: Union[str, None]
+
+
+async def get_github_repo(access_token: str, full_name: str):
+    try:
+        headers = {
+            "Accept": "application/vnd.github+json",
+            "Authorization": f"token {access_token}",
+        }
+        host = f"https://api.github.com/repos/{full_name}"
+
+        res = requests.get(host, headers=headers)
+
+        output: GetGitHubRepoOutput
+
+        if res.status_code == 200:
+            logger.info(
+                f"Requested GitHub repositories for authenticated user successfully returned from GitHub API"
+            )
+            output = dict(status="success", data=res.json())
+        else:
+            error_msg = f"Retrieving Github repo failed | status code: {str(res.status_code)} | response: {str(res)}"
+            logger.warning(error_msg)
+            output = dict(status="failed", error=error_msg)
+
+        return output
+
+    except Exception as e:
+        logger.error(
+            f"Unexpected error occured at {get_github_repo.__name__} | {str(e)}"
+        )
+        raise e
+
+
+class GetGitHubRepoListOutput(TypedDict):
     status: Literal["success", "failed"]
     data: List[str]  # List of JSON
     error: Union[str, None]
 
 
-async def get_github_repos(access_token: str):
+async def get_github_repo_list(access_token: str):
     try:
         headers = {
             "Accept": "application/vnd.github+json",
@@ -21,7 +58,7 @@ async def get_github_repos(access_token: str):
 
         res = requests.get(host, headers=headers)
 
-        output: RegisterPushGitHubRepoOutput
+        output: GetGitHubRepoListOutput
 
         if res.status_code == 200:
             logger.info(
@@ -37,8 +74,9 @@ async def get_github_repos(access_token: str):
 
     except Exception as e:
         logger.error(
-            f"Unexpected error occured at {get_github_repos.__name__} | {str(e)}"
+            f"Unexpected error occured at {get_github_repo_list.__name__} | {str(e)}"
         )
+        raise e
 
 
 class RegisterPushGitHubRepoOutput(TypedDict):
@@ -46,7 +84,7 @@ class RegisterPushGitHubRepoOutput(TypedDict):
     error: Union[str, None]
 
 
-async def register_push_github_repos(
+async def register_push_github_repo(
     access_token: str, repo_fullname: str
 ) -> RegisterPushGitHubRepoOutput:
     try:
@@ -78,5 +116,5 @@ async def register_push_github_repos(
 
         return output
     except Exception as e:
-        logger.error(f"Error at {register_push_github_repos.__name__} | {str(e)}")
+        logger.error(f"Error at {register_push_github_repo.__name__} | {str(e)}")
         raise e

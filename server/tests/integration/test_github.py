@@ -1,9 +1,9 @@
 import pytest, requests
 
 from src.integration.github import (
-    get_github_repos,
-    GetGitHubReposOutput,
-    register_push_github_repos,
+    get_github_repo_list,
+    GetGitHubRepoListOutput,
+    register_push_github_repo,
     RegisterPushGitHubRepoOutput,
 )
 
@@ -29,13 +29,13 @@ async def test_get_github_repos(monkeypatch):
 
     monkeypatch.setattr(requests, "get", mock_get_res)
 
-    res: GetGitHubReposOutput = await get_github_repos("mock_token")
+    res: GetGitHubRepoListOutput = await get_github_repo_list("mock_token")
     assert res["status"] == "success"
     assert res["data"] == mock_data
 
 
 @pytest.mark.asyncio
-async def test_register_push_github_repos(monkeypatch):
+async def test_register_push_github_repo(monkeypatch):
     class MockResponse:
         def __init__(self, status_code: int) -> None:
             self.status_code = status_code
@@ -46,7 +46,7 @@ async def test_register_push_github_repos(monkeypatch):
 
     monkeypatch.setattr(requests, "post", mock_post_res)
 
-    res: RegisterPushGitHubRepoOutput = await register_push_github_repos(
+    res: RegisterPushGitHubRepoOutput = await register_push_github_repo(
         "mock_token", "test_repo"
     )
     assert res["status"] == "success"
