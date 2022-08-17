@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from auth.jwt import issue_token, get_email_from_token
 from auth.github import get_github_access_token, get_github_user, get_github_user_email
 
-from integration.github import get_github_repos
+from integration.github import get_github_repos, register_push_github_repos
 
 from storage.userdb import read_user_by_email, create_user, write_github_token
 from storage.mrepodb import create_monitored_repo
@@ -92,14 +92,18 @@ async def add_monitored_repos(
         if len(payload["repos"]) > 0:
 
             batch: List[MonitoredRepo] = []
+            oauth_token = user.oauth[0]["token"]
 
             for repo in payload["repos"]:
+                # TODO: Check the provider before calling github API
+                # TODO Register can fail if the repo doesn't exsit, it should be handled
+                # TODO Consider to decouple this as a separate async queue?
+                await register_push_github_repos(oauth_token, repo["fullName"])
+            
+                # TODO Existing repo should be filtered out
                 new_repo = await create_monitored_repo(dict(repo), user_id)
                 batch.append(new_repo)
 
-            oauth_token = user.oauth[0]["token"]
-
-            # TODO: Register the gh webhook
             publish_parse_req(batch, oauth_token)
             response.status_code = 201
             return

@@ -40,7 +40,7 @@ async def get_github_user(access_token: str):
 
         return res.json()
 
-    except e:
+    except Exception as e:
         raise e
 
 
@@ -63,5 +63,5 @@ async def get_github_user_email(username: str, access_token: str) -> str:
         """In case the return value evaluate with KeyError"""
         return None
 
-    except e:
+    except Exception as e:
         raise e
