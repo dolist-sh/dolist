@@ -8,3 +8,4 @@ sqs = boto3.resource(
     aws_secret_access_key=AWS_SECRET_KEY,
 )
 parse_queue = sqs.get_queue_by_name(QueueName="Parse")
+failed_hook_queue = sqs.get_queue_by_name(QueueName="FailedGithubHook")
