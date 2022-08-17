@@ -88,10 +88,17 @@ async def register_push_github_repo(
     access_token: str, repo_fullname: str
 ) -> RegisterPushGitHubRepoOutput:
     try:
+        from config import GITHUB_WEBHOOK_CALLBACK
+
+        if GITHUB_WEBHOOK_CALLBACK is None:
+            raise Exception(
+                "GITHUB_WEBHOOK_CALLBACK cannot be None, check the env variable"
+            )
+
         payload = {
             "hub.mode": "subscribe",
             "hub.topic": f"https://github.com/{repo_fullname}/events/push.json",
-            "hub.callback": "http://15.188.137.121/api/webhook",
+            "hub.callback": GITHUB_WEBHOOK_CALLBACK,
         }
 
         headers = {

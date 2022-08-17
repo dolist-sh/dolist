@@ -128,6 +128,7 @@ async def add_monitored_repos(
                 # fmt: on
 
         if len(batch) > 0:
+            # TODO: Remove this, github will send push webhook as soon as it's registered
             publish_parse_req(batch, oauth_token)
             response.status_code = 201
             return
@@ -136,6 +137,8 @@ async def add_monitored_repos(
             raise HTTPException(
                 status_code=422, detail="No repository to process from the payload"
             )
+    except HTTPException as e:
+        logger.warning(f"HTTP exception at {add_monitored_repos.__name__}: {str(e)}")
     except Exception as e:
         logger.critical(
             f"Unexpected exceptions at {add_monitored_repos.__name__}: {str(e)}"
@@ -192,7 +195,13 @@ async def handle_auth(session_code: str, status_code=200):
         raise e
 
 
-@app.post("/webhook")
-def process_hook(payload):
-    print(payload)
-    return "okay"
+@app.post("/webhook/github/push")
+def process_gh_push_hook(payload=Depends(get_json_body), status_code=200):
+    try:
+        print(payload)
+        return "okay"
+    except Exception as e:
+        logger.critical(
+            f"Unexpected exceptions at {process_gh_push_hook.__name__}: {str(e)}"
+        )
+        raise e
