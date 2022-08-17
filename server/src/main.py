@@ -69,9 +69,14 @@ async def get_user_github_repos(
         user = await read_user_by_email(email)
         github_token = user.oauth[0]["token"]  # TODO: Replace this with find call
 
-        github_repos = await get_github_repos(github_token)
+        from src.integration.github import GetGitHubReposOutput
 
-        return github_repos
+        output: GetGitHubReposOutput = await get_github_repos(github_token)
+
+        if output["status"] == "success":
+            return output["data"]
+        else:
+            raise HTTPException(status_code=422, detail=output["error"])
 
     except Exception as e:
         print(f"Unexpected exceptions: {str(e)}")

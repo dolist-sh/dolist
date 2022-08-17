@@ -1,15 +1,43 @@
 import pytest, requests
 
 from src.integration.github import (
+    get_github_repos,
+    GetGitHubReposOutput,
     register_push_github_repos,
     RegisterPushGitHubRepoOutput,
 )
+
+from typing import List
+
+
+@pytest.mark.asyncio
+async def test_get_github_repos(monkeypatch):
+
+    mock_data = ["object_1", "object_2"]
+
+    class MockResponse:
+        def __init__(self, status_code: int, data: List[str]) -> None:
+            self.status_code = status_code
+            self.data = data
+
+        def json(self) -> List[str]:
+            return self.data
+
+    def mock_get_res(host, headers):
+        print(f"host: {host}, headers: {headers}")
+        return MockResponse(status_code=200, data=mock_data)
+
+    monkeypatch.setattr(requests, "get", mock_get_res)
+
+    res: GetGitHubReposOutput = await get_github_repos("mock_token")
+    assert res["status"] == "success"
+    assert res["data"] == mock_data
 
 
 @pytest.mark.asyncio
 async def test_register_push_github_repos(monkeypatch):
     class MockResponse:
-        def __init__(self, status_code: int):
+        def __init__(self, status_code: int) -> None:
             self.status_code = status_code
 
     def mock_post_res(host, headers, data):

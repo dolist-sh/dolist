@@ -1,8 +1,14 @@
 import requests
 from helpers.logger import logger
 
-from typing import Union
+from typing import Union, List
 from typing_extensions import Literal, TypedDict
+
+
+class GetGitHubReposOutput(TypedDict):
+    status: Literal["success", "failed"]
+    data: List[str]  # List of JSON
+    error: Union[str, None]
 
 
 async def get_github_repos(access_token: str):
@@ -15,12 +21,20 @@ async def get_github_repos(access_token: str):
 
         res = requests.get(host, headers=headers)
 
-        # TODO: Check the response code and throw exception
-        return res.json()
+        output: RegisterPushGitHubRepoOutput
+
+        if res.status_code == 200:
+            output = dict(status="success", data=res.json())
+        else:
+            error_msg = f"Retrieving Github repos failed | status code: {str(res.status_code)} | response: {str(res)}"
+            output = dict(status="failed", error=error_msg)
+
+        return output
 
     except Exception as e:
-        logger.error(f"Unexpected issue at {get_github_repos.__name__} | {str(e)}")
-        raise e
+        logger.error(
+            f"Unexpected error occured at {get_github_repos.__name__} | {str(e)}"
+        )
 
 
 class RegisterPushGitHubRepoOutput(TypedDict):
@@ -59,3 +73,4 @@ async def register_push_github_repos(
         logger.error(
             f"Unexpected error occured at {register_push_github_repos.__name__} | {str(e)}"
         )
+        raise e
