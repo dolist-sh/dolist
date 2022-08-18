@@ -209,8 +209,6 @@ async def handle_auth_worker(
     try:
         from config import WORKER_OAUTH_CLIENT_ID, WORKER_OAUTH_CLIENT_SECRET
 
-        print(payload)
-
         client_id = payload["client_id"]
         client_secret = payload["client_secret"]
 
