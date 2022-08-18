@@ -1,10 +1,11 @@
 from pubsub.sub import consume_parse_queue, consume_parse_complete_queue
 from threading import Timer
+from helpers.auth import get_auth_token
 import asyncio
 
-# Global variables to track the status of worker
-is_parse_worker_busy = False
-is_parse_complete_worker_busy = False
+
+# Global variable for machine-to-machine authentication token
+token = None
 
 
 def run_parse():
@@ -12,39 +13,42 @@ def run_parse():
 
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
-
-    global is_parse_worker_busy
-
-    if is_parse_worker_busy == True:
-        print("Parse queue worker is currently processing a message.. 🚧 🚧 🔨 🔨")
-
-    if is_parse_worker_busy == False:
-        print("Parse queue worker is not busy, polling a new message.. 🔍 🔍")
-        loop.run_until_complete(consume_parse_queue())
-        loop.close()
+    loop.run_until_complete(consume_parse_queue())
 
     Timer(30, run_parse).start()
+
+    loop.close()
 
 
 def run_parse_complete():
     print("Running worker process for ParseComplete queue..👷‍♂️ 👷‍♂️")
 
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
+    global token
 
-    global is_parse_complete_worker_busy
+    if token == None:
+        print(
+            "Authentication token is null, can't start pooling the ParseComplete queue.."
+        )
+        Timer(30, run_parse_complete).start()
 
-    if is_parse_complete_worker_busy == True:
-        print("ParseComplete queue worker is currently processing a message.. 🚧 🚧 🔨 🔨")
+    if token != None:
+        print(
+            "Authentication token found, start pooling a message from the ParseComeplete queue.. 🚧 🚧 🔨 🔨"
+        )
 
-    if is_parse_worker_busy == False:
-        print("ParseComplete queue worker is not busy, polling a new message.. 🔍 🔍")
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
         loop.run_until_complete(consume_parse_complete_queue())
-        loop.close()
 
-    Timer(30, run_parse_complete).start()
+        Timer(30, run_parse_complete).start()
+
+        loop.close()
 
 
 if __name__ == "__main__":
+
+    token = get_auth_token()
+
     run_parse()
+
     run_parse_complete()

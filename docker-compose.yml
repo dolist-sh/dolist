@@ -55,9 +55,13 @@ services:
       network: host
     env_file:
      - ./worker/.env
+    environment:
+      - RUN_DOCKER=True
     restart: always
     networks:
       - app-networks
+    depends_on:
+      - server
 networks:
   app-networks:
     driver: bridge

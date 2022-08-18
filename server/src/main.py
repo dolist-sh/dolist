@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Request, Response, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 
-from auth.jwt import issue_token, get_email_from_token
+from auth.jwt import issue_token, issue_machine_token, get_email_from_token
 from auth.github import get_github_access_token, get_github_user, get_github_user_email
 
 from storage.userdb import read_user_by_email, create_user, write_github_token
@@ -18,6 +18,7 @@ from integration.github import (
 
 from pubsub.pub import publish_parse_msg
 
+from domain.auth import CreateMachineTokenInput, MachineToken
 from domain.user import User
 from domain.mrepo import AddMonitoredReposInput, MonitoredRepo
 
@@ -195,6 +196,36 @@ async def handle_auth(session_code: str, status_code=200):
 
     except Exception as e:
         logger.critical(f"Unexpected exceptions at {handle_auth.__name__}: {str(e)}")
+        raise e
+
+
+@app.post("/auth/worker")
+async def handle_auth_worker(
+    response: Response,
+    payload: CreateMachineTokenInput = Depends(get_json_body),
+    status_code=200,
+    response_model=MachineToken,
+):
+    try:
+        from config import WORKER_OAUTH_CLIENT_ID, WORKER_OAUTH_CLIENT_SECRET
+
+        print(payload)
+
+        client_id = payload["client_id"]
+        client_secret = payload["client_secret"]
+
+        if (client_id != WORKER_OAUTH_CLIENT_ID) or (
+            client_secret != WORKER_OAUTH_CLIENT_SECRET
+        ):
+            raise HTTPException(status_code=401, detail="Invalid auth request")
+
+        machine_token = issue_machine_token(payload)
+        response.status_code = 201
+        return machine_token
+    except Exception as e:
+        logger.critical(
+            f"Unexpected exceptions at {handle_auth_worker.__name__}: {str(e)}"
+        )
         raise e
 
 

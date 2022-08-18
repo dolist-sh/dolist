@@ -16,3 +16,6 @@ ENV = os.environ.get("ENV")
 
 AWS_ACCESS_KEY = os.environ.get("AWS_ACCESS_KEY")
 AWS_SECRET_KEY = os.environ.get("AWS_SECRET_KEY")
+
+WORKER_OAUTH_CLIENT_ID = os.environ.get("WORKER_OAUTH_CLIENT_ID")
+WORKER_OAUTH_CLIENT_SECRET = os.environ.get("WORKER_OAUTH_CLIENT_SECRET")
