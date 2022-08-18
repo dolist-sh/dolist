@@ -1,7 +1,13 @@
+from curses.ascii import HT
 from fastapi import FastAPI, Request, Response, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 
-from auth.jwt import issue_token, issue_machine_token, get_email_from_token
+from auth.jwt import (
+    issue_token,
+    issue_machine_token,
+    verify_machine_token,
+    get_email_from_token,
+)
 from auth.github import get_github_access_token, get_github_user, get_github_user_email
 
 from storage.userdb import read_user_by_email, create_user, write_github_token
@@ -146,6 +152,31 @@ async def add_monitored_repos(
     except Exception as e:
         logger.critical(
             f"Unexpected exceptions at {add_monitored_repos.__name__}: {str(e)}"
+        )
+        raise e
+
+
+@app.post("/parse/result", status_code=200)
+async def write_parse_result(
+    response: Response,
+    payload=Depends(get_json_body),  # TODO: Define the payload type
+    is_auth_req: bool = Depends(verify_machine_token),
+):
+    try:
+        if is_auth_req is not True:
+            raise HTTPException(status_code=401, detail="Unauthorized request")
+
+        print(payload)
+        # Decode the hashed parse result
+        # Find the monitored repository
+        # Write a parsed result in the database -> should think about the data structure
+        response.status_code = 201
+        return
+    except HTTPException as e:
+        logger.warning(f"HTTP exception at {write_parse_result.__name__}: {str(e)}")
+    except Exception as e:
+        logger.critical(
+            f"Unexpected exceptions at {write_parse_result.__name__}: {str(e)}"
         )
         raise e
 

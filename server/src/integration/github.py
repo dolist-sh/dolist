@@ -105,7 +105,7 @@ async def register_push_github_repo(
             "Accept": "application/json",
             "Authorization": f"token {access_token}",
         }
-        host = f"https://api.github.com/hub"
+        host = "https://api.github.com/hub"
 
         res = requests.post(host, headers=headers, data=payload)
 

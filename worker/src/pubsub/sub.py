@@ -1,13 +1,12 @@
-from asyncio import sleep
 from pubsub.sqs import parse_queue, parse_complete_queue
 from pubsub.pub import publish_result
 
 from core.github import parse_github_repo
-from core.definition import ParseRequestMsg, ParseCompleteMsg
+from core.definition import ParseRequestMsg, ParseCompleteMsg, MachineToken
 
-from config import JWT_SECRET
+from config import JWT_SECRET, SERVER_HOST
 from helpers.logger import logger
-import json, jwt
+import json, jwt, requests
 
 
 async def consume_parse_queue() -> None:
@@ -62,7 +61,7 @@ async def consume_parse_queue() -> None:
         )
 
 
-async def consume_parse_complete_queue() -> None:
+async def consume_parse_complete_queue(token: MachineToken) -> None:
     try:
         for msg in parse_complete_queue.receive_messages(MaxNumberOfMessages=1):
             print("Received a message from ParseComplete queue")
@@ -70,16 +69,26 @@ async def consume_parse_complete_queue() -> None:
             print(f"Message body: ${msg.body}")
             print("------------------")
 
-            await sleep(5)
+            headers = {
+                "Accept": "application/json",
+                "Authorization": f"token {token['access_token']}",
+            }
+            host = f"{SERVER_HOST}/parse/result"
 
-            # Request authentication to the server
-            # Persist the auth token in the memory
+            #payload = json.dumps(json.loads(msg.body))
+            #print(payload)
 
-            # Call the endpoint to write the ParsedComment at the server
-            # Delete the message if the request was successful
+            dummy = {
+                "example": "example"
+            }
 
-            # logger.info(f"Parsing complete for message: ${msg.body}")
-            # msg.delete()
+            res = requests.post(host, headers=headers, data=json.dumps(dummy))
+
+            if res.status_code == 201:
+                logger.info(f"Parsing result has been processed | original message: {msg.body}")
+                msg.delete()
+
+            return
     except Exception as e:
         logger.critical(
             f"Unexpected issue while attemping to process the message from ParseComplete queue: {str(e)}"

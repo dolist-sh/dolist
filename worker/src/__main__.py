@@ -1,12 +1,13 @@
 from pubsub.sub import consume_parse_queue, consume_parse_complete_queue
 from helpers.auth import get_auth_token
 
+from core.definition import MachineToken
 from threading import Timer
 import asyncio, time
 
 
 # Global variable for machine-to-machine authentication token
-token = None
+token: MachineToken = None
 
 
 def run_parse():
@@ -39,7 +40,7 @@ def run_parse_complete():
 
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
-        loop.run_until_complete(consume_parse_complete_queue())
+        loop.run_until_complete(consume_parse_complete_queue(token))
 
         Timer(30, run_parse_complete).start()
 
