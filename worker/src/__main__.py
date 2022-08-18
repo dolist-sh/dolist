@@ -1,27 +1,50 @@
-from pubsub.sub import consume_parse_queue
+from pubsub.sub import consume_parse_queue, consume_parse_complete_queue
 from threading import Timer
 import asyncio
 
-is_worker_busy = False  # Global variable to track the status of worker
+# Global variables to track the status of worker
+is_parse_worker_busy = False
+is_parse_complete_worker_busy = False
 
-def run():
-    print("Running worker process..👷‍♂️ 👷‍♂️ ")
+
+def run_parse():
+    print("Running worker process for Parse queue..👷‍♂️ 👷‍♂️ ")
 
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
 
-    global is_worker_busy
+    global is_parse_worker_busy
 
-    if is_worker_busy == True:
-        print("Worker is currently processing a message.. 🚧 🚧 🔨 🔨")
+    if is_parse_worker_busy == True:
+        print("Parse queue worker is currently processing a message.. 🚧 🚧 🔨 🔨")
 
-    if is_worker_busy == False:
-        print("Worker is not busy, polling a queue.. 🔍 🔍")
+    if is_parse_worker_busy == False:
+        print("Parse queue worker is not busy, polling a new message.. 🔍 🔍")
         loop.run_until_complete(consume_parse_queue())
         loop.close()
-    
-    Timer(30, run).start()
-   
+
+    Timer(30, run_parse).start()
+
+
+def run_parse_complete():
+    print("Running worker process for ParseComplete queue..👷‍♂️ 👷‍♂️")
+
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+
+    global is_parse_complete_worker_busy
+
+    if is_parse_complete_worker_busy == True:
+        print("ParseComplete queue worker is currently processing a message.. 🚧 🚧 🔨 🔨")
+
+    if is_parse_worker_busy == False:
+        print("ParseComplete queue worker is not busy, polling a new message.. 🔍 🔍")
+        loop.run_until_complete(consume_parse_complete_queue())
+        loop.close()
+
+    Timer(30, run_parse_complete).start()
+
 
 if __name__ == "__main__":
-    run()
+    run_parse()
+    run_parse_complete()

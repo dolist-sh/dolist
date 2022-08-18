@@ -1,4 +1,5 @@
-from pubsub.sqs import parse_queue
+from asyncio import sleep
+from pubsub.sqs import parse_queue, parse_complete_queue
 from pubsub.pub import publish_result
 
 from core.github import parse_github_repo
@@ -9,8 +10,8 @@ from helpers.logger import logger
 import json, jwt
 
 
-async def consume_parse_queue():
-    global is_worker_busy
+async def consume_parse_queue() -> None:
+    global is_parse_worker_busy
 
     try:
         for msg in parse_queue.receive_messages(MaxNumberOfMessages=1):
@@ -19,7 +20,7 @@ async def consume_parse_queue():
             print(f"Message body: ${msg.body}")
             print("------------------")
 
-            is_worker_busy = True
+            is_parse_worker_busy = True
 
             data: ParseRequestMsg = json.loads(msg.body)
 
@@ -59,8 +60,41 @@ async def consume_parse_queue():
                 logger.info(f"Parsing complete for message: ${msg.body}")
                 msg.delete()
 
-            is_worker_busy = False
+            is_parse_worker_busy = False
 
     except Exception as e:
-        is_worker_busy = False
-        logger.critical(f"Unexpected issuewhile attemping to process the message: {str(e)}")
+        is_parse_worker_busy = False
+        logger.critical(
+            f"Unexpected issuewhile attemping to process the message from Parse queue: {str(e)}"
+        )
+
+
+async def consume_parse_complete_queue() -> None:
+    global is_parse_complete_worker_busy
+
+    try:
+        for msg in parse_complete_queue.receive_messages(MaxNumberOfMessages=1):
+            print("Received a message from Parse queue")
+            print("------------------")
+            print(f"Message body: ${msg.body}")
+            print("------------------")
+
+            is_parse_complete_worker_busy = True
+
+            await sleep(5)
+
+            # Request authentication to the server
+            # Persist the auth token in the memory
+
+            # Call the endpoint to write the ParsedComment at the server
+            # Delete the message if the request was successful
+
+            # logger.info(f"Parsing complete for message: ${msg.body}")
+            # msg.delete()
+
+            is_parse_complete_worker_busy = False
+    except Exception as e:
+        is_parse_complete_worker_busy = False
+        logger.critical(
+            f"Unexpected issue while attemping to process the message from ParseComplete queue: {str(e)}"
+        )

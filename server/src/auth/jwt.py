@@ -22,7 +22,7 @@ def get_email_from_token(Authorization: str = Header()) -> str:
         options = dict(verify_signature=True, require=["email", "exp"], verify_exp=True)
 
         decoded = jwt.decode(token, JWT_SECRET, algorithms="HS256", options=options)
-
+        #TODO: Should check if the email is associated with the user, returning the status is required
         return decoded["email"]
 
     except Exception as e:

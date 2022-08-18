@@ -19,5 +19,6 @@ async def publish_result(payload: ParseCompleteMsg) -> Literal["success", "faile
         else:
             return "failed"
     except Exception as e:
-        logger.critical(f"Unexpected issue while publishing the parsing result: {str(e)}")
-
+        logger.critical(
+            f"Unexpected issue while publishing the parsing result: {str(e)}"
+        )
