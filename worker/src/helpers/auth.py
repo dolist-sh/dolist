@@ -14,6 +14,8 @@ def get_auth_token():
         res = requests.post(f"{SERVER_HOST}/auth/worker", data=json.dumps(payload))
 
         token = res.json()
+        print("Updated token from the post call")
+        print(token)
         return token
     except Exception as e:
         logger.critical(f"Authentication request has failed | {str(e)}")

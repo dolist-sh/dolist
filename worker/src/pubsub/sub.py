@@ -11,16 +11,12 @@ import json, jwt
 
 
 async def consume_parse_queue() -> None:
-    global is_parse_worker_busy
-
     try:
         for msg in parse_queue.receive_messages(MaxNumberOfMessages=1):
             print("Received a message from Parse queue")
             print("------------------")
             print(f"Message body: ${msg.body}")
             print("------------------")
-
-            is_parse_worker_busy = True
 
             data: ParseRequestMsg = json.loads(msg.body)
 
@@ -60,26 +56,19 @@ async def consume_parse_queue() -> None:
                 logger.info(f"Parsing complete for message: ${msg.body}")
                 msg.delete()
 
-            is_parse_worker_busy = False
-
     except Exception as e:
-        is_parse_worker_busy = False
         logger.critical(
             f"Unexpected issuewhile attemping to process the message from Parse queue: {str(e)}"
         )
 
 
 async def consume_parse_complete_queue() -> None:
-    global is_parse_complete_worker_busy
-
     try:
         for msg in parse_complete_queue.receive_messages(MaxNumberOfMessages=1):
-            print("Received a message from Parse queue")
+            print("Received a message from ParseComplete queue")
             print("------------------")
             print(f"Message body: ${msg.body}")
             print("------------------")
-
-            is_parse_complete_worker_busy = True
 
             await sleep(5)
 
@@ -91,10 +80,7 @@ async def consume_parse_complete_queue() -> None:
 
             # logger.info(f"Parsing complete for message: ${msg.body}")
             # msg.delete()
-
-            is_parse_complete_worker_busy = False
     except Exception as e:
-        is_parse_complete_worker_busy = False
         logger.critical(
             f"Unexpected issue while attemping to process the message from ParseComplete queue: {str(e)}"
         )

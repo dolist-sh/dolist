@@ -1,7 +1,8 @@
 from pubsub.sub import consume_parse_queue, consume_parse_complete_queue
-from threading import Timer
 from helpers.auth import get_auth_token
-import asyncio
+
+from threading import Timer
+import asyncio, time
 
 
 # Global variable for machine-to-machine authentication token
@@ -46,9 +47,11 @@ def run_parse_complete():
 
 
 if __name__ == "__main__":
+    print("Worker has initialized, waiting 10 seconds for server to get up and running")
+    time.sleep(10)
 
+    print("Requesting m-to-m auth token")
     token = get_auth_token()
 
     run_parse()
-
     run_parse_complete()
