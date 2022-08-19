@@ -10,10 +10,16 @@ from auth.jwt import (
 )
 from auth.github import get_github_access_token, get_github_user, get_github_user_email
 
-from storage.userdb import read_user_by_email, create_user, write_github_token
+from storage.userdb import (
+    read_user,
+    read_user_by_email,
+    create_user,
+    write_github_token,
+)
 from storage.mrepodb import (
     create_monitored_repo,
     read_monitored_repo_by_fullname,
+    read_monitored_repo,
 )
 
 from integration.github import (
@@ -26,7 +32,7 @@ from pubsub.pub import publish_parse_msg
 
 from domain.auth import CreateMachineTokenInput, MachineToken
 from domain.user import User
-from domain.mrepo import AddMonitoredReposInput, MonitoredRepo
+from domain.mrepo import AddMonitoredReposInput, AddParsedResultInput, MonitoredRepo
 
 from logger import logger
 from typing import List
@@ -156,10 +162,10 @@ async def add_monitored_repos(
         raise e
 
 
-@app.post("/parse/result", status_code=200)
+@app.post("/monitoredrepo/parse/result", status_code=200)
 async def write_parse_result(
     response: Response,
-    payload=Depends(get_json_body),  # TODO: Define the payload type
+    payload: AddParsedResultInput = Depends(get_json_body),
     is_auth_req: bool = Depends(verify_machine_token),
 ):
     try:
@@ -168,11 +174,14 @@ async def write_parse_result(
 
         print(payload)
 
-        # Decode the hashed parse result
-
         # Find the monitored repository -> If the repo exists and status is active proceed
+        mrepo = await read_monitored_repo(payload["mrepoId"])
+        user = await read_user(mrepo.userId)
 
-        # Write a new record in the parsed result table
+        print(mrepo)
+        print(user)
+
+        # Call GitHub API to get the latest commit (payload: repo fullname, oauth token, branch)
 
         # Start the transaction
 
@@ -187,6 +196,8 @@ async def write_parse_result(
         # Write all new comments from payload to DB
 
         # Mark neutral comment older than certain duration to old (threshold tbd)
+
+        # Update the last updated timestamps
 
         # Commit the transaction
 
@@ -281,6 +292,8 @@ async def handle_auth_worker(
 @app.post("/webhook/github/push")
 async def process_gh_push_hook(payload=Depends(get_json_body), status_code=200):
     try:
+        # Payload: https://docs.github.com/en/developers/webhooks-and-events/webhooks/webhook-events-and-payloads#push
+        print(payload)
         repo_fullname = payload["repository"]["full_name"]
 
         await publish_parse_msg(repo_fullname, "github")

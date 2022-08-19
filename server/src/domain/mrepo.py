@@ -1,6 +1,6 @@
 from uuid import UUID
 from pydantic import BaseModel
-from typing import List
+from typing import List, Union
 from typing_extensions import Literal, TypedDict
 
 
@@ -16,6 +16,11 @@ class CreateMonitoredReposInput(TypedDict):
 
 class AddMonitoredReposInput(BaseModel):
     repos: List[CreateMonitoredReposInput]
+
+
+class AddParsedResultInput(BaseModel):
+    mrepoId: Union[str, UUID]
+    parseResult: List[str]
 
 
 class MonitoredRepo(BaseModel):

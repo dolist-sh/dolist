@@ -1,4 +1,4 @@
-from pubsub.sub import consume_parse_queue, consume_parse_complete_queue
+from pubsub.sub import consume_parse_queue
 from helpers.auth import get_auth_token
 
 from core.definition import MachineToken

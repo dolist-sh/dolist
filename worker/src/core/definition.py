@@ -9,6 +9,7 @@ class MachineToken(TypedDict):
 class ParseRequestMsg(TypedDict):
     userId: str
     token: str
+    mrepoId: str
     repoName: str
     branch: str
     provider: Literal["github"]

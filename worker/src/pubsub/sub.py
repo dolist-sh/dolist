@@ -18,11 +18,11 @@ async def consume_parse_queue(machine_token: MachineToken) -> None:
 
             data: ParseRequestMsg = json.loads(msg.body)
 
-            user_id = data["userId"]
+            #user_id = data["userId"]
             github_oauth_token = data["token"]
+            mrepo_id = data["mrepoId"]
             repo_name = data["repoName"]
-            branch = data["branch"]
-            
+            branch = data["branch"] 
 
             # TODO: Add provider check when more integration are in place
             # provider = data["provider"]
@@ -37,14 +37,14 @@ async def consume_parse_queue(machine_token: MachineToken) -> None:
                 "Accept": "application/json",
                 "Authorization": f"token {machine_token['access_token']}",
             }
-            host = f"{SERVER_HOST}/parse/result"
+            host = f"{SERVER_HOST}/monitoredrepo/parse/result"
 
             payload = {
-                "userId":  user_id,
-                "repoFullname": repo_name,
-                "branch": branch,
-                "parseResult": parse_output
-                #TODO: add the last commit here
+                "mrepoId": mrepo_id,
+                "parseResult": parse_output,
+                #"repoFullname": repo_name,
+                #"branch": branch,
+                #"userId":  user_id,
             }
 
             res = requests.post(host, headers=headers, data=json.dumps(payload))

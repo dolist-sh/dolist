@@ -15,10 +15,11 @@ async def publish_parse_msg(repo_fullname: str, provider: str) -> None:
 
         msg = json.dumps(
             dict(
-                userId=str(repo.userId),
+                mrepoId=str(repo.id),
+                # userId=str(repo.userId), TODO: Likely not needed, remove this
                 token=user.oauth[0]["token"],
                 repoName=repo.fullName,
-                branch=repo.defaultBranch,
+                branch=repo.defaultBranch,  # IDEA: this can take a distinct branch later
                 provider=repo.provider,
             ),
         )
