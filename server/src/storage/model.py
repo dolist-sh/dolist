@@ -1,6 +1,6 @@
 """Schema definition for postgres"""
 
-from sqlalchemy import MetaData, Table, Column, String, Integer, JSON
+from sqlalchemy import MetaData, Table, Column, String, Integer, JSON, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
 
 import uuid
@@ -28,6 +28,7 @@ monitored_repo_schema = Table(
     Column("name", String(50), nullable=False),
     Column("fullName", String(50), nullable=False),
     Column("defaultBranch", String(50), nullable=False),
+    Column("lastCommit", String(50)),
     Column("language", String(50), nullable=True),
     Column("userId", UUID(as_uuid=True), nullable=False),
     Column("provider", String(30), nullable=False),
@@ -37,22 +38,16 @@ monitored_repo_schema = Table(
     Column("lastUpdated", Integer, nullable=False),
 )
 
-parse_report_schema = Table(
-    "parse_report",
-    metadata_obj,
-    Column("id", UUID(as_uuid=True), primary_key=True, default=uuid.uuid4()),
-    Column("mrepoId", UUID(as_uuid=True), nullable=False),
-    Column("branch", String(50), nullable=False),
-    Column("commit", String(100), nullable=False),
-    Column("createdAt", Integer, nullable=False),
-)
 
 parsed_comment_schema = Table(
     "parsed_comment",
     metadata_obj,
     Column("id", UUID(as_uuid=True), primary_key=True, default=uuid.uuid4()),
-    Column("parseReportId", UUID(as_uuid=True), nullable=False),
+    Column(
+        "mrepoId", UUID(as_uuid=True), ForeignKey("monitoredrepo.id"), nullable=False
+    ),
     Column("type", String(30), nullable=False, default="TODO"),
+    Column("status", String(20), nullable=False, default="New"),
     Column("commentStyle", String(20), nullable=False),
     Column("fullComment", JSON, default=[]),
     Column("filePath", String(200), nullable=False),
@@ -63,4 +58,4 @@ parsed_comment_schema = Table(
 # Create a new table if doens't exist
 user_schema.create(engine, checkfirst=True)
 monitored_repo_schema.create(engine, checkfirst=True)
-parse_report_schema.create(engine, checkfirst=True)
+parsed_comment_schema.create(engine, checkfirst=True)

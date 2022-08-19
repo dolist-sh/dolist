@@ -193,23 +193,7 @@ async def write_parse_result(
 
         print(commit)
 
-        # Start the transaction
-
-        # Write a new record in the parsed result table
-
-        # Load all previously parsed comments from DB
-        # Find comments from DB (new, neutral, old) that doesn't exists in the payload -> mark these as resolved
-
-        # Find comments from payload that doesn't exist yet in the DB
-
-        # Mark previously new comments from DB to neutral
-        # Write all new comments from payload to DB
-
-        # Mark neutral comment older than certain duration to old (threshold tbd)
-
-        # Update the last updated timestamps
-
-        # Commit the transaction
+        # Call the DB access method
 
         response.status_code = 201
         return

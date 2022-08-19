@@ -77,3 +77,25 @@ async def read_monitored_repo(id: UUID) -> MonitoredRepo:
     except Exception as e:
         print(f"Unexpected exceptions: {str(e)}")
         raise e
+
+
+async def create_parse_report():
+    # Start the transaction
+
+    # Write last commit to the mrepo 
+
+    # Load all previously parsed comments from DB
+    # Find comments from DB (new, neutral, old) that doesn't exists in the payload -> mark these as resolved
+
+    # Find comments from payload that doesn't exist yet in the DB
+
+    # Mark previously new comments from DB to normal
+    # Write all new comments from payload to DB
+
+    # Mark neutral comment older than certain duration to old (threshold tbd)
+
+    # Update the last updated timestamps
+
+    # Commit the transaction
+
+    pass
