@@ -26,6 +26,7 @@ from integration.github import (
     get_github_repo,
     get_github_repo_list,
     register_push_github_repo,
+    get_github_repo_last_commit,
 )
 
 from pubsub.pub import publish_parse_msg
@@ -182,6 +183,15 @@ async def write_parse_result(
         print(user)
 
         # Call GitHub API to get the latest commit (payload: repo fullname, oauth token, branch)
+        oauth_token = user.oauth[0]["token"]
+
+        gh_call_output = await get_github_repo_last_commit(
+            oauth_token, mrepo.fullName, mrepo.defaultBranch
+        )
+
+        commit = gh_call_output["commit"]
+
+        print(commit)
 
         # Start the transaction
 

@@ -125,3 +125,43 @@ async def register_push_github_repo(
     except Exception as e:
         logger.error(f"Error at {register_push_github_repo.__name__} | {str(e)}")
         raise e
+
+
+class GetGitHubRepoLastCommitOutput(TypedDict):
+    status: Literal["success", "failed"]
+    commit: str
+    error: Union[str, None]
+
+
+async def get_github_repo_last_commit(
+    access_token: str, full_name: str, branch: str
+) -> GetGitHubRepoLastCommitOutput:
+    try:
+        headers = {
+            "Accept": "application/vnd.github+json",
+            "Authorization": f"token {access_token}",
+        }
+
+        # Get the branch detail to find the sha of the latest commit
+        # https://docs.github.com/en/rest/branches/branches#get-a-branch
+        host = f"https://api.github.com/repos/{full_name}/branches/{branch}"
+        res = requests.get(host, headers=headers)
+
+        output: GetGitHubRepoLastCommitOutput
+
+        if res.status_code == 200:
+            logger.info(
+                f"Last commit of GitHub repo has retrieved | repo: {full_name} | branch: {branch}"
+            )
+            data = res.json()
+            commit = data["commit"]["sha"]
+            output = dict(status="success", commit=commit)
+        else:
+            error_msg = f"Failed to retrieve the last commit of GitHub repo | status code: {str(res.status_code)} | repo: {full_name} | branch {branch}"
+            logger.warning(error_msg)
+            output = dict(status="failed", error=error_msg)
+
+        return output
+    except Exception as e:
+        logger.error(f"Error at {get_github_repo_last_commit.__name__} | {str(e)}")
+        raise e
