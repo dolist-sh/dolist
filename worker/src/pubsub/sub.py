@@ -1,15 +1,14 @@
-from pubsub.sqs import parse_queue, parse_complete_queue
-from pubsub.pub import publish_result
+from pubsub.sqs import parse_queue
 
 from core.github import parse_github_repo
-from core.definition import ParseRequestMsg, ParseCompleteMsg, MachineToken
+from core.definition import ParseRequestMsg, MachineToken
 
-from config import JWT_SECRET, SERVER_HOST
+from config import SERVER_HOST
 from helpers.logger import logger
-import json, jwt, requests
+import json, requests
 
 
-async def consume_parse_queue() -> None:
+async def consume_parse_queue(machine_token: MachineToken) -> None:
     try:
         for msg in parse_queue.receive_messages(MaxNumberOfMessages=1):
             print("Received a message from Parse queue")
@@ -19,77 +18,42 @@ async def consume_parse_queue() -> None:
 
             data: ParseRequestMsg = json.loads(msg.body)
 
-            userId = data["userId"]
-            token = data["token"]
+            user_id = data["userId"]
+            github_oauth_token = data["token"]
             repo_name = data["repoName"]
             branch = data["branch"]
-            provider = data["provider"]
+            
 
             # TODO: Add provider check when more integration are in place
-            parse_output = parse_github_repo(token, repo_name, branch)
+            # provider = data["provider"]
+            parse_output = parse_github_repo(github_oauth_token, repo_name, branch)
 
             print("------------------")
             print("Parse output: ")
             print(parse_output)
             print("------------------")
 
-            encode_payload = {"result": parse_output}
-            encoded = jwt.encode(encode_payload, JWT_SECRET, algorithm="HS256")
-
-            print("------------------")
-            print("Encoded output: ")
-            print(encoded)
-            print("------------------")
-
-            msg_payload: ParseCompleteMsg = dict(
-                userId=userId,
-                repoName=repo_name,
-                branch=branch,
-                provider=provider,
-                hashedResult=encoded,
-            )
-
-            pub_result = await publish_result(msg_payload)
-
-            if pub_result == "success":
-                logger.info(f"Parsing complete for message: ${msg.body}")
-                msg.delete()
-
-    except Exception as e:
-        logger.critical(
-            f"Unexpected issuewhile attemping to process the message from Parse queue: {str(e)}"
-        )
-
-
-async def consume_parse_complete_queue(token: MachineToken) -> None:
-    try:
-        for msg in parse_complete_queue.receive_messages(MaxNumberOfMessages=1):
-            print("Received a message from ParseComplete queue")
-            print("------------------")
-            print(f"Message body: ${msg.body}")
-            print("------------------")
-
             headers = {
                 "Accept": "application/json",
-                "Authorization": f"token {token['access_token']}",
+                "Authorization": f"token {machine_token['access_token']}",
             }
             host = f"{SERVER_HOST}/parse/result"
 
-            #payload = json.dumps(json.loads(msg.body))
-            #print(payload)
-
-            dummy = {
-                "example": "example"
+            payload = {
+                "userId":  user_id,
+                "repoFullname": repo_name,
+                "branch": branch,
+                "parseResult": parse_output
+                #TODO: add the last commit here
             }
 
-            res = requests.post(host, headers=headers, data=json.dumps(dummy))
+            res = requests.post(host, headers=headers, data=json.dumps(payload))
 
             if res.status_code == 201:
                 logger.info(f"Parsing result has been processed | original message: {msg.body}")
                 msg.delete()
 
-            return
     except Exception as e:
         logger.critical(
-            f"Unexpected issue while attemping to process the message from ParseComplete queue: {str(e)}"
+            f"Unexpected issuewhile attemping to process the message from Parse queue: {str(e)}"
         )

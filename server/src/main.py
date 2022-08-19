@@ -167,9 +167,29 @@ async def write_parse_result(
             raise HTTPException(status_code=401, detail="Unauthorized request")
 
         print(payload)
+
         # Decode the hashed parse result
-        # Find the monitored repository
-        # Write a parsed result in the database -> should think about the data structure
+
+        # Find the monitored repository -> If the repo exists and status is active proceed
+
+        # Write a new record in the parsed result table
+
+        # Start the transaction
+
+        # Write a new record in the parsed result table
+
+        # Load all previously parsed comments from DB
+        # Find comments from DB (new, neutral, old) that doesn't exists in the payload -> mark these as resolved
+
+        # Find comments from payload that doesn't exist yet in the DB
+
+        # Mark previously new comments from DB to neutral
+        # Write all new comments from payload to DB
+
+        # Mark neutral comment older than certain duration to old (threshold tbd)
+
+        # Commit the transaction
+
         response.status_code = 201
         return
     except HTTPException as e:

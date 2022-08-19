@@ -12,11 +12,3 @@ class ParseRequestMsg(TypedDict):
     repoName: str
     branch: str
     provider: Literal["github"]
-
-
-class ParseCompleteMsg(TypedDict):
-    userId: str
-    repoName: str
-    branch: str
-    provider: Literal["github"]
-    hashedResult: str

@@ -13,39 +13,22 @@ token: MachineToken = None
 def run_parse():
     print("Running worker process for Parse queue..👷‍♂️ 👷‍♂️ ")
 
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    loop.run_until_complete(consume_parse_queue())
-
-    Timer(30, run_parse).start()
-
-    loop.close()
-
-
-def run_parse_complete():
-    print("Running worker process for ParseComplete queue..👷‍♂️ 👷‍♂️")
-
     global token
 
     if token == None:
-        print(
-            "Authentication token is null, can't start pooling the ParseComplete queue.."
-        )
-        Timer(30, run_parse_complete).start()
+        print("Authentication token is null, can't start pooling the Parse queue..")
+        Timer(30, run_parse).start()
 
     if token != None:
-        print(
-            "Authentication token found, start pooling a message from the ParseComeplete queue.. 🚧 🚧 🔨 🔨"
-        )
+        print("Authentication token found, start pooling a message from the Parse queue.. 🚧 🚧 🔨🔨")
 
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
-        loop.run_until_complete(consume_parse_complete_queue(token))
+        loop.run_until_complete(consume_parse_queue(token))
 
-        Timer(30, run_parse_complete).start()
+        Timer(30, run_parse).start()
 
         loop.close()
-
 
 if __name__ == "__main__":
     print("Worker has initialized, waiting 10 seconds for server to get up and running")
@@ -55,4 +38,3 @@ if __name__ == "__main__":
     token = get_auth_token()
 
     run_parse()
-    run_parse_complete()
