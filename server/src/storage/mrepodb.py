@@ -1,15 +1,26 @@
 """Database access module for MonitoredRepo."""
 
-from uuid import UUID
-from time import time
+from sqlalchemy import bindparam
 from sqlalchemy.sql import and_
-from storage.model import monitored_repo_schema
+from storage.model import monitored_repo_schema, parsed_comment_schema
 from storage.db import engine
 
-from domain.mrepo import MonitoredRepo, CreateMonitoredReposInput
+from domain.mrepo import (
+    MonitoredRepo,
+    CreateMonitoredReposInput,
+    AddParsedResultInput,
+    generate_parsed_comment_id,
+    _find_resolved_comments,
+    _find_new_comments,
+)
+from uuid import UUID
+from time import time
+from logger import logger
+
 from typing import Union
 
 mrepo_db = monitored_repo_schema
+parsed_comment_db = parsed_comment_schema
 db = engine
 
 
@@ -79,23 +90,103 @@ async def read_monitored_repo(id: UUID) -> MonitoredRepo:
         raise e
 
 
-async def create_parse_report():
-    # Start the transaction
+# TODO: Write test for different scenarios with this methods
+async def create_parse_report(last_commit: str, payload: AddParsedResultInput) -> None:
+    conn = db.connect()
+    transaction = conn.begin()
+    try:
+        mrepo_id = payload["mrepoId"]
+        timestamp = int(time())
 
-    # Write last commit to the mrepo 
+        # Below update is due to the lastCommit field at the MonitoredRepo object is not known when it's first written to DB
+        update_last_commit_stmt = (
+            mrepo_db.update()
+            .where(mrepo_db.c.id == mrepo_id)
+            .values(lastCommit=last_commit, lastUpdated=timestamp)
+        )
+        db.execute(update_last_commit_stmt)
 
-    # Load all previously parsed comments from DB
-    # Find comments from DB (new, neutral, old) that doesn't exists in the payload -> mark these as resolved
+        # Add id field to parsed comments from the payload
+        mapped_result = []
 
-    # Find comments from payload that doesn't exist yet in the DB
+        for item in payload["parseResult"]:
+            item["id"] = generate_parsed_comment_id(
+                item["type"], item["title"], item["path"], item["lineNumber"]
+            )
+            mapped_result.append(item)
 
-    # Mark previously new comments from DB to normal
-    # Write all new comments from payload to DB
+        # Load all previously parsed comments from DB
+        load_parsed_comments = parsed_comment_db.select().where(
+            parsed_comment_db.c.mrepoId == mrepo_id
+        )
+        prev_parsed_comments = db.execute(load_parsed_comments).fetchall()
 
-    # Mark neutral comment older than certain duration to old (threshold tbd)
+        resolved_comments = _find_resolved_comments(prev_parsed_comments, mapped_result)
 
-    # Update the last updated timestamps
+        if len(resolved_comments) > 0:
+            print("Resolved comment found from payload")
+            print(resolved_comments)
 
-    # Commit the transaction
+            # Change the status of resolved comment in DB
+            update_to_resolved_stmt = (
+                parsed_comment_db.update()
+                .where(parsed_comment_db.c.id == bindparam("id"))
+                .values(status="Resolved", lastUpdated=timestamp)
+            )
+            update_to_resolved_payload = [{"id": c["id"]} for c in resolved_comments]
+            db.execute(update_to_resolved_stmt, update_to_resolved_payload)
 
-    pass
+        new_from_prev_parsed_comments = [
+            c for c in prev_parsed_comments if c["status"] == "New"
+        ]
+
+        if len(new_from_prev_parsed_comments) > 0:
+            print("Previously parsed comments have comments with status - New")
+            print("Updating the status to Normal in favor of new parsed result")
+
+            # Mark previously new comments from DB to normal
+            update_from_new_to_normal_stmt = (
+                parsed_comment_db.update()
+                .where(parsed_comment_db.c.status == "New")
+                .values(status="Normal", lastUpdated=timestamp)
+            )
+            db.execute(update_from_new_to_normal_stmt)
+
+        # Find comments from payload that doesn't exist yet in the DB
+        new_comments_from_payload = _find_new_comments(
+            prev_parsed_comments, mapped_result
+        )
+        if len(new_comments_from_payload):
+            print("New comments found from payload")
+            print("Interesting to the database")
+            print(new_comments_from_payload)
+            new_comments_insert_payload = [
+                {
+                    "id": c["id"],
+                    "mrepoId": mrepo_id,
+                    "title": c["title"],
+                    "type": c["type"],
+                    "status": "New",
+                    "commentStyle": c["commentStyle"],
+                    "fullComment": c["fullComment"],
+                    "filePath": c["path"],
+                    "lineNumber": c["lineNumber"],
+                    "createdAt": timestamp,
+                    "lastUpdated": timestamp,
+                }
+                for c in new_comments_from_payload
+            ]
+            # Write all new comments from payload to DB
+            db.execute(parsed_comment_db.insert(), new_comments_insert_payload)
+
+        # Mark neutral comment older than certain duration to old (threshold tbd)
+        # Update the last updated timestamps
+
+        transaction.commit()
+        return
+    except Exception as e:
+        transaction.rollback()
+        logger.error(
+            f"Unexpected exceptions at {create_parse_report.__name__}: {str(e)}"
+        )
+        raise e

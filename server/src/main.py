@@ -20,6 +20,7 @@ from storage.mrepodb import (
     create_monitored_repo,
     read_monitored_repo_by_fullname,
     read_monitored_repo,
+    create_parse_report,
 )
 
 from integration.github import (
@@ -193,7 +194,7 @@ async def write_parse_result(
 
         print(commit)
 
-        # Call the DB access method
+        await create_parse_report(commit, payload)
 
         response.status_code = 201
         return
@@ -287,7 +288,6 @@ async def handle_auth_worker(
 async def process_gh_push_hook(payload=Depends(get_json_body), status_code=200):
     try:
         # Payload: https://docs.github.com/en/developers/webhooks-and-events/webhooks/webhook-events-and-payloads#push
-        print(payload)
         repo_fullname = payload["repository"]["full_name"]
 
         await publish_parse_msg(repo_fullname, "github")

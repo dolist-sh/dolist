@@ -42,16 +42,21 @@ monitored_repo_schema = Table(
 parsed_comment_schema = Table(
     "parsed_comment",
     metadata_obj,
-    Column("id", UUID(as_uuid=True), primary_key=True, default=uuid.uuid4()),
+    Column(
+        "id", String(100), primary_key=True
+    ),  # SHA-1 hash produced by title, type, filaPath fields
     Column(
         "mrepoId", UUID(as_uuid=True), ForeignKey("monitoredrepo.id"), nullable=False
     ),
+    Column("title", String(300), nullable=False),
     Column("type", String(30), nullable=False, default="TODO"),
     Column("status", String(20), nullable=False, default="New"),
     Column("commentStyle", String(20), nullable=False),
     Column("fullComment", JSON, default=[]),
     Column("filePath", String(200), nullable=False),
-    Column("lineNumber", Integer, nullable=False)
+    Column("lineNumber", Integer, nullable=False),
+    Column("createdAt", Integer, nullable=False),
+    Column("lastUpdated", Integer, nullable=False),
     # TODO: Add fields originalCommit, resolvedCommit, createdBy, resolvedBy, linkedTicket, note
 )
 
