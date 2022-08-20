@@ -111,7 +111,11 @@ async def create_parse_report(last_commit: str, payload: AddParsedResultInput) -
 
         for item in payload["parseResult"]:
             item["id"] = generate_parsed_comment_id(
-                item["type"], item["title"], item["path"], item["lineNumber"]
+                item["type"],
+                item["title"],
+                item[
+                    "path"
+                ],  # lineNumber will make certain comment reappear as new one (when new code push the new comment)
             )
             mapped_result.append(item)
 
@@ -121,28 +125,13 @@ async def create_parse_report(last_commit: str, payload: AddParsedResultInput) -
         )
         prev_parsed_comments = db.execute(load_parsed_comments).fetchall()
 
-        resolved_comments = _find_resolved_comments(prev_parsed_comments, mapped_result)
-
-        if len(resolved_comments) > 0:
-            print("Resolved comment found from payload")
-            print(resolved_comments)
-
-            # Change the status of resolved comment in DB
-            update_to_resolved_stmt = (
-                parsed_comment_db.update()
-                .where(parsed_comment_db.c.id == bindparam("id"))
-                .values(status="Resolved", lastUpdated=timestamp)
-            )
-            update_to_resolved_payload = [{"id": c["id"]} for c in resolved_comments]
-            db.execute(update_to_resolved_stmt, update_to_resolved_payload)
-
         new_from_prev_parsed_comments = [
             c for c in prev_parsed_comments if c["status"] == "New"
         ]
 
         if len(new_from_prev_parsed_comments) > 0:
-            print("Previously parsed comments have comments with status - New")
-            print("Updating the status to Normal in favor of new parsed result")
+            logger.info("Previously parsed comments have comments with status - New")
+            logger.info("Updating the status to Normal in favor of new parsed result")
 
             # Mark previously new comments from DB to normal
             update_from_new_to_normal_stmt = (
@@ -152,14 +141,32 @@ async def create_parse_report(last_commit: str, payload: AddParsedResultInput) -
             )
             db.execute(update_from_new_to_normal_stmt)
 
+        resolved_comments = _find_resolved_comments(prev_parsed_comments, mapped_result)
+
+        if len(resolved_comments) > 0:
+            logger.info("Resolved comment found from payload")
+            logger.info(resolved_comments)
+
+            # Change the status of resolved comment in DB
+            update_to_resolved_stmt = (
+                parsed_comment_db.update()
+                .where(parsed_comment_db.c.id == bindparam("comment_id"))
+                .values(status="Resolved", lastUpdated=timestamp)
+            )
+            update_to_resolved_payload = [
+                {"comment_id": c["id"]} for c in resolved_comments
+            ]
+            db.execute(update_to_resolved_stmt, update_to_resolved_payload)
+
         # Find comments from payload that doesn't exist yet in the DB
         new_comments_from_payload = _find_new_comments(
             prev_parsed_comments, mapped_result
         )
         if len(new_comments_from_payload):
-            print("New comments found from payload")
-            print("Interesting to the database")
-            print(new_comments_from_payload)
+            logger.info("New comments found from payload...")
+            logger.info("Inserting to the database...")
+            logger.info(new_comments_from_payload)
+
             new_comments_insert_payload = [
                 {
                     "id": c["id"],
@@ -179,8 +186,7 @@ async def create_parse_report(last_commit: str, payload: AddParsedResultInput) -
             # Write all new comments from payload to DB
             db.execute(parsed_comment_db.insert(), new_comments_insert_payload)
 
-        # Mark neutral comment older than certain duration to old (threshold tbd)
-        # Update the last updated timestamps
+        # TODO: Mark neutral comment older than certain duration to old (threshold tbd)
 
         transaction.commit()
         return

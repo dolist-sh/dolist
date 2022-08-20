@@ -23,10 +23,10 @@ class AddParsedResultInput(BaseModel):
     parseResult: List[str]
 
 
-def generate_parsed_comment_id(type: str, title: str, filePath: str, lineNumber: int):
+def generate_parsed_comment_id(type: str, title: str, filePath: str):
     import hashlib
 
-    hash_payload = bytes(f"{type}, {title}, {filePath}, {lineNumber}", encoding="utf-8")
+    hash_payload = bytes(f"{type}, {title}, {filePath}", encoding="utf-8")
 
     return hashlib.sha1(hash_payload).hexdigest()
 
