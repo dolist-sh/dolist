@@ -8,7 +8,7 @@ GITHUB_OAUTH_CLIENT_SECRET = os.environ.get("GITHUB_OAUTH_CLIENT_SECRET")
 GITHUB_WEBHOOK_CALLBACK = os.environ.get("GITHUB_WEBHOOK_CALLBACK")
 
 DB_HOST = "postgres" if os.environ.get("RUN_DOCKER") else "localhost"
-DB_USER = os.environ.get("POSTGRES_USERNAME")
+DB_USER = os.environ.get("POSTGRES_USER")
 DB_PWD = os.environ.get("POSTGRES_PASSWORD")
 
 JWT_SECRET = os.environ.get("JWT_SECRET")

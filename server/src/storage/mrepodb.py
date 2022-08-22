@@ -113,9 +113,7 @@ async def create_parse_report(last_commit: str, payload: AddParsedResultInput) -
             item["id"] = generate_parsed_comment_id(
                 item["type"],
                 item["title"],
-                item[
-                    "path"
-                ],  # lineNumber will make certain comment reappear as new one (when new code push the new comment)
+                item["path"], 
             )
             mapped_result.append(item)
 
