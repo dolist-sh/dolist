@@ -100,26 +100,34 @@ jobs:
           GITHUB_OAUTH_CLIENT_ID: ${{ secrets.CLIENT_ID_DEV }}
           GITHUB_OAUTH_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET_DEV }}
           GITHUB_OAUTH_REDIRECT_URI: ${{ secrets.OAUTH_REDIRECT_URI_DEV }}
+          GITHUB_WEBHOOK_CALLBACK: ${{ secrets.PUSH_WEBHOOK_CALLBACK_DEV }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           POSTGRES_USERNAME: ${{ secrets.POSTGRES_USERNAME }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
           AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+          WORKER_OAUTH_CLIENT_ID: ${{ secrets.WORKER_OAUTH_CLIENT_ID_DEV }}
+          WORKER_OAUTH_CLIENT_SECRET: ${{ secrets.WORKER_OAUTH_CLIENT_SECRET_DEV }}
         run: |
-          touch ./app/.env.local ./server/.env
+          touch ./app/.env.local ./server/.env ./worker/.env
 
-          echo "GITHUB_OAUTH_CLIENT_ID=$GITHUB_OAUTH_CLIENT_ID" >> ./app/.env.local
-          echo "GITHUB_OAUTH_CLIENT_SECRET=$GITHUB_OAUTH_CLIENT_SECRET" >> ./app/.env.local
-          echo "GITHUB_OAUTH_REDIRECT_URI=$GITHUB_OAUTH_REDIRECT_URI" >> ./app/.env.local
           echo "ENV=dev" >> ./app/.env.local
 
-          echo "GITHUB_OAUTH_CLIENT_ID=$GITHUB_OAUTH_CLIENT_ID" >> ./server/.env
-          echo "GITHUB_OAUTH_CLIENT_SECRET=$GITHUB_OAUTH_CLIENT_SECRET" >> ./server/.env
+          echo "GITHUB_OAUTH_CLIENT_ID=$GITHUB_OAUTH_CLIENT_ID" >> ./app/.env.local ./server/.env
+          echo "GITHUB_OAUTH_CLIENT_SECRET=$GITHUB_OAUTH_CLIENT_SECRET" >> ./app/.env.local ./server/.env
+          echo "GITHUB_OAUTH_REDIRECT_URI=$GITHUB_OAUTH_REDIRECT_URI" >> ./app/.env.local
+          echo "GITHUB_WEBHOOK_CALLBACK=$GITHUB_WEBHOOK_CALLBACK" >> ./server/.env
+
+          echo "JWT_SECRET=$JWT_SECRET" >> ./server/.env
+          echo "AWS_ACCESS_KEY=$AWS_ACCESS_KEY" >> ./server/.env ./worker/.env
+          echo "AWS_SECRET_KEY=$AWS_SECRET_KEY" >> ./server/.env ./worker/.env
+
           echo "POSTGRES_USERNAME=$POSTGRES_USERNAME" >> ./server/.env
           echo "POSTGRES_PASSWORD=$POSTGRES_PASSWORD" >> ./server/.env
-          echo "JWT_SECRET=$JWT_SECRET" >> ./server/.env
-          echo "AWS_ACCESS_KEY=$AWS_ACCESS_KEY" >> ./server/.env
-          echo "AWS_SECRET_KEY=$AWS_SECRET_KEY" >> ./server/.env
+          
+          echo "WORKER_OAUTH_CLIENT_ID=$WORKER_OAUTH_CLIENT_ID" >> ./server/.env ./worker/.env
+          echo "WORKER_OAUTH_CLIENT_SECRET=$WORKER_OAUTH_CLIENT_SECRET" >> ./server/.env ./worker/.env
+
       - name: Deploy the code to EC2
         uses: easingthemes/ssh-deploy@v2
         env:
