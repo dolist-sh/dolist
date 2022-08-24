@@ -112,21 +112,21 @@ jobs:
           touch ./app/.env.local ./server/.env ./worker/.env
 
           echo "ENV=dev" >> ./app/.env.local
-
-          echo "GITHUB_OAUTH_CLIENT_ID=$GITHUB_OAUTH_CLIENT_ID" >> ./app/.env.local ./server/.env
-          echo "GITHUB_OAUTH_CLIENT_SECRET=$GITHUB_OAUTH_CLIENT_SECRET" >> ./app/.env.local ./server/.env
+          echo "GITHUB_OAUTH_CLIENT_ID=$GITHUB_OAUTH_CLIENT_ID" >> ./app/.env.local
+          echo "GITHUB_OAUTH_CLIENT_SECRET=$GITHUB_OAUTH_CLIENT_SECRET" >> ./app/.env.local
           echo "GITHUB_OAUTH_REDIRECT_URI=$GITHUB_OAUTH_REDIRECT_URI" >> ./app/.env.local
+
+          echo "GITHUB_OAUTH_CLIENT_ID=$GITHUB_OAUTH_CLIENT_ID" >> ./server/.env
+          echo "GITHUB_OAUTH_CLIENT_SECRET=$GITHUB_OAUTH_CLIENT_SECRET" >> ./server/.env
           echo "GITHUB_WEBHOOK_CALLBACK=$GITHUB_WEBHOOK_CALLBACK" >> ./server/.env
-
-          echo "JWT_SECRET=$JWT_SECRET" >> ./server/.env
-          echo "AWS_ACCESS_KEY=$AWS_ACCESS_KEY" >> ./server/.env ./worker/.env
-          echo "AWS_SECRET_KEY=$AWS_SECRET_KEY" >> ./server/.env ./worker/.env
-
-          echo "POSTGRES_USERNAME=$POSTGRES_USERNAME" >> ./server/.env
+          echo "POSTGRES_USER=$POSTGRES_USERNAME" >> ./server/.env
           echo "POSTGRES_PASSWORD=$POSTGRES_PASSWORD" >> ./server/.env
-          
-          echo "WORKER_OAUTH_CLIENT_ID=$WORKER_OAUTH_CLIENT_ID" >> ./server/.env ./worker/.env
-          echo "WORKER_OAUTH_CLIENT_SECRET=$WORKER_OAUTH_CLIENT_SECRET" >> ./server/.env ./worker/.env
+          echo "JWT_SECRET=$JWT_SECRET" >> ./server/.env
+
+          echo "AWS_ACCESS_KEY=$AWS_ACCESS_KEY" >> ./worker/.env
+          echo "AWS_SECRET_KEY=$AWS_SECRET_KEY" >> ./worker/.env
+          echo "WORKER_OAUTH_CLIENT_ID=$WORKER_OAUTH_CLIENT_ID" >> ./worker/.env
+          echo "WORKER_OAUTH_CLIENT_SECRET=$WORKER_OAUTH_CLIENT_SECRET" >> ./worker/.env
 
       - name: Deploy the code to EC2
         uses: easingthemes/ssh-deploy@v2
