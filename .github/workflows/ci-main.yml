@@ -122,6 +122,10 @@ jobs:
           echo "POSTGRES_USER=$POSTGRES_USERNAME" >> ./server/.env
           echo "POSTGRES_PASSWORD=$POSTGRES_PASSWORD" >> ./server/.env
           echo "JWT_SECRET=$JWT_SECRET" >> ./server/.env
+          echo "AWS_ACCESS_KEY=$AWS_ACCESS_KEY" >> ./server/.env
+          echo "AWS_SECRET_KEY=$AWS_SECRET_KEY" >> ./server/.env
+          echo "WORKER_OAUTH_CLIENT_ID=$WORKER_OAUTH_CLIENT_ID" >> ./server/.env
+          echo "WORKER_OAUTH_CLIENT_SECRET=$WORKER_OAUTH_CLIENT_SECRET" >> ./server/.env
 
           echo "AWS_ACCESS_KEY=$AWS_ACCESS_KEY" >> ./worker/.env
           echo "AWS_SECRET_KEY=$AWS_SECRET_KEY" >> ./worker/.env
