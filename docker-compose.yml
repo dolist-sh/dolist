@@ -20,6 +20,9 @@ services:
       interval: 10s
       retries: 10
     restart: always
+    volumes:
+      - ./scripts/init_db.sh:/docker-entrypoint-initdb.d/init_db.sh
+      - postgres-data:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER 
       - POSTGRES_PASSWORD
@@ -49,6 +52,23 @@ services:
       - app-networks
     depends_on:
       - postgres
+  worker:
+    build:
+      context: ./worker/.
+      network: host
+    env_file:
+     - ./worker/.env
+    environment:
+      - RUN_DOCKER=True
+    restart: always
+    networks:
+      - app-networks
+    depends_on:
+      - server
 networks:
   app-networks:
     driver: bridge
+volumes:
+  postgres-data:
+    labels:
+      com.postgres-data.description: "Database volume"

@@ -1,11 +1,54 @@
 import requests
-import re
-import base64
-from dolistparser import js_gh_parser, py_gh_parser, ParsedComment
-from typing import List
+from logger import logger
+
+from typing import Union, List
+from typing_extensions import Literal, TypedDict
 
 
-async def get_github_repos(access_token: str):
+class GetGitHubRepoOutput(TypedDict):
+    status: Literal["success", "failed"]
+    data: str  # JSON object
+    error: Union[str, None]
+
+
+async def get_github_repo(access_token: str, full_name: str):
+    try:
+        headers = {
+            "Accept": "application/vnd.github+json",
+            "Authorization": f"token {access_token}",
+        }
+        host = f"https://api.github.com/repos/{full_name}"
+
+        res = requests.get(host, headers=headers)
+
+        output: GetGitHubRepoOutput
+
+        if res.status_code == 200:
+            logger.info(
+                f"Requested GitHub repositories for authenticated user successfully returned from GitHub API"
+            )
+            output = dict(status="success", data=res.json())
+        else:
+            error_msg = f"Retrieving Github repo failed | status code: {str(res.status_code)} | response: {str(res)}"
+            logger.warning(error_msg)
+            output = dict(status="failed", error=error_msg)
+
+        return output
+
+    except Exception as e:
+        logger.error(
+            f"Unexpected error occured at {get_github_repo.__name__} | {str(e)}"
+        )
+        raise e
+
+
+class GetGitHubRepoListOutput(TypedDict):
+    status: Literal["success", "failed"]
+    data: List[str]  # List of JSON
+    error: Union[str, None]
+
+
+async def get_github_repo_list(access_token: str):
     try:
         headers = {
             "Accept": "application/vnd.github+json",
@@ -15,15 +58,84 @@ async def get_github_repos(access_token: str):
 
         res = requests.get(host, headers=headers)
 
-        return res.json()
+        output: GetGitHubRepoListOutput
+
+        if res.status_code == 200:
+            logger.info(
+                f"List of GitHub repositories for authenticated user successfully returned"
+            )
+            output = dict(status="success", data=res.json())
+        else:
+            error_msg = f"Retrieving Github repos failed | status code: {str(res.status_code)} | response: {str(res)}"
+            logger.warning(error_msg)
+            output = dict(status="failed", error=error_msg)
+
+        return output
 
     except Exception as e:
+        logger.error(
+            f"Unexpected error occured at {get_github_repo_list.__name__} | {str(e)}"
+        )
         raise e
 
 
-async def parse_github_repo(
-    access_token: str, repo_name: str, branch: str
-) -> List[ParsedComment]:
+class RegisterPushGitHubRepoOutput(TypedDict):
+    status: Literal["success", "failed"]
+    error: Union[str, None]
+
+
+async def register_push_github_repo(
+    access_token: str, repo_fullname: str
+) -> RegisterPushGitHubRepoOutput:
+    try:
+        from config import GITHUB_WEBHOOK_CALLBACK
+
+        if GITHUB_WEBHOOK_CALLBACK is None:
+            raise Exception(
+                "GITHUB_WEBHOOK_CALLBACK cannot be None, check the env variable"
+            )
+
+        payload = {
+            "hub.mode": "subscribe",
+            "hub.topic": f"https://github.com/{repo_fullname}/events/push.json",
+            "hub.callback": GITHUB_WEBHOOK_CALLBACK,
+        }
+
+        headers = {
+            "Accept": "application/json",
+            "Authorization": f"token {access_token}",
+        }
+        host = "https://api.github.com/hub"
+
+        res = requests.post(host, headers=headers, data=payload)
+
+        output: RegisterPushGitHubRepoOutput
+
+        if res.status_code == 204:
+            logger.info(
+                f"GitHub webhook for push event successfully registered | {repo_fullname}"
+            )
+            output = dict(status="success")
+        else:
+            error_msg = f"Github webhook registration failed | status code: {str(res.status_code)} | repo name: {repo_fullname}"
+            logger.warning(error_msg)
+            output = dict(status="failed", error=error_msg)
+
+        return output
+    except Exception as e:
+        logger.error(f"Error at {register_push_github_repo.__name__} | {str(e)}")
+        raise e
+
+
+class GetGitHubRepoLastCommitOutput(TypedDict):
+    status: Literal["success", "failed"]
+    commit: str
+    error: Union[str, None]
+
+
+async def get_github_repo_last_commit(
+    access_token: str, full_name: str, branch: str
+) -> GetGitHubRepoLastCommitOutput:
     try:
         headers = {
             "Accept": "application/vnd.github+json",
@@ -31,47 +143,25 @@ async def parse_github_repo(
         }
 
         # Get the branch detail to find the sha of the latest commit
+        # https://docs.github.com/en/rest/branches/branches#get-a-branch
+        host = f"https://api.github.com/repos/{full_name}/branches/{branch}"
+        res = requests.get(host, headers=headers)
 
-        host = f"https://api.github.com/repos/{repo_name}/branches/{branch}"
-        res_branch = requests.get(host, headers=headers)
-        data_branch = res_branch.json()
+        output: GetGitHubRepoLastCommitOutput
 
-        # Recursively call the git tree API for full list of source files
-        # https://docs.github.com/en/rest/git/trees#get-a-tree
+        if res.status_code == 200:
+            logger.info(
+                f"Last commit of GitHub repo has retrieved | repo: {full_name} | branch: {branch}"
+            )
+            data = res.json()
+            commit = data["commit"]["sha"]
+            output = dict(status="success", commit=commit)
+        else:
+            error_msg = f"Failed to retrieve the last commit of GitHub repo | status code: {str(res.status_code)} | repo: {full_name} | branch {branch}"
+            logger.warning(error_msg)
+            output = dict(status="failed", error=error_msg)
 
-        uri_tree_api = data_branch["commit"]["commit"]["tree"]["url"]
-        res_tree = requests.get(f"{uri_tree_api}?recursive=true", headers=headers)
-        data_tree = res_tree.json()
-
-        result = []
-
-        for data in data_tree["tree"]:
-            # if data['type'] == 'tree':
-            # tree type is directory
-
-            if data["type"] == "blob":
-                file_path = data["path"]
-                blob_url = data["url"]
-
-                # Get the content of the file
-                # https://docs.github.com/en/rest/git/blobs#get-a-blob
-
-                blob_res = requests.get(blob_url, headers=headers)
-                data_blob = blob_res.json()
-
-                file_content = base64.b64decode(data_blob["content"])
-                content_to_parse = str(file_content).split(("\\n"))
-
-                parsed = []
-
-                if re.search(r"(\.js$|\.ts$)", file_path, re.IGNORECASE):
-                    parsed = js_gh_parser.parse(content_to_parse, file_path)
-
-                if re.search(r"(\.py$)", file_path, re.IGNORECASE):
-                    parsed = py_gh_parser.parse(content_to_parse, file_path)
-
-                result = result + parsed
-
-        return result
+        return output
     except Exception as e:
+        logger.error(f"Error at {get_github_repo_last_commit.__name__} | {str(e)}")
         raise e

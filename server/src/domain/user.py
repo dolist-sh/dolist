@@ -25,5 +25,5 @@ class User(BaseModel):
     email: str  # unique value
     name: Optional[str]
     profileUrl: str
-    oauth: List[OAuth]
+    oauth: List[OAuth]  # TODO: Have oauth field for each integration providers
     createdAt: int  # Unix timestamp
