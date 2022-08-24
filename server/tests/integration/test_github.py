@@ -1,5 +1,4 @@
 import pytest, requests
-import src.config
 
 from src.integration.github import (
     get_github_repo_list,
@@ -45,8 +44,8 @@ async def test_register_push_github_repo(monkeypatch):
         print(f"host: {host}, headers: {headers}, data: {data}")
         return MockResponse(status_code=204)
 
+    monkeypatch.setenv("GITHUB_WEBHOOK_CALLBACK", "http://dummy_callback", prepend=None)
     monkeypatch.setattr(requests, "post", mock_post_res)
-    monkeypatch.setattr(src.config, 'GITHUB_WEBHOOK_CALLBACK', "http://dummy_uri")
 
     res: RegisterPushGitHubRepoOutput = await register_push_github_repo(
         "mock_token", "test_repo"
