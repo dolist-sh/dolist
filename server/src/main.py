@@ -1,4 +1,3 @@
-from curses.ascii import HT
 from fastapi import FastAPI, Request, Response, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -174,14 +173,9 @@ async def write_parse_result(
         if is_auth_req is not True:
             raise HTTPException(status_code=401, detail="Unauthorized request")
 
-        print(payload)
-
         # Find the monitored repository -> If the repo exists and status is active proceed
         mrepo = await read_monitored_repo(payload["mrepoId"])
         user = await read_user(mrepo.userId)
-
-        print(mrepo)
-        print(user)
 
         # Call GitHub API to get the latest commit (payload: repo fullname, oauth token, branch)
         oauth_token = user.oauth[0]["token"]
@@ -191,8 +185,6 @@ async def write_parse_result(
         )
 
         commit = gh_call_output["commit"]
-
-        print(commit)
 
         await create_parse_report(commit, payload)
 
@@ -243,7 +235,7 @@ async def handle_auth(session_code: str, status_code=200):
 
             await create_user(user_payload)
 
-            return issue_token(user_payload.email)
+            return issue_token(user_payload['email'])
 
         else:
             """Sign-in case"""
