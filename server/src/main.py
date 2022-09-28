@@ -1,39 +1,43 @@
 from fastapi import FastAPI, Request, Response, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 
-from auth.jwt import (
+from infra.auth.jwt import (
     issue_token,
     issue_machine_token,
     verify_machine_token,
     get_email_from_token,
 )
-from auth.github import get_github_access_token, get_github_user, get_github_user_email
+from infra.auth.github import (
+    get_github_access_token,
+    get_github_user,
+    get_github_user_email,
+)
 
-from storage.userdb import (
+from infra.storage.userdb import (
     read_user,
     read_user_by_email,
     create_user,
     write_github_token,
 )
-from storage.mrepodb import (
+from infra.storage.mrepodb import (
     create_monitored_repo,
     read_monitored_repo_by_fullname,
     read_monitored_repo,
     create_parse_report,
 )
 
-from integration.github import (
+from infra.integration.github import (
     get_github_repo,
     get_github_repo_list,
     register_push_github_repo,
     get_github_repo_last_commit,
 )
 
-from pubsub.pub import publish_parse_msg
+from infra.pubsub.pub import publish_parse_msg
 
-from domain.auth import CreateMachineTokenInput, MachineToken
-from domain.user import User
-from domain.mrepo import AddMonitoredReposInput, AddParsedResultInput, MonitoredRepo
+from app.domain.auth import CreateMachineTokenInput, MachineToken
+from app.domain.user import User
+from app.domain.mrepo import AddMonitoredReposInput, AddParsedResultInput, MonitoredRepo
 
 from logger import logger
 from typing import List

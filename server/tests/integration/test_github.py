@@ -1,6 +1,6 @@
 import pytest, requests
 
-from src.integration.github import (
+from src.infra.integration.github import (
     get_github_repo_list,
     GetGitHubRepoListOutput,
     register_push_github_repo,

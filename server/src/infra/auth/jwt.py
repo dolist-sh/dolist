@@ -1,6 +1,6 @@
 import jwt
 from datetime import datetime, timedelta, timezone
-from domain.auth import CreateMachineTokenInput, MachineToken
+from app.domain.auth import CreateMachineTokenInput, MachineToken
 from fastapi import Header, HTTPException
 
 from config import JWT_SECRET, WORKER_OAUTH_CLIENT_ID, WORKER_OAUTH_CLIENT_SECRET

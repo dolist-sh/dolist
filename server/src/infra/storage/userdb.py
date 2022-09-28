@@ -3,7 +3,7 @@
 from uuid import UUID
 from time import time
 from sqlalchemy import sql
-from domain.user import User, CreateUserInput
+from app.domain.user import User, CreateUserInput
 from storage.model import user_schema
 from storage.db import engine
 

@@ -5,7 +5,7 @@ from sqlalchemy.sql import and_
 from storage.model import monitored_repo_schema, parsed_comment_schema
 from storage.db import engine
 
-from domain.mrepo import (
+from app.domain.mrepo import (
     MonitoredRepo,
     CreateMonitoredReposInput,
     AddParsedResultInput,
