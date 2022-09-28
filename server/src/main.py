@@ -235,7 +235,7 @@ async def handle_auth(session_code: str, status_code=200):
 
             await create_user(user_payload)
 
-            return issue_token(user_payload['email'])
+            return issue_token(user_payload["email"])
 
         else:
             """Sign-in case"""

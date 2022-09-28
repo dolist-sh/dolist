@@ -23,11 +23,10 @@ async def get_github_access_token(session_code: str) -> str:
         return data["access_token"]
 
     except KeyError as e:
-        """When no access_token is returned from Github, data['access_token'] return KeyError"""
+        """When no access_token is returned from Github, data['access_token'] will throw KeyError"""
         return None
 
     except Exception as e:
-        print(e)
         raise e
 
 

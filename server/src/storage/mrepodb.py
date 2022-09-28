@@ -113,7 +113,7 @@ async def create_parse_report(last_commit: str, payload: AddParsedResultInput) -
             item["id"] = generate_parsed_comment_id(
                 item["type"],
                 item["title"],
-                item["path"], 
+                item["path"],
             )
             mapped_result.append(item)
 
