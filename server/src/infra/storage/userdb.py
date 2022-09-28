@@ -4,8 +4,8 @@ from uuid import UUID
 from time import time
 from sqlalchemy import sql
 from app.domain.user import User, CreateUserInput
-from storage.model import user_schema
-from storage.db import engine
+from infra.storage.model import user_schema
+from infra.storage.db import engine
 
 user_db = user_schema
 db = engine

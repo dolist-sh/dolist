@@ -1,7 +1,7 @@
-from pubsub.sqs import parse_queue, failed_hook_queue
+from infra.pubsub.sqs import parse_queue, failed_hook_queue
 
-from storage.mrepodb import read_monitored_repo_by_fullname
-from storage.userdb import read_user
+from infra.storage.mrepodb import read_monitored_repo_by_fullname
+from infra.storage.userdb import read_user
 
 from logger import logger
 

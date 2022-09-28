@@ -2,22 +2,14 @@ from fastapi import FastAPI, Request, Response, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 
 from infra.auth.jwt import (
-    issue_token,
     issue_machine_token,
     verify_machine_token,
     get_email_from_token,
-)
-from infra.auth.github import (
-    get_github_access_token,
-    get_github_user,
-    get_github_user_email,
 )
 
 from infra.storage.userdb import (
     read_user,
     read_user_by_email,
-    create_user,
-    write_github_token,
 )
 from infra.storage.mrepodb import (
     create_monitored_repo,
@@ -43,6 +35,10 @@ from logger import logger
 from typing import List
 import json
 
+
+from app.interactors.auth import AuthInteractor
+
+auth_interactor = AuthInteractor()
 
 app = FastAPI()
 
@@ -207,45 +203,11 @@ async def write_parse_result(
 @app.get("/auth")
 async def handle_auth(session_code: str, status_code=200):
     try:
-        github_token = await get_github_access_token(session_code)
-
-        if github_token is None:
-            raise HTTPException(status_code=401, detail="Invalid session code")
-
-        github_user = await get_github_user(github_token)
-
-        email = github_user["email"]
-        name = github_user["name"]
-        profile_url = github_user["avatar_url"]
-        github_username = github_user["login"]
-
-        if email is None:
-            """
-            Fetch email address for user who marked their email as private.
-            This step is requred as email field from get_github_user method returns null,
-            When user have marked their email private.
-            """
-            email = await get_github_user_email(github_username, github_token)
-
-        user_check_result = await read_user_by_email(email)
-
-        oauth_payload = dict(type="github", token=github_token)
-
-        if user_check_result is None:
-            """Sign-up case"""
-            user_payload = dict(
-                email=email, name=name, profileUrl=profile_url, oauthInUse=oauth_payload
-            )
-
-            await create_user(user_payload)
-
-            return issue_token(user_payload["email"])
-
-        else:
-            """Sign-in case"""
-            await write_github_token(email, github_token)
-
-            return issue_token(user_check_result.email)
+        token = await auth_interactor.execute_github_auth(session_code)
+        return token
+    except ValueError as e:
+        logger.critical(f"Invalid auth request. {handle_auth.__name__}: {str(e)}")
+        raise HTTPException(status_code=401, detail="Invalid session code")
 
     except Exception as e:
         logger.critical(f"Unexpected exceptions at {handle_auth.__name__}: {str(e)}")

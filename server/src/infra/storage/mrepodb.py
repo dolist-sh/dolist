@@ -2,8 +2,8 @@
 
 from sqlalchemy import bindparam
 from sqlalchemy.sql import and_
-from storage.model import monitored_repo_schema, parsed_comment_schema
-from storage.db import engine
+from infra.storage.model import monitored_repo_schema, parsed_comment_schema
+from infra.storage.db import engine
 
 from app.domain.mrepo import (
     MonitoredRepo,
