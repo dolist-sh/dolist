@@ -36,7 +36,9 @@ import json
 
 
 from app.interactors.auth import AuthInteractor
+from app.interactors.user import UserInteractor
 
+user_interactor = UserInteractor()
 auth_interactor = AuthInteractor()
 
 app = FastAPI()
@@ -73,9 +75,11 @@ async def get_user(
     email: str = Depends(get_email_from_token), status_code=200, response_model=User
 ):
     try:
-        user = await read_user_by_email(email)
+        user = await user_interactor.execute_get_user(email)
         return user
-
+    except ValueError as e:
+        logger.info(f"User not found from {get_user.__name__}: {str(e)}")
+        raise HTTPException(status_code=404, detail={str(e)})
     except Exception as e:
         logger.critical(f"Unexpected exceptions at {get_user.__name__}: {str(e)}")
         raise e
