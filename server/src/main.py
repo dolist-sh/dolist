@@ -2,7 +2,6 @@ from fastapi import FastAPI, Request, Response, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 
 from infra.auth.jwt import (
-    issue_machine_token,
     verify_machine_token,
     get_email_from_token,
 )
@@ -207,8 +206,7 @@ async def handle_auth(session_code: str, status_code=200):
         return token
     except ValueError as e:
         logger.critical(f"Invalid auth request. {handle_auth.__name__}: {str(e)}")
-        raise HTTPException(status_code=401, detail="Invalid session code")
-
+        raise HTTPException(status_code=401, detail={str(e)})
     except Exception as e:
         logger.critical(f"Unexpected exceptions at {handle_auth.__name__}: {str(e)}")
         raise e
@@ -222,19 +220,12 @@ async def handle_auth_worker(
     response_model=MachineToken,
 ):
     try:
-        from config import WORKER_OAUTH_CLIENT_ID, WORKER_OAUTH_CLIENT_SECRET
-
-        client_id = payload["client_id"]
-        client_secret = payload["client_secret"]
-
-        if (client_id != WORKER_OAUTH_CLIENT_ID) or (
-            client_secret != WORKER_OAUTH_CLIENT_SECRET
-        ):
-            raise HTTPException(status_code=401, detail="Invalid auth request")
-
-        machine_token = issue_machine_token(payload)
+        token = await auth_interactor.execute_worker_auth(payload)
         response.status_code = 201
-        return machine_token
+        return token
+    except ValueError as e:
+        logger.critical(f"Invalid auth request {handle_auth_worker.__name__}: {str(e)}")
+        raise HTTPException(status_code=401, detail={str(e)})
     except Exception as e:
         logger.critical(
             f"Unexpected exceptions at {handle_auth_worker.__name__}: {str(e)}"

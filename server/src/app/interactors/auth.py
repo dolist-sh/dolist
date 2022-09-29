@@ -1,10 +1,12 @@
+from app.domain.auth import CreateMachineTokenInput, MachineToken
+
 from infra.auth.github import (
     get_github_access_token,
     get_github_user,
     get_github_user_email,
 )
 from infra.storage.userdb import read_user_by_email, create_user, write_github_token
-from infra.auth.jwt import issue_token
+from infra.auth.jwt import issue_token, issue_machine_token
 
 
 class AuthInteractor:
@@ -59,6 +61,26 @@ class AuthInteractor:
                 await write_github_token(email, github_token)
 
                 return issue_token(user_check_result.email)
+        except ValueError as e:
+            raise e
+        except Exception as e:
+            raise e
+
+    async def execute_worker_auth(
+        self, payload: CreateMachineTokenInput
+    ) -> MachineToken:
+        try:
+            from config import WORKER_OAUTH_CLIENT_ID, WORKER_OAUTH_CLIENT_SECRET
+
+            client_id = payload["client_id"]
+            client_secret = payload["client_secret"]
+
+            if (client_id != WORKER_OAUTH_CLIENT_ID) or (
+                client_secret != WORKER_OAUTH_CLIENT_SECRET
+            ):
+                raise ValueError("Invalid auth request")
+
+            return issue_machine_token(payload)
         except ValueError as e:
             raise e
         except Exception as e:
