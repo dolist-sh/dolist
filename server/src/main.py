@@ -19,7 +19,6 @@ from infra.storage.mrepodb import (
 
 from infra.integration.github import (
     get_github_repo,
-    get_github_repo_list,
     register_push_github_repo,
     get_github_repo_last_commit,
 )
@@ -77,9 +76,11 @@ async def get_user(
     try:
         user = await user_interactor.execute_get_user(email)
         return user
+
     except ValueError as e:
-        logger.info(f"User not found from {get_user.__name__}: {str(e)}")
+        logger.info(f"Can't find the requested user {get_user.__name__}: {str(e)}")
         raise HTTPException(status_code=404, detail={str(e)})
+
     except Exception as e:
         logger.critical(f"Unexpected exceptions at {get_user.__name__}: {str(e)}")
         raise e
@@ -91,17 +92,12 @@ async def get_user_github_repos(
     email: str = Depends(get_email_from_token), status_code=200
 ):
     try:
-        user = await read_user_by_email(email)
-        github_token = user.oauth[0]["token"]  # TODO: Replace this with find call
+        output = await user_interactor.execute_get_user_github_repos(email)
+        return output
 
-        from src.integration.github import GetGitHubRepoListOutput
-
-        output: GetGitHubRepoListOutput = await get_github_repo_list(github_token)
-
-        if output["status"] == "success":
-            return output["data"]
-        else:
-            raise HTTPException(status_code=422, detail=output["error"])
+    except ValueError as e:
+        logger.critical(f"Request failed at {get_user_github_repos.__name__}: {str(e)}")
+        raise HTTPException(status_code=422, detail=output["error"])
 
     except Exception as e:
         logger.critical(
