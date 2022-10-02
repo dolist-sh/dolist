@@ -8,18 +8,13 @@ from infra.auth.jwt import (
 
 from infra.storage.userdb import (
     read_user,
-    read_user_by_email,
 )
 from infra.storage.mrepodb import (
-    create_monitored_repo,
-    read_monitored_repo_by_fullname,
     read_monitored_repo,
     create_parse_report,
 )
 
 from infra.integration.github import (
-    get_github_repo,
-    register_push_github_repo,
     get_github_repo_last_commit,
 )
 
@@ -30,7 +25,6 @@ from app.domain.user import User
 from app.domain.mrepo import AddMonitoredReposInput, AddParsedResultInput, MonitoredRepo
 
 from logger import logger
-from typing import List
 import json
 
 
@@ -113,46 +107,21 @@ async def add_monitored_repos(
     payload: AddMonitoredReposInput = Depends(get_json_body),
     email: str = Depends(get_email_from_token),
 ):
-    """Add GitHub repositories are monitored repos"""
     try:
-        user = await read_user_by_email(email)
-        user_id = user.id
+        new_monitored_repos = await user_interactor.execute_add_monitored_repos(
+            email, payload
+        )
 
-        created_repos: List[MonitoredRepo] = []
-        oauth_token = user.oauth[0]["token"]
-
-        if len(payload["repos"]) > 0:
-            for repo in payload["repos"]:
-                repo = dict(repo)
-                github_repo_check = await get_github_repo(oauth_token, repo["fullName"])
-
-                # fmt: off
-                if github_repo_check["status"] == "fail":
-                    logger.warning(f"Non-existing GitHub repository was requested for monitoring | user_id: {user_id} | repo_fullname: {repo['fullName']}")
-
-                if github_repo_check["status"] == "success":
-                    duplication_check_result = await read_monitored_repo_by_fullname(repo["fullName"], "github")
-
-                    # TODO: Handle the case of inactive repository included in the request
-                    if duplication_check_result is None:
-                        """ New repository """
-                        new_repo = await create_monitored_repo(repo, user_id)
-                        created_repos.append(new_repo)
-                        await register_push_github_repo(oauth_token, repo["fullName"])
-                    else:
-                        """ Already monitored repository """
-                        logger.warning(f"Already monitored repository was included in the {add_monitored_repos.__name__} | user_id: {user_id} | repo_name: {repo['fullName']}")
-                # fmt: on
-
-        if len(created_repos) > 0:
-            logger.info(f"{len(created_repos)} repositories added for monitoring")
+        if len(new_monitored_repos) > 0:
+            logger.info(f"{len(new_monitored_repos)} repositories added for monitoring")
             response.status_code = 201
             return
-        elif (len(created_repos) == 0) and (len(payload["repos"]) > 0):
-            """When nothing to process from the requested list of repositories"""
+        elif (len(new_monitored_repos) == 0) and (len(payload["repos"]) > 0):
+            """The case that all repos from payload are already monitored"""
             raise HTTPException(
                 status_code=422, detail="No repository to process from the payload"
             )
+
     except HTTPException as e:
         logger.warning(f"HTTP exception at {add_monitored_repos.__name__}: {str(e)}")
     except Exception as e:
