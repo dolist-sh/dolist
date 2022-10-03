@@ -1,22 +1,23 @@
-from fastapi import FastAPI, Request, Response, HTTPException, Depends
+from fastapi import FastAPI, Response, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 
-from infra.auth.jwt import (
+from framework.web.helpers import (
     verify_machine_token,
     get_email_from_token,
+    get_json_body,
 )
 
 from app.domain.auth import CreateMachineTokenInput, MachineToken
 from app.domain.user import User
 from app.domain.mrepo import AddMonitoredReposInput, AddParsedResultInput
 
-from logger import logger
-import json
-
 from app.interactors.auth import AuthInteractor
 from app.interactors.user import UserInteractor
 from app.interactors.mrepo import MonitoredRepoInteractor
 from app.interactors.webhook import WebhookInteractor
+
+from logger import logger
+
 
 user_interactor = UserInteractor()
 auth_interactor = AuthInteractor()
@@ -39,11 +40,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-async def get_json_body(request: Request):
-    body = await request.body()
-    return json.loads(body)
 
 
 @app.get("/")
