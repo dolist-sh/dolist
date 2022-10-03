@@ -62,7 +62,6 @@ def verify_machine_token(Authorization: str = Header()) -> bool:
             algorithms="HS256",
             options=options,
         )
-        print(decoded)
         return _verify_token_cred(decoded)
 
     except Exception as e:
@@ -80,5 +79,4 @@ def get_email_from_token(Authorization: str = Header()) -> str:
         return decoded["email"]
 
     except Exception as e:
-        print(str(e))
         raise HTTPException(status_code=401, detail="Invalid token")

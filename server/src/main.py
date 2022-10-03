@@ -6,18 +6,6 @@ from infra.auth.jwt import (
     get_email_from_token,
 )
 
-from infra.storage.userdb import (
-    read_user,
-)
-from infra.storage.mrepodb import (
-    read_monitored_repo,
-    create_parse_report,
-)
-
-from infra.integration.github import (
-    get_github_repo_last_commit,
-)
-
 from infra.pubsub.pub import publish_parse_msg
 
 from app.domain.auth import CreateMachineTokenInput, MachineToken
@@ -27,12 +15,13 @@ from app.domain.mrepo import AddMonitoredReposInput, AddParsedResultInput, Monit
 from logger import logger
 import json
 
-
 from app.interactors.auth import AuthInteractor
 from app.interactors.user import UserInteractor
+from app.interactors.mrepo import MonitoredRepoInteractor
 
 user_interactor = UserInteractor()
 auth_interactor = AuthInteractor()
+mrepo_interactor = MonitoredRepoInteractor()
 
 app = FastAPI()
 
@@ -91,7 +80,7 @@ async def get_user_github_repos(
 
     except ValueError as e:
         logger.critical(f"Request failed at {get_user_github_repos.__name__}: {str(e)}")
-        raise HTTPException(status_code=422, detail=output["error"])
+        raise HTTPException(status_code=422, detail=str(e))
 
     except Exception as e:
         logger.critical(
@@ -118,12 +107,12 @@ async def add_monitored_repos(
             return
         elif (len(new_monitored_repos) == 0) and (len(payload["repos"]) > 0):
             """The case that all repos from payload are already monitored"""
+            logger.warning(
+                f"HTTP exception at {add_monitored_repos.__name__}: all repositoires in the payload are already monitored"
+            )
             raise HTTPException(
                 status_code=422, detail="No repository to process from the payload"
             )
-
-    except HTTPException as e:
-        logger.warning(f"HTTP exception at {add_monitored_repos.__name__}: {str(e)}")
     except Exception as e:
         logger.critical(
             f"Unexpected exceptions at {add_monitored_repos.__name__}: {str(e)}"
@@ -141,25 +130,19 @@ async def write_parse_result(
         if is_auth_req is not True:
             raise HTTPException(status_code=401, detail="Unauthorized request")
 
-        # Find the monitored repository -> If the repo exists and status is active proceed
-        mrepo = await read_monitored_repo(payload["mrepoId"])
-        user = await read_user(mrepo.userId)
+        result = await mrepo_interactor.execute_write_parse_result(payload)
 
-        # Call GitHub API to get the latest commit (payload: repo fullname, oauth token, branch)
-        oauth_token = user.oauth[0]["token"]
-
-        gh_call_output = await get_github_repo_last_commit(
-            oauth_token, mrepo.fullName, mrepo.defaultBranch
-        )
-
-        commit = gh_call_output["commit"]
-
-        await create_parse_report(commit, payload)
-
-        response.status_code = 201
-        return
-    except HTTPException as e:
-        logger.warning(f"HTTP exception at {write_parse_result.__name__}: {str(e)}")
+        if result["status"] == "failed":
+            logger.warning(
+                f"HTTP exception at {write_parse_result.__name__}: {result['error']}"
+            )
+            raise HTTPException(status_code=422, detail=result["error"])
+        else:
+            logger.info(
+                f"New parse report created for the repository: {payload['mrepoId']}"
+            )
+            response.status_code = 201
+            return
     except Exception as e:
         logger.critical(
             f"Unexpected exceptions at {write_parse_result.__name__}: {str(e)}"
