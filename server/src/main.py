@@ -6,11 +6,9 @@ from infra.auth.jwt import (
     get_email_from_token,
 )
 
-from infra.pubsub.pub import publish_parse_msg
-
 from app.domain.auth import CreateMachineTokenInput, MachineToken
 from app.domain.user import User
-from app.domain.mrepo import AddMonitoredReposInput, AddParsedResultInput, MonitoredRepo
+from app.domain.mrepo import AddMonitoredReposInput, AddParsedResultInput
 
 from logger import logger
 import json
@@ -18,10 +16,12 @@ import json
 from app.interactors.auth import AuthInteractor
 from app.interactors.user import UserInteractor
 from app.interactors.mrepo import MonitoredRepoInteractor
+from app.interactors.webhook import WebhookInteractor
 
 user_interactor = UserInteractor()
 auth_interactor = AuthInteractor()
 mrepo_interactor = MonitoredRepoInteractor()
+webhook_interactor = WebhookInteractor()
 
 app = FastAPI()
 
@@ -188,11 +188,7 @@ async def handle_auth_worker(
 @app.post("/webhook/github/push")
 async def process_gh_push_hook(payload=Depends(get_json_body), status_code=200):
     try:
-        # Payload: https://docs.github.com/en/developers/webhooks-and-events/webhooks/webhook-events-and-payloads#push
-        repo_fullname = payload["repository"]["full_name"]
-
-        await publish_parse_msg(repo_fullname, "github")
-        return "success"
+        await webhook_interactor.execute_process_gh_push_hook(payload)
     except Exception as e:
         logger.critical(
             f"Unexpected exceptions at {process_gh_push_hook.__name__}: {str(e)}"
