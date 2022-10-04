@@ -60,7 +60,6 @@ class GitHubAuthAdaptor:
             return primary_email[0]["email"]
 
         except KeyError as e:
-            """In case the return value evaluate with KeyError"""
             return None
         except Exception as e:
             raise e
