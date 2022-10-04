@@ -89,7 +89,6 @@ async def read_monitored_repo(id: UUID) -> MonitoredRepo:
         print(f"Unexpected exceptions: {str(e)}")
         raise e
 
-
 # TODO: Write test for different scenarios with this methods
 async def create_parse_report(last_commit: str, payload: AddParsedResultInput) -> None:
     conn = db.connect()
