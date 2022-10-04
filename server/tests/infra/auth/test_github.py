@@ -1,15 +1,7 @@
 import pytest, requests
 
 from src.infra.auth.github import GitHubAuthAdaptor
-
-
-class MockRequests:
-    def __init__(self, status_code: int, data) -> None:
-        self.status_code = status_code
-        self.data = data
-
-    def json(self):
-        return self.data
+from tests.mocks import MockResponse
 
 
 @pytest.fixture
@@ -28,7 +20,7 @@ async def test_get_github_access_token(monkeypatch, github_auth_adaptor):
 
     def mock_post(host, headers, params):
         print(f"host: {host}, headers: {headers}, params: {params}")
-        return MockRequests(201, mock_res)
+        return MockResponse(201, mock_res)
 
     with monkeypatch.context() as m:
         m.setattr(requests, "post", mock_post)
@@ -91,7 +83,7 @@ async def test_get_github_user(monkeypatch, github_auth_adaptor):
 
     def mock_get(host, headers):
         print(f"host: {host}, headers: {headers}")
-        return MockRequests(200, mock_res)
+        return MockResponse(200, mock_res)
 
     with monkeypatch.context() as m:
         m.setattr(requests, "get", mock_get)
@@ -116,7 +108,7 @@ async def test_get_github_user_email(monkeypatch, github_auth_adaptor):
 
     def mock_get(host, auth):
         print(f"host: {host}, headers: {auth}")
-        return MockRequests(200, mock_res)
+        return MockResponse(200, mock_res)
 
     with monkeypatch.context() as m:
         m.setattr(requests, "get", mock_get)
