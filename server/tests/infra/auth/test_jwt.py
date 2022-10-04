@@ -23,5 +23,5 @@ def test_issue_machine_token(jwt_adaptor: JWTAdaptor):
     }
 
     machine_token = jwt_adaptor.issue_machine_token(payload)
-    
+
     assert (type(machine_token) is MachineToken) == True
