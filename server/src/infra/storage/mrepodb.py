@@ -1,7 +1,6 @@
 """Database access module for MonitoredRepo."""
 
 from time import time
-
 from app.domain.mrepo import (
     MonitoredRepo,
     CreateMonitoredReposInput,

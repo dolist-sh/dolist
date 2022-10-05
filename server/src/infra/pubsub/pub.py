@@ -13,8 +13,8 @@ class ParseMsgPublisher:
         logger: Logger,
     ) -> None:
         """
-            Type definition of queues:
-            https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/sqs.html?highlight=sqs#queue
+        Type definition of queues:
+        https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/sqs.html?highlight=sqs#queue
         """
         self.parse_queue = parse_queue
         self.failed_msg_queue = failed_msg_queue
