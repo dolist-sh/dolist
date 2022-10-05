@@ -29,29 +29,31 @@ def test_mrepo_dataset():
 @pytest.fixture
 def test_db_session(test_user_dataset, test_mrepo_dataset):
 
-    engine = create_engine(f"postgresql://{DB_USER}:{DB_PWD}@{DB_HOST}:5432/testdb")
+    test_db_engine = create_engine(
+        f"postgresql://{DB_USER}:{DB_PWD}@{DB_HOST}:5432/testdb"
+    )
 
-    if not database_exists(engine.url):
-        create_database(engine)
+    if not database_exists(test_db_engine.url):
+        create_database(test_db_engine.url)
 
-    user_schema.create(engine, checkfirst=True)
-    monitored_repo_schema.create(engine, checkfirst=True)
-    parsed_comment_schema.create(engine, checkfirst=True)
+    user_schema.create(test_db_engine, checkfirst=True)
+    monitored_repo_schema.create(test_db_engine, checkfirst=True)
+    parsed_comment_schema.create(test_db_engine, checkfirst=True)
 
     # Prepopulate DB with test dataset
-    engine.execute(user_schema.insert(), test_user_dataset)
-    engine.execute(monitored_repo_schema.insert(), test_mrepo_dataset)
+    test_db_engine.execute(user_schema.insert(), test_user_dataset)
+    test_db_engine.execute(monitored_repo_schema.insert(), test_mrepo_dataset)
 
     # Use yield instead of return to start the teardown process.
-    yield engine
+    yield test_db_engine
 
     # pytest will executes the following lines after test run.
 
-    user_schema.drop(engine, checkfirst=True)
-    monitored_repo_schema.drop(engine, checkfirst=True)
-    parsed_comment_schema.drop(engine, checkfirst=True)
+    user_schema.drop(test_db_engine, checkfirst=True)
+    parsed_comment_schema.drop(test_db_engine, checkfirst=True)
+    monitored_repo_schema.drop(test_db_engine, checkfirst=True)
 
-    drop_database(engine.url)
+    drop_database(test_db_engine.url)
 
 
 @pytest.fixture
