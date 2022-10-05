@@ -1,19 +1,21 @@
-from infra.pubsub.sqs import parse_queue, failed_hook_queue
-
-# TODO: Add type definition of storage classes
-
-from logger import logger
+from infra.storage.mrepodb import MonitoredRepoDBAdaptor
+from infra.storage.userdb import UserDBAdaptor
+from logging import Logger
 
 
 class ParseMsgPublisher:
     def __init__(
         self,
-        parse_queue: parse_queue,
-        failed_msg_queue: failed_hook_queue,
-        mrepodb,
-        userdb,
-        logger: logger,
+        parse_queue,
+        failed_msg_queue,
+        mrepodb: MonitoredRepoDBAdaptor,
+        userdb: UserDBAdaptor,
+        logger: Logger,
     ) -> None:
+        """
+            Type definition of queues:
+            https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/sqs.html?highlight=sqs#queue
+        """
         self.parse_queue = parse_queue
         self.failed_msg_queue = failed_msg_queue
         self.mrepodb = mrepodb

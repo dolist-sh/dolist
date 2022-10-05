@@ -1,5 +1,4 @@
-"""Database access module for User."""
-
+"""Database access module for User Model"""
 import sqlalchemy
 from app.domain.user import User, CreateUserInput
 from uuid import UUID
