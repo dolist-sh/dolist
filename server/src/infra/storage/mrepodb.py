@@ -1,6 +1,6 @@
 """Database access module for MonitoredRepo."""
-from infra.storage.model import monitored_repo_schema, parsed_comment_schema
-from infra.storage.db import engine
+
+from time import time
 
 from app.domain.mrepo import (
     MonitoredRepo,
@@ -12,22 +12,19 @@ from app.domain.mrepo import (
 )
 
 import sqlalchemy
-
-from uuid import UUID
-from time import time
-from logger import logger
-
 from typing import Union
+from uuid import UUID
+from logging import Logger
 
 
 class MonitoredRepoDBAdaptor:
     def __init__(
         self,
         sql_driver: sqlalchemy,
-        db_instance: engine,
-        mrepo_schema: monitored_repo_schema,
-        parsed_comment_schema: parsed_comment_schema,
-        logger: logger,
+        db_instance: sqlalchemy.engine.Engine,
+        mrepo_schema: sqlalchemy.Table,
+        parsed_comment_schema: sqlalchemy.Table,
+        logger: Logger,
     ) -> None:
         self.sql_driver = sql_driver
         self.db_instance = db_instance
@@ -65,7 +62,6 @@ class MonitoredRepoDBAdaptor:
 
             return new_monitored_repo_obj
         except Exception as e:
-            self.logger.critical(f"Unexpected exceptions: {str(e)}")
             raise e
 
     async def read_monitored_repo_by_fullname(
@@ -83,7 +79,6 @@ class MonitoredRepoDBAdaptor:
 
             return repo
         except Exception as e:
-            self.logger.critical(f"Unexpected exceptions: {str(e)}")
             raise e
 
     async def read_monitored_repo(self, id: UUID) -> MonitoredRepo:
@@ -98,10 +93,8 @@ class MonitoredRepoDBAdaptor:
                 return MonitoredRepo(**result)
 
         except Exception as e:
-            self.logger.critical(f"Unexpected exceptions: {str(e)}")
             raise e
 
-    # TODO: Write test for different scenarios with this methods
     async def create_parse_report(
         self, last_commit: str, payload: AddParsedResultInput
     ) -> None:
@@ -111,7 +104,7 @@ class MonitoredRepoDBAdaptor:
             mrepo_id = payload["mrepoId"]
             timestamp = int(time())
 
-            # Below update is due to the lastCommit field at the MonitoredRepo object is not known when it's first written to DB
+            # This update is due to the lastCommit field at the MonitoredRepo object is not known when it's first written to DB
             update_last_commit_stmt = (
                 self.mrepo_schema.update()
                 .where(self.mrepo_schema.c.id == mrepo_id)
@@ -218,7 +211,4 @@ class MonitoredRepoDBAdaptor:
             return
         except Exception as e:
             transaction.rollback()
-            self.logger.error(
-                f"Unexpected exceptions at {self.create_parse_report.__name__}: {str(e)}"
-            )
             raise e

@@ -1,13 +1,14 @@
 """Database access module for User."""
 
+import sqlalchemy
 from app.domain.user import User, CreateUserInput
 from uuid import UUID
-from sqlalchemy import Table
-from sqlalchemy.engine import Engine
 
 
 class UserDBAdaptor:
-    def __init__(self, db_instance: Engine, user_schema: Table) -> None:
+    def __init__(
+        self, db_instance: sqlalchemy.engine.Engine, user_schema: sqlalchemy.Table
+    ) -> None:
         self.db_instance = db_instance
         self.user_schema = user_schema
 
@@ -16,7 +17,7 @@ class UserDBAdaptor:
             from time import time
             from uuid import uuid4
 
-            # TODO: Add email unique check in this call
+            # TODO: Unique check for email in the input should be added.
 
             new_id = uuid4()
             oauth = [payload["oauthInUse"]]
