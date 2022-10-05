@@ -1,86 +1,89 @@
 """Database access module for User."""
 
-from uuid import UUID
-from time import time
-from sqlalchemy import sql
 from app.domain.user import User, CreateUserInput
-from infra.storage.model import user_schema
-from infra.storage.db import engine
-
-user_db = user_schema
-db = engine
+from uuid import UUID
+from sqlalchemy import Table
+from sqlalchemy.engine import Engine
 
 
-async def create_user(payload: CreateUserInput) -> User:
-    # TODO: Add email unique check in this call
-    try:
-        from uuid import uuid4
+class UserDBAdaptor:
+    def __init__(self, db_instance: Engine, user_schema: Table) -> None:
+        self.db_instance = db_instance
+        self.user_schema = user_schema
 
-        new_id = uuid4()
-        oauth = [payload["oauthInUse"]]
-        timestamp = int(time())
+    async def create_user(self, payload: CreateUserInput) -> User:
+        try:
+            from time import time
+            from uuid import uuid4
 
-        # TODO: Create different user type based on the arg
-        new_user_data = dict(
-            id=new_id, type="admin", oauth=oauth, createdAt=timestamp, **payload
-        )
+            # TODO: Add email unique check in this call
 
-        insert = user_db.insert()
-        db.execute(insert, new_user_data)
+            new_id = uuid4()
+            oauth = [payload["oauthInUse"]]
+            timestamp = int(time())
 
-        new_user_obj = await read_user(new_id)
+            """
+                # TODO: More user type could be added
+                # Instead of hard-coded value for the type field, take the value from input when more user type need to be supported.
+            """
 
-        return new_user_obj
+            new_user_data = dict(
+                id=new_id, type="admin", oauth=oauth, createdAt=timestamp, **payload
+            )
 
-    except Exception as e:
-        print(f"Unexpected exceptions: {str(e)}")
-        raise e
+            insert = self.user_schema.insert()
+            self.db_instance.execute(insert, new_user_data)
 
+            new_user_obj = await self.read_user(new_id)
 
-async def write_github_token(email: str, new_token: str) -> str:
-    try:
-        oauth = dict(type="github", token=new_token)
+            return new_user_obj
 
-        # TODO: oauth list should be re-constructred
-        update = user_db.update().where(user_db.c.email == email).values(oauth=[oauth])
-        db.execute(update)
+        except Exception as e:
+            raise e
 
-        updated_user = await read_user_by_email(email)
+    async def write_github_token(self, email: str, new_token: str) -> str:
+        try:
+            oauth = dict(type="github", token=new_token)
 
-        return updated_user.oauth[0]["token"]
+            # TODO: oauth list should be re-constructred
+            update = (
+                self.user_schema.update()
+                .where(self.user_schema.c.email == email)
+                .values(oauth=[oauth])
+            )
+            self.db_instance.execute(update)
 
-    except Exception as e:
-        print(f"Unexpected exceptions: {str(e)}")
-        raise e
+            updated_user = await self.read_user_by_email(email)
 
+            return updated_user.oauth[0]["token"]
 
-async def read_user(id: UUID) -> User:
-    try:
-        select = user_db.select().where(user_db.c.id == id)
+        except Exception as e:
+            raise e
 
-        result = db.execute(select).fetchone()
+    async def read_user(self, id: UUID) -> User:
+        try:
+            select = self.user_schema.select().where(self.user_schema.c.id == id)
 
-        if result is None:
-            return None
-        else:
-            return User(**result)
+            result = self.db_instance.execute(select).fetchone()
 
-    except Exception as e:
-        print(f"Unexpected exceptions: {str(e)}")
-        raise e
+            if result is None:
+                return None
+            else:
+                return User(**result)
 
+        except Exception as e:
+            raise e
 
-async def read_user_by_email(email: str) -> User:
-    try:
-        select = user_db.select().where(user_db.c.email == email)
+    async def read_user_by_email(self, email: str) -> User:
+        try:
+            select = self.user_schema.select().where(self.user_schema.c.email == email)
 
-        result = db.execute(select).fetchone()
+            result = self.db_instance.execute(select).fetchone()
 
-        if result is None:
-            return None
-        else:
-            return User(**result)
+            if result is None:
+                return None
+            else:
+                return User(**result)
 
-    except Exception as e:
-        print(f"Unexpected exceptions: {str(e)}")
-        raise e
+        except Exception as e:
+            raise e
