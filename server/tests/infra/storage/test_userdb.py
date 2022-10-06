@@ -33,12 +33,24 @@ async def test_read_user(userdb_adaptor: UserDBAdaptor, test_user_dataset):
 
 
 @pytest.mark.asyncio
+async def test_read_user_null_case(userdb_adaptor: UserDBAdaptor):
+    from uuid import uuid4
+
+    assert await userdb_adaptor.read_user(uuid4()) == None
+
+
+@pytest.mark.asyncio
 async def test_read_user_by_email(userdb_adaptor: UserDBAdaptor, test_user_dataset):
     result = await userdb_adaptor.read_user_by_email(test_user_dataset[2]["email"])
 
     assert (type(result).__name__) is User.__name__
     assert result.id == test_user_dataset[2]["id"]
     assert result.email == test_user_dataset[2]["email"]
+
+
+@pytest.mark.asyncio
+async def test_read_user_by_email_null_case(userdb_adaptor: UserDBAdaptor):
+    assert await userdb_adaptor.read_user_by_email("null_email@gmail.com") == None
 
 
 @pytest.mark.asyncio
