@@ -65,7 +65,7 @@ class MonitoredRepoDBAdaptor:
 
     async def read_monitored_repo_by_fullname(
         self, full_name: str, provider: str
-    ) -> Union[MonitoredRepo, None]:
+    ) -> MonitoredRepo:
         try:
             select = self.mrepo_schema.select().where(
                 self.sql_driver.sql.and_(
@@ -74,9 +74,12 @@ class MonitoredRepoDBAdaptor:
                 )
             )
 
-            repo = self.db_instance.execute(select).fetchone()
+            result = self.db_instance.execute(select).fetchone()
 
-            return repo
+            if result is None:
+                return None
+            else:
+                return MonitoredRepo(**result)
         except Exception as e:
             raise e
 
@@ -103,7 +106,7 @@ class MonitoredRepoDBAdaptor:
             mrepo_id = payload["mrepoId"]
             timestamp = int(time())
 
-            # This update is due to the lastCommit field at the MonitoredRepo object is not known when it's first written to DB
+            # Writing lastCommit as it's not known at the object is written to the DB.
             update_last_commit_stmt = (
                 self.mrepo_schema.update()
                 .where(self.mrepo_schema.c.id == mrepo_id)

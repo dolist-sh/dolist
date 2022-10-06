@@ -44,6 +44,7 @@ def generate_test_mrepo_dataset(size: int = 100):
             defaultBranch="main",
             userId=uuid4(),
             provider="github",
+            language="python",
             visibility="public",
             status="active",
             createdAt=int(time()),
