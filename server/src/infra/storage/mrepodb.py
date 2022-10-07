@@ -5,12 +5,10 @@ from app.domain.mrepo import (
     MonitoredRepo,
     CreateMonitoredReposInput,
     AddParsedResultInput,
-    generate_parsed_comment_id,
-    _find_resolved_comments,
-    _find_new_comments,  # TODO: Think about where to place this domain logics -> should this be part of DB access?
 )
 
 import sqlalchemy
+from typing import List
 from uuid import UUID
 from logging import Logger
 
@@ -117,7 +115,7 @@ class MonitoredRepoDBAdaptor:
             mapped_result = []
 
             for item in payload["parseResult"]:
-                item["id"] = generate_parsed_comment_id(
+                item["id"] = self._generate_parsed_comment_id(
                     item["type"],
                     item["title"],
                     item["path"],
@@ -152,7 +150,7 @@ class MonitoredRepoDBAdaptor:
                 )
                 self.db_instance.execute(update_from_new_to_normal_stmt)
 
-            resolved_comments = _find_resolved_comments(
+            resolved_comments = self._find_resolved_comments(
                 prev_parsed_comments, mapped_result
             )
 
@@ -177,7 +175,7 @@ class MonitoredRepoDBAdaptor:
                 )
 
             # Find comments from payload that doesn't exist yet in the DB
-            new_comments_from_payload = _find_new_comments(
+            new_comments_from_payload = self._find_new_comments(
                 prev_parsed_comments, mapped_result
             )
             if len(new_comments_from_payload):
@@ -213,3 +211,56 @@ class MonitoredRepoDBAdaptor:
         except Exception as e:
             transaction.rollback()
             raise e
+
+    def _generate_parsed_comment_id(self, type: str, title: str, filePath: str):
+        import hashlib
+
+        hash_payload = bytes(f"{type}, {title}, {filePath}", encoding="utf-8")
+
+        return hashlib.sha1(hash_payload).hexdigest()
+
+    def _find_resolved_comments(
+        self, prev_comments_from_db: List, parsed_comments: List
+    ) -> List:
+        """
+        When a comment is in prev_comments from DB, but not in parsed_comments, it's resolved.
+        """
+
+        def _is_resolved_comment(id: str) -> bool:
+            result = True
+            for parsed_comment in parsed_comments:
+                if id == parsed_comment["id"]:
+                    result = False
+                    break
+            return result
+
+        resolved = [
+            comment
+            for comment in prev_comments_from_db
+            if _is_resolved_comment(comment["id"]) is True
+        ]
+
+        return resolved
+
+    def _find_new_comments(
+        self, prev_comments_from_db: List, parsed_comments: List
+    ) -> List:
+        """
+        When a comment is in parsed_comments, but not in prev_comments_from_db, it's a new comment
+        """
+
+        def _is_new_comment(id: str):
+            result = True
+            for comment_from_db in prev_comments_from_db:
+                if id == comment_from_db["id"]:
+                    result = False
+                    break
+            return result
+
+        new = [
+            comment
+            for comment in parsed_comments
+            if _is_new_comment(comment["id"]) is True
+        ]
+
+        return new

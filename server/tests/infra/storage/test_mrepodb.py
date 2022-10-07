@@ -1,13 +1,7 @@
 import pytest
 
+from src.app.domain.mrepo import MonitoredRepo, CreateMonitoredReposInput
 from src.infra.storage.mrepodb import MonitoredRepoDBAdaptor
-
-from src.app.domain.mrepo import (
-    MonitoredRepo,
-    CreateMonitoredReposInput,
-    _find_resolved_comments,
-    _find_new_comments,
-)  # Temporarily move to the domain layer
 
 
 @pytest.mark.asyncio
@@ -125,7 +119,7 @@ async def test_create_parse_report(
 """
 
 # fmt: off
-def test_find_resolved_comments():
+def test_find_resolved_comments(mrepodb_adaptor: MonitoredRepoDBAdaptor):
 
     dummy_parsed_comments = [
         {
@@ -164,12 +158,12 @@ def test_find_resolved_comments():
             "title": "Resolved comment - 2",
         },
     ]
-    resolved = _find_resolved_comments(dummy_comments_from_db, dummy_parsed_comments)
+    resolved = mrepodb_adaptor._find_resolved_comments(dummy_comments_from_db, dummy_parsed_comments)
 
     assert len(resolved) == 2
 
 
-def test_find_new_comments():
+def test_find_new_comments(mrepodb_adaptor: MonitoredRepoDBAdaptor):
     dummy_parsed_comments = [
         {
             "id": "85136c79cbf9fe36bb9d05d0639c70c265c18d37",
@@ -207,7 +201,7 @@ def test_find_new_comments():
             "title": "Improve performance",
         },
     ]
-    new = _find_new_comments(dummy_comments_from_db, dummy_parsed_comments)
+    new = mrepodb_adaptor._find_new_comments(dummy_comments_from_db, dummy_parsed_comments)
 
     assert len(new) == 2
 # fmt: on
