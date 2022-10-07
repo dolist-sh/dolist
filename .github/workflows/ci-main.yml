@@ -12,15 +12,36 @@ on:
     branches:
       - "main"
 jobs:
+  
   test-server:
     name: test server
     runs-on: ubuntu-latest
+
+    # Set env variables to connect the postgres service container
+    env:
+      # RUN_DOCKER will set the DB_HOST in config.py to "postgres", to resolve the postgres container name in docker network
+      RUN_DOCKER: True 
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+    # Run Postgres as service container in the runner machine
+    # https://docs.github.com/en/actions/using-containerized-services/creating-postgresql-service-containers#running-jobs-directly-on-the-runner-machine
+    services:
+      postgres:
+        image: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
     defaults:
       run: 
         working-directory: server
     steps:
       #----------------------------------------------
-      #       check-out repo and set-up python
+      #       Check-out repo and set-up python
       #----------------------------------------------
       - name: Checkout the repository
         uses: actions/checkout@v2
@@ -29,7 +50,7 @@ jobs:
         with:
           python-version: 3.8
       #----------------------------------------------
-      #       Install & Configure Poetry
+      #       Install & configure Poetry
       #----------------------------------------------
       - name: Install Poetry
         uses: snok/install-poetry@v1
@@ -47,24 +68,26 @@ jobs:
           path: .venv
           key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
       #----------------------------------------------
-      # install dependencies if cache does not exist
+      # Install dependencies if cache does not exist
       #----------------------------------------------
       - name: Install dependencies
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         run: poetry install --no-interaction --no-root
             #----------------------------------------------
-      # install your root project, if required
+      # Install your root project, if required
       #----------------------------------------------
       - name: Install library
         run: poetry install --no-interaction
     #----------------------------------------------
-    #              run test suite
+    #              Run test suite
     #----------------------------------------------
       - name: Run tests
         run: |
+          chmod 755 ../script/init_db.sh
+          /../script/init_db.sh
           source .venv/bin/activate
           pytest tests/
-        # coverage report | NOT using coverage.py atm | More: https://pypi.org/project/coverage/
+        # Coverage report | NOT using coverage.py atm | More: https://pypi.org/project/coverage/
   test-app:
     name: test app ui
     runs-on: ubuntu-latest
