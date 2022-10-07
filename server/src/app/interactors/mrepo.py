@@ -1,9 +1,8 @@
-from distutils.log import error
 from app.domain.mrepo import AddParsedResultInput, MonitoredRepo
 
-from infra.storage.mrepodb import read_monitored_repo, create_parse_report
-from infra.storage.userdb import read_user
-from infra.integration.github import get_github_repo_last_commit
+from infra.storage.mrepodb import MonitoredRepoDBAdaptor
+from infra.storage.userdb import UserDBAdaptor
+from infra.integration.github import GitHubAdaptor
 
 from typing import Union, TypedDict
 from typing_extensions import Literal
@@ -15,11 +14,15 @@ class WriteParseResultOutput(TypedDict):
 
 
 class MonitoredRepoInteractor:
-    def __init__(self) -> None:
-        # infra.storage.mrepodb
-        # infra.storage.userdb
-        # infra.integration.github
-        pass
+    def __init__(
+        self,
+        userdb: UserDBAdaptor,
+        mrepodb: MonitoredRepoDBAdaptor,
+        github: GitHubAdaptor,
+    ) -> None:
+        self.userdb = userdb
+        self.mrepodb = mrepodb
+        self.github = github
 
     async def execute_write_parse_result(
         self, payload: AddParsedResultInput
@@ -27,7 +30,9 @@ class MonitoredRepoInteractor:
         try:
             output: WriteParseResultOutput
 
-            mrepo: MonitoredRepo = await read_monitored_repo(payload["mrepoId"])
+            mrepo: MonitoredRepo = await self.mrepodb.read_monitored_repo(
+                payload["mrepoId"]
+            )
 
             if mrepo is None:
                 output = dict(
@@ -40,14 +45,14 @@ class MonitoredRepoInteractor:
                 output = dict(status="failed", error="Requested repository is inactive")
                 return output
 
-            user = await read_user(mrepo.userId)
+            user = await self.userdb.read_user(mrepo.userId)
 
             """
               The hash of the latest commit is required to create parse report.
             """
             oauth_token = user.oauth[0]["token"]
 
-            gh_call_output = await get_github_repo_last_commit(
+            gh_call_output = await self.github.get_github_repo_last_commit(
                 oauth_token, mrepo.fullName, mrepo.defaultBranch
             )
 
@@ -55,8 +60,9 @@ class MonitoredRepoInteractor:
                 output = dict(status="failed", error=gh_call_output["error"])
 
             if gh_call_output["status"] == "success":
-                commit_hash = gh_call_output["commit"]
-                await create_parse_report(commit_hash, payload)
+                await self.mrepodb.create_parse_report(
+                    gh_call_output["commit"], payload
+                )
                 output = dict(status="success")
 
             return output

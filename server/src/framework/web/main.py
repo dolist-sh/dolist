@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Response, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 
-from framework.web.helpers import (
+from .helpers import (
     verify_machine_token,
     get_email_from_token,
     get_json_body,
@@ -11,18 +11,14 @@ from app.domain.auth import CreateMachineTokenInput, MachineToken
 from app.domain.user import User
 from app.domain.mrepo import AddMonitoredReposInput, AddParsedResultInput
 
-from app.interactors.auth import AuthInteractor
-from app.interactors.user import UserInteractor
-from app.interactors.mrepo import MonitoredRepoInteractor
-from app.interactors.webhook import WebhookInteractor
+from dependency import (
+    auth_interactor,
+    mrepo_interactor,
+    user_interactor,
+    webhook_interactor,
+    logger,
+)
 
-from logger import logger
-
-
-user_interactor = UserInteractor()
-auth_interactor = AuthInteractor()
-mrepo_interactor = MonitoredRepoInteractor()
-webhook_interactor = WebhookInteractor()
 
 app = FastAPI()
 

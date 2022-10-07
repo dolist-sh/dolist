@@ -1,10 +1,7 @@
 import pytest
 
-from src.infra.integration.github import (
-    requests,
-    logger,
-    GitHubAdaptor,
-)
+from src.infra.integration.github import requests, GitHubAdaptor
+from src.logger import logger
 
 from tests.mocks import MockResponse
 

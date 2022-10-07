@@ -1,5 +1,5 @@
 import requests
-from logger import logger
+from logging import Logger
 
 from typing import Union, List
 from typing_extensions import Literal, TypedDict
@@ -23,7 +23,7 @@ class GetGitHubRepoLastCommitOutput(GitHubCallOutput):
 
 
 class GitHubAdaptor:
-    def __init__(self, requests: requests, logger: logger) -> None:
+    def __init__(self, requests: requests, logger: Logger) -> None:
         self.requests = requests
         self.logger = logger
 

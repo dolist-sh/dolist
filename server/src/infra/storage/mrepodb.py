@@ -11,7 +11,6 @@ from app.domain.mrepo import (
 )
 
 import sqlalchemy
-from typing import Union
 from uuid import UUID
 from logging import Logger
 
