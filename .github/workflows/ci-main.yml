@@ -80,11 +80,17 @@ jobs:
     #----------------------------------------------
       - name: Run tests
         run: |
+
           export PGPASSWORD=$POSTGRES_PASSWORD
           psql -v ON_ERROR_STOP=1 --host "localhost"  --username $POSTGRES_USER --dbname $POSTGRES_USER <<-EOSQL 
             CREATE DATABASE dolistdb; 
           EOSQL
+          
           source .venv/bin/activate
+
+          touch .env
+          echo "JWT_SECRET=secret" >> ./.env
+          echo "GITHUB_WEBHOOK_CALLBACK=http://dummycallback.com" >> ./.env
           pytest tests/
         # Coverage report | NOT using coverage.py atm | More: https://pypi.org/project/coverage/
   test-app:
