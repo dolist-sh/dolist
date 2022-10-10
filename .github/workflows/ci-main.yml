@@ -28,11 +28,11 @@ jobs:
     # https://docs.github.com/en/actions/using-containerized-services/creating-postgresql-service-containers#running-jobs-directly-on-the-runner-machine
     services:
       postgres:
-        image: postgres
+        image: postgres:12
         options: >-
-          --health-cmd pg_isready
+          --health-cmd pg_isready -d ${POSTGRES_USER} -U ${POSTGRES_USER}
           --health-interval 10s
-          --health-timeout 5s
+          --health-timeout 45s
           --health-retries 5
         ports:
           - 5432:5432
