@@ -29,7 +29,7 @@ Python:   /usr
 
 #### 4. Launch the app (from root folder of project)
 ```
-  uvicorn src.main:app --reload
+  uvicorn src.framework.web.main:app --reload
 ```
 ```
   Call the API running locally on: http://127.0.0.1:8000

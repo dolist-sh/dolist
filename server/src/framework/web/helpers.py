@@ -1,37 +1,12 @@
-import jwt
-from datetime import datetime, timedelta, timezone
-from domain.auth import CreateMachineTokenInput, MachineToken
-from fastapi import Header, HTTPException
-
-from config import JWT_SECRET, WORKER_OAUTH_CLIENT_ID, WORKER_OAUTH_CLIENT_SECRET
+from fastapi import Request, Header, HTTPException
 from logger import logger
+from config import JWT_SECRET, WORKER_OAUTH_CLIENT_ID, WORKER_OAUTH_CLIENT_SECRET
+import json, jwt
 
 
-def issue_token(email: str) -> str:
-    payload = {
-        "email": email,
-        "exp": datetime.now(tz=timezone.utc) + timedelta(days=30),
-    }
-    encoded = jwt.encode(payload, JWT_SECRET, algorithm="HS256")
-
-    return encoded
-
-
-def issue_machine_token(input: CreateMachineTokenInput) -> MachineToken:
-    exp_at = datetime.now(tz=timezone.utc) + timedelta(days=30)
-
-    payload = {
-        "aud": input["audience"],
-        "iss": "dolist_server",
-        "client_id": input["client_id"],
-        "client_secret": input["client_secret"],
-        "exp": exp_at,
-    }
-    access_token = jwt.encode(payload, JWT_SECRET, algorithm="HS256")
-
-    return MachineToken(
-        token_type="Bearer", access_token=access_token, expires_at=exp_at
-    )
+async def get_json_body(request: Request):
+    body = await request.body()
+    return json.loads(body)
 
 
 def _verify_token_cred(token_claim) -> bool:
@@ -62,7 +37,6 @@ def verify_machine_token(Authorization: str = Header()) -> bool:
             algorithms="HS256",
             options=options,
         )
-        print(decoded)
         return _verify_token_cred(decoded)
 
     except Exception as e:
@@ -80,5 +54,4 @@ def get_email_from_token(Authorization: str = Header()) -> str:
         return decoded["email"]
 
     except Exception as e:
-        print(str(e))
-        raise HTTPException(status_code=401, detail="Invalid token")
+        raise HTTPException(status_code=401, detail={str(e)})

@@ -18,14 +18,12 @@ async def consume_parse_queue(machine_token: MachineToken) -> None:
 
             data: ParseRequestMsg = json.loads(msg.body)
 
-            #user_id = data["userId"]
             github_oauth_token = data["token"]
             mrepo_id = data["mrepoId"]
             repo_name = data["repoName"]
             branch = data["branch"] 
 
-            # TODO: Add provider check when more integration are in place
-            # provider = data["provider"]
+            # TODO: Check the provider field, when more integration GitLab, BitBucket is added
             parse_output = parse_github_repo(github_oauth_token, repo_name, branch)
 
             print("------------------")
@@ -42,9 +40,6 @@ async def consume_parse_queue(machine_token: MachineToken) -> None:
             payload = {
                 "mrepoId": mrepo_id,
                 "parseResult": parse_output,
-                #"repoFullname": repo_name,
-                #"branch": branch,
-                #"userId":  user_id,
             }
 
             res = requests.post(host, headers=headers, data=json.dumps(payload))
