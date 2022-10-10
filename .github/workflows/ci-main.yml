@@ -21,7 +21,6 @@ jobs:
     env:
       # RUN_DOCKER will set the DB_HOST in config.py to "postgres", to resolve the postgres container name in docker network
       RUN_DOCKER: True 
-      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
 
     # Run Postgres as service container in the runner machine
