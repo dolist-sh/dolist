@@ -16,18 +16,17 @@ jobs:
   test-server:
     name: test server
     runs-on: ubuntu-latest
-
-    # Set env variables to connect the postgres service container
     env:
       # RUN_DOCKER will set the DB_HOST in config.py to "postgres", to resolve the postgres container name in docker network
       RUN_DOCKER: True 
-      POSTGRES_PASSWORD: postgres
 
     # Run Postgres as service container in the runner machine
     # https://docs.github.com/en/actions/using-containerized-services/creating-postgresql-service-containers#running-jobs-directly-on-the-runner-machine
     services:
       postgres:
         image: postgres:12
+        env:
+          POSTGRES_PASSWORD: postgres
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
