@@ -80,7 +80,8 @@ jobs:
     #----------------------------------------------
       - name: Run tests
         run: |
-          sudo psql -v ON_ERROR_STOP=1 --host "localhost"  --username $POSTGRES_USER --dbname $POSTGRES_PASSWORD --no-password <<-EOSQL 
+          export PGPASSWORD=$POSTGRES_PASSWORD
+          psql -v ON_ERROR_STOP=1 --host "localhost"  --username $POSTGRES_USER --dbname $POSTGRES_USER <<-EOSQL 
             CREATE DATABASE dolistdb; 
           EOSQL
           source .venv/bin/activate
