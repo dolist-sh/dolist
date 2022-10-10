@@ -82,14 +82,14 @@ async def get_user_github_repos(
 
 
 # TODO: Rename this endpoint to improve readability of uri, using different term for monitored repo might be good idea
-@app.post("/user/monitoredrepo", status_code=200)
+@app.post("/monitoredrepo", status_code=200)
 async def add_monitored_repos(
     response: Response,
     payload: AddMonitoredReposInput = Depends(get_json_body),
     email: str = Depends(get_email_from_token),
 ):
     try:
-        new_monitored_repos = await user_interactor.execute_add_monitored_repos(
+        new_monitored_repos = await mrepo_interactor.execute_add_monitored_repos(
             email, payload
         )
 

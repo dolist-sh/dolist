@@ -42,7 +42,7 @@ export const getGithubRepos = async (token: string) => {
 export const postMonitoredRepos = async (token: string, repos: Repo[]) => {
   const host = getApiHost();
 
-  const response = await fetch(`${host}/user/monitoredrepo`, {
+  const response = await fetch(`${host}/monitoredrepo`, {
     method: 'POST',
     mode: 'cors',
     headers: { Authorization: `token ${token}` },

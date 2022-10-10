@@ -19,9 +19,9 @@ from infra.storage.mrepodb import MonitoredRepoDBAccess
 from infra.storage.userdb import UserDBAccess
 
 # Resolve dependencies of classes at infra layer
-github_auth_adaptor = GitHubOAuthService(requests)
-jwt_adaptor = JWTService(jwt)
-github_adaptor = GitHubService(requests, logger)
+github_oauth_service = GitHubOAuthService(requests)
+jwt_service = JWTService(jwt)
+github_service = GitHubService(requests, logger)
 
 mrepodb = MonitoredRepoDBAccess(
     sqlalchemy, engine, monitored_repo_schema, parsed_comment_schema, logger
@@ -39,7 +39,7 @@ from app.interactors.webhook import WebhookInteractor
 
 # All dependencies of interactors are instantiated classes from infra layer
 # Resolve dependencies of interactors
-auth_interactor = AuthInteractor(userdb, github_auth_adaptor, jwt_adaptor)
-mrepo_interactor = MonitoredRepoInteractor(userdb, mrepodb, github_adaptor)
-user_interactor = UserInteractor(userdb, mrepodb, github_adaptor, logger)
+auth_interactor = AuthInteractor(userdb, github_oauth_service, jwt_service)
+mrepo_interactor = MonitoredRepoInteractor(userdb, mrepodb, github_service)
+user_interactor = UserInteractor(userdb, github_service, logger)
 webhook_interactor = WebhookInteractor(publisher)
