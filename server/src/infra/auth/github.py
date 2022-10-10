@@ -1,7 +1,7 @@
 import requests
 
 
-class GitHubAuthAdaptor:
+class GitHubOAuthService:
     def __init__(self, requests: requests) -> None:
         self.requests = requests
 

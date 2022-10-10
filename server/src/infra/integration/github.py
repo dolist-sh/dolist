@@ -22,7 +22,7 @@ class GetGitHubRepoLastCommitOutput(GitHubCallOutput):
     commit: str
 
 
-class GitHubAdaptor:
+class GitHubService:
     def __init__(self, requests: requests, logger: Logger) -> None:
         self.requests = requests
         self.logger = logger

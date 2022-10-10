@@ -1,8 +1,8 @@
 from app.domain.mrepo import AddParsedResultInput, MonitoredRepo
 
-from infra.storage.mrepodb import MonitoredRepoDBAdaptor
-from infra.storage.userdb import UserDBAdaptor
-from infra.integration.github import GitHubAdaptor
+from infra.storage.mrepodb import MonitoredRepoDBAccess
+from infra.storage.userdb import UserDBAccess
+from infra.integration.github import GitHubService
 
 from typing import Union, TypedDict
 from typing_extensions import Literal
@@ -16,9 +16,9 @@ class WriteParseResultOutput(TypedDict):
 class MonitoredRepoInteractor:
     def __init__(
         self,
-        userdb: UserDBAdaptor,
-        mrepodb: MonitoredRepoDBAdaptor,
-        github: GitHubAdaptor,
+        userdb: UserDBAccess,
+        mrepodb: MonitoredRepoDBAccess,
+        github: GitHubService,
     ) -> None:
         self.userdb = userdb
         self.mrepodb = mrepodb

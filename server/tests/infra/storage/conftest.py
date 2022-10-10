@@ -9,8 +9,8 @@ from src.infra.storage.model import (
     parsed_comment_schema,
 )
 
-from src.infra.storage.mrepodb import MonitoredRepoDBAdaptor
-from src.infra.storage.userdb import UserDBAdaptor
+from src.infra.storage.mrepodb import MonitoredRepoDBAccess
+from src.infra.storage.userdb import UserDBAccess
 
 from .helpers import generate_test_user_dataset, generate_test_mrepo_dataset
 from config import DB_HOST, DB_USER, DB_PWD
@@ -58,7 +58,7 @@ def test_db_session(test_user_dataset, test_mrepo_dataset):
 
 @pytest.fixture
 def userdb_adaptor(test_db_session):
-    return UserDBAdaptor(test_db_session, user_schema)
+    return UserDBAccess(test_db_session, user_schema)
 
 
 @pytest.fixture
@@ -66,7 +66,7 @@ def mrepodb_adaptor(test_db_session):
     import sqlalchemy
     from src.logger import logger
 
-    return MonitoredRepoDBAdaptor(
+    return MonitoredRepoDBAccess(
         sqlalchemy,
         test_db_session,
         monitored_repo_schema,

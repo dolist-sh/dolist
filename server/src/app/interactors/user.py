@@ -1,9 +1,9 @@
 from app.domain.user import User
 from app.domain.mrepo import AddMonitoredReposInput, MonitoredRepo
 
-from infra.storage.userdb import UserDBAdaptor
-from infra.integration.github import GitHubAdaptor, GetGitHubRepoOutput
-from infra.storage.mrepodb import MonitoredRepoDBAdaptor
+from infra.storage.userdb import UserDBAccess
+from infra.integration.github import GitHubService, GetGitHubRepoOutput
+from infra.storage.mrepodb import MonitoredRepoDBAccess
 
 from logging import Logger
 from typing import List
@@ -12,9 +12,9 @@ from typing import List
 class UserInteractor:
     def __init__(
         self,
-        userdb: UserDBAdaptor,
-        mrepodb: MonitoredRepoDBAdaptor,
-        github: GitHubAdaptor,
+        userdb: UserDBAccess,
+        mrepodb: MonitoredRepoDBAccess,
+        github: GitHubService,
         logger: Logger,
     ) -> None:
         self.userdb = userdb

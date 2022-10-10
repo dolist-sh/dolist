@@ -1,6 +1,6 @@
 import pytest
 
-from src.infra.integration.github import requests, GitHubAdaptor
+from src.infra.integration.github import requests, GitHubService
 from src.logger import logger
 
 from tests.mocks import MockResponse
@@ -8,11 +8,11 @@ from tests.mocks import MockResponse
 
 @pytest.fixture
 def github_adaptor():
-    return GitHubAdaptor(requests, logger)
+    return GitHubService(requests, logger)
 
 
 @pytest.mark.asyncio
-async def test_get_github_repo(monkeypatch, github_adaptor: GitHubAdaptor):
+async def test_get_github_repo(monkeypatch, github_adaptor: GitHubService):
     # https://docs.github.com/en/rest/repos/repos#get-a-repository
 
     # Some fields are omitted to keep the code brief, refer to GitHub doc for full example response.
@@ -83,7 +83,7 @@ async def test_get_github_repo(monkeypatch, github_adaptor: GitHubAdaptor):
 
 
 @pytest.mark.asyncio
-async def test_get_github_repo_list(monkeypatch, github_adaptor: GitHubAdaptor):
+async def test_get_github_repo_list(monkeypatch, github_adaptor: GitHubService):
     # https://docs.github.com/en/rest/repos/repos#list-repositories-for-the-authenticated-user
 
     mock_res = [
@@ -158,7 +158,7 @@ async def test_get_github_repo_list(monkeypatch, github_adaptor: GitHubAdaptor):
 
 
 @pytest.mark.asyncio
-async def test_get_github_repo_last_commit(monkeypatch, github_adaptor: GitHubAdaptor):
+async def test_get_github_repo_last_commit(monkeypatch, github_adaptor: GitHubService):
     mock_res = {
         "name": "main",
         "commit": {
@@ -202,7 +202,7 @@ async def test_get_github_repo_last_commit(monkeypatch, github_adaptor: GitHubAd
 
 
 @pytest.mark.asyncio
-async def test_register_push_github_repo(monkeypatch, github_adaptor: GitHubAdaptor):
+async def test_register_push_github_repo(monkeypatch, github_adaptor: GitHubService):
     def mock_post_res(host, headers, data):
         print(f"host: {host}, headers: {headers}, data: {data}")
         return MockResponse(status_code=204, data=data)

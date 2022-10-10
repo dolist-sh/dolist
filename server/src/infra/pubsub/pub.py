@@ -1,5 +1,5 @@
-from infra.storage.mrepodb import MonitoredRepoDBAdaptor
-from infra.storage.userdb import UserDBAdaptor
+from infra.storage.mrepodb import MonitoredRepoDBAccess
+from infra.storage.userdb import UserDBAccess
 from logging import Logger
 
 
@@ -8,8 +8,8 @@ class ParseMsgPublisher:
         self,
         parse_queue,
         failed_msg_queue,
-        mrepodb: MonitoredRepoDBAdaptor,
-        userdb: UserDBAdaptor,
+        mrepodb: MonitoredRepoDBAccess,
+        userdb: UserDBAccess,
         logger: Logger,
     ) -> None:
         """

@@ -13,7 +13,7 @@ from uuid import UUID
 from logging import Logger
 
 
-class MonitoredRepoDBAdaptor:
+class MonitoredRepoDBAccess:
     def __init__(
         self,
         sql_driver: sqlalchemy,

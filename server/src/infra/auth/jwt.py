@@ -5,7 +5,7 @@ from datetime import datetime, timedelta, timezone
 from config import JWT_SECRET
 
 
-class JWTAdaptor:
+class JWTService:
     def __init__(self, jwt: jwt) -> None:
         """
         Taking jwt as injected-dependency as it is an external package.

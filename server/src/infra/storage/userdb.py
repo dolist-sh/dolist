@@ -4,7 +4,7 @@ from app.domain.user import User, CreateUserInput
 from uuid import UUID
 
 
-class UserDBAdaptor:
+class UserDBAccess:
     def __init__(
         self, db_instance: sqlalchemy.engine.Engine, user_schema: sqlalchemy.Table
     ) -> None:

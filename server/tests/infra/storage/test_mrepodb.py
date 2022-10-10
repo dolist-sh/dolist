@@ -1,12 +1,12 @@
 import pytest
 
 from src.app.domain.mrepo import MonitoredRepo, CreateMonitoredReposInput
-from src.infra.storage.mrepodb import MonitoredRepoDBAdaptor
+from src.infra.storage.mrepodb import MonitoredRepoDBAccess
 
 
 @pytest.mark.asyncio
 async def test_create_monitored_repo(
-    mrepodb_adaptor: MonitoredRepoDBAdaptor, test_user_dataset
+    mrepodb_adaptor: MonitoredRepoDBAccess, test_user_dataset
 ):
     payload: CreateMonitoredReposInput = {
         "name": "new_repo",
@@ -30,7 +30,7 @@ async def test_create_monitored_repo(
 
 @pytest.mark.asyncio
 async def test_read_monitored_repo_by_fullname(
-    mrepodb_adaptor: MonitoredRepoDBAdaptor, test_mrepo_dataset
+    mrepodb_adaptor: MonitoredRepoDBAccess, test_mrepo_dataset
 ):
     result = await mrepodb_adaptor.read_monitored_repo_by_fullname(
         test_mrepo_dataset[1]["fullName"], test_mrepo_dataset[1]["provider"]
@@ -43,7 +43,7 @@ async def test_read_monitored_repo_by_fullname(
 
 @pytest.mark.asyncio
 async def test_null_case_read_monitored_repo_by_fullname(
-    mrepodb_adaptor: MonitoredRepoDBAdaptor,
+    mrepodb_adaptor: MonitoredRepoDBAccess,
 ):
     result = await mrepodb_adaptor.read_monitored_repo_by_fullname(
         "randome_repo", "github"
@@ -54,7 +54,7 @@ async def test_null_case_read_monitored_repo_by_fullname(
 
 @pytest.mark.asyncio
 async def test_read_monitored_repo(
-    mrepodb_adaptor: MonitoredRepoDBAdaptor, test_mrepo_dataset
+    mrepodb_adaptor: MonitoredRepoDBAccess, test_mrepo_dataset
 ):
     result = await mrepodb_adaptor.read_monitored_repo(test_mrepo_dataset[3]["id"])
 
@@ -64,7 +64,7 @@ async def test_read_monitored_repo(
 
 
 @pytest.mark.asyncio
-async def test_null_case_read_monitored_repo(mrepodb_adaptor: MonitoredRepoDBAdaptor):
+async def test_null_case_read_monitored_repo(mrepodb_adaptor: MonitoredRepoDBAccess):
     from uuid import uuid4
 
     result = await mrepodb_adaptor.read_monitored_repo(uuid4())
@@ -74,7 +74,7 @@ async def test_null_case_read_monitored_repo(mrepodb_adaptor: MonitoredRepoDBAda
 
 @pytest.mark.asyncio
 async def test_create_parse_report(
-    mrepodb_adaptor: MonitoredRepoDBAdaptor, test_mrepo_dataset
+    mrepodb_adaptor: MonitoredRepoDBAccess, test_mrepo_dataset
 ):
     payload = {
         "mrepoId": test_mrepo_dataset[3]["id"],
@@ -119,7 +119,7 @@ async def test_create_parse_report(
 """
 
 # fmt: off
-def test_find_resolved_comments(mrepodb_adaptor: MonitoredRepoDBAdaptor):
+def test_find_resolved_comments(mrepodb_adaptor: MonitoredRepoDBAccess):
 
     dummy_parsed_comments = [
         {
@@ -163,7 +163,7 @@ def test_find_resolved_comments(mrepodb_adaptor: MonitoredRepoDBAdaptor):
     assert len(resolved) == 2
 
 
-def test_find_new_comments(mrepodb_adaptor: MonitoredRepoDBAdaptor):
+def test_find_new_comments(mrepodb_adaptor: MonitoredRepoDBAccess):
     dummy_parsed_comments = [
         {
             "id": "85136c79cbf9fe36bb9d05d0639c70c265c18d37",

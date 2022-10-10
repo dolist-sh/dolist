@@ -1,13 +1,13 @@
 from app.domain.auth import CreateMachineTokenInput, MachineToken
 
-from infra.auth.github import GitHubAuthAdaptor
-from infra.storage.userdb import UserDBAdaptor
-from infra.auth.jwt import JWTAdaptor
+from infra.auth.github import GitHubOAuthService
+from infra.storage.userdb import UserDBAccess
+from infra.auth.jwt import JWTService
 
 
 class AuthInteractor:
     def __init__(
-        self, userdb: UserDBAdaptor, github_auth: GitHubAuthAdaptor, jwt: JWTAdaptor
+        self, userdb: UserDBAccess, github_auth: GitHubOAuthService, jwt: JWTService
     ) -> None:
         self.userdb = userdb
         self.github_auth = github_auth

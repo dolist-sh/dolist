@@ -1,12 +1,12 @@
 import pytest, requests
 
-from src.infra.auth.github import GitHubAuthAdaptor
+from src.infra.auth.github import GitHubOAuthService
 from tests.mocks import MockResponse
 
 
 @pytest.fixture
 def github_auth_adaptor():
-    return GitHubAuthAdaptor(requests)
+    return GitHubOAuthService(requests)
 
 
 @pytest.mark.asyncio

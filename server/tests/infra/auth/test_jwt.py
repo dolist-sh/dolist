@@ -1,20 +1,20 @@
 import pytest
 
-from src.infra.auth.jwt import JWTAdaptor, CreateMachineTokenInput, MachineToken, jwt
+from src.infra.auth.jwt import JWTService, CreateMachineTokenInput, MachineToken, jwt
 
 
 @pytest.fixture
 def jwt_adaptor():
-    return JWTAdaptor(jwt)
+    return JWTService(jwt)
 
 
-def test_issue_token(jwt_adaptor: JWTAdaptor):
+def test_issue_token(jwt_adaptor: JWTService):
     token = jwt_adaptor.issue_token("awesome_user@gmail.com")
 
     assert (type(token) is str) == True
 
 
-def test_issue_machine_token(jwt_adaptor: JWTAdaptor):
+def test_issue_machine_token(jwt_adaptor: JWTService):
     payload: CreateMachineTokenInput = {
         "audience": "worker",
         "grant_type": "client_credentials",

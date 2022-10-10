@@ -2,9 +2,9 @@
 import requests, jwt, sqlalchemy
 from logger import logger
 
-from infra.auth.github import GitHubAuthAdaptor
-from infra.auth.jwt import JWTAdaptor
-from infra.integration.github import GitHubAdaptor
+from infra.auth.github import GitHubOAuthService
+from infra.auth.jwt import JWTService
+from infra.integration.github import GitHubService
 
 from infra.pubsub.sqs import parse_queue, failed_hook_queue
 from infra.pubsub.pub import ParseMsgPublisher
@@ -15,18 +15,18 @@ from infra.storage.model import (
     monitored_repo_schema,
     parsed_comment_schema,
 )
-from infra.storage.mrepodb import MonitoredRepoDBAdaptor
-from infra.storage.userdb import UserDBAdaptor
+from infra.storage.mrepodb import MonitoredRepoDBAccess
+from infra.storage.userdb import UserDBAccess
 
 # Resolve dependencies of classes at infra layer
-github_auth_adaptor = GitHubAuthAdaptor(requests)
-jwt_adaptor = JWTAdaptor(jwt)
-github_adaptor = GitHubAdaptor(requests, logger)
+github_auth_adaptor = GitHubOAuthService(requests)
+jwt_adaptor = JWTService(jwt)
+github_adaptor = GitHubService(requests, logger)
 
-mrepodb = MonitoredRepoDBAdaptor(
+mrepodb = MonitoredRepoDBAccess(
     sqlalchemy, engine, monitored_repo_schema, parsed_comment_schema, logger
 )
-userdb = UserDBAdaptor(engine, user_schema)
+userdb = UserDBAccess(engine, user_schema)
 
 publisher = ParseMsgPublisher(parse_queue, failed_hook_queue, mrepodb, userdb, logger)
 

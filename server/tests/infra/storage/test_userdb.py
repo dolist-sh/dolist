@@ -1,11 +1,11 @@
 import pytest
 
 from src.app.domain.user import CreateUserInput, User
-from src.infra.storage.userdb import UserDBAdaptor
+from src.infra.storage.userdb import UserDBAccess
 
 
 @pytest.mark.asyncio
-async def test_create_user(userdb_adaptor: UserDBAdaptor):
+async def test_create_user(userdb_adaptor: UserDBAccess):
     payload: CreateUserInput = {
         "email": "awesome_test_user@gmail.com",
         "name": "awesome test user",
@@ -24,7 +24,7 @@ async def test_create_user(userdb_adaptor: UserDBAdaptor):
 
 
 @pytest.mark.asyncio
-async def test_read_user(userdb_adaptor: UserDBAdaptor, test_user_dataset):
+async def test_read_user(userdb_adaptor: UserDBAccess, test_user_dataset):
     result = await userdb_adaptor.read_user(test_user_dataset[5]["id"])
 
     assert (type(result).__name__) is User.__name__
@@ -33,14 +33,14 @@ async def test_read_user(userdb_adaptor: UserDBAdaptor, test_user_dataset):
 
 
 @pytest.mark.asyncio
-async def test_read_user_null_case(userdb_adaptor: UserDBAdaptor):
+async def test_read_user_null_case(userdb_adaptor: UserDBAccess):
     from uuid import uuid4
 
     assert await userdb_adaptor.read_user(uuid4()) == None
 
 
 @pytest.mark.asyncio
-async def test_read_user_by_email(userdb_adaptor: UserDBAdaptor, test_user_dataset):
+async def test_read_user_by_email(userdb_adaptor: UserDBAccess, test_user_dataset):
     result = await userdb_adaptor.read_user_by_email(test_user_dataset[2]["email"])
 
     assert (type(result).__name__) is User.__name__
@@ -49,12 +49,12 @@ async def test_read_user_by_email(userdb_adaptor: UserDBAdaptor, test_user_datas
 
 
 @pytest.mark.asyncio
-async def test_read_user_by_email_null_case(userdb_adaptor: UserDBAdaptor):
+async def test_read_user_by_email_null_case(userdb_adaptor: UserDBAccess):
     assert await userdb_adaptor.read_user_by_email("null_email@gmail.com") == None
 
 
 @pytest.mark.asyncio
-async def test_write_github_token(userdb_adaptor: UserDBAdaptor, test_user_dataset):
+async def test_write_github_token(userdb_adaptor: UserDBAccess, test_user_dataset):
     new_token = "b456c2a3c88f7d28342eefcfe82aeb2354b96493"
 
     result = await userdb_adaptor.write_github_token(
