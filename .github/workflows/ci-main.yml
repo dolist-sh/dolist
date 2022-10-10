@@ -81,8 +81,6 @@ jobs:
     #----------------------------------------------
       - name: Run tests
         run: |
-          chmod 755 ../script/init_db.sh
-          /../script/init_db.sh
           source .venv/bin/activate
           pytest tests/
         # Coverage report | NOT using coverage.py atm | More: https://pypi.org/project/coverage/
