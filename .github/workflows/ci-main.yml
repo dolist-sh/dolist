@@ -16,6 +16,10 @@ jobs:
   test-server:
     name: test server
     runs-on: ubuntu-latest
+    env:
+      # The server will pick the the envs to construct connection string
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
     # Run Postgres as service container in the runner machine
     # https://docs.github.com/en/actions/using-containerized-services/creating-postgresql-service-containers#running-jobs-directly-on-the-runner-machine
     services:
