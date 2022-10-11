@@ -2,6 +2,7 @@ import pytest
 
 from src.infra.auth.jwt import JWTService, CreateMachineTokenInput, MachineToken, jwt
 
+
 @pytest.fixture
 def jwt_service():
     return JWTService(jwt)
@@ -11,8 +12,8 @@ def test_issue_token(jwt_service: JWTService):
     token = jwt_service.issue_token("awesome_user@gmail.com")
 
     assert (type(token) is str) == True
-    
-    
+
+
 def test_issue_machine_token(jwt_service: JWTService):
     payload: CreateMachineTokenInput = {
         "audience": "worker",
@@ -23,5 +24,3 @@ def test_issue_machine_token(jwt_service: JWTService):
     machine_token = jwt_service.issue_machine_token(payload)
 
     assert (type(machine_token) is MachineToken) == True
-
-        

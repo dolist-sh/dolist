@@ -24,6 +24,19 @@ class MonitoredRepoInteractor:
         self.mrepodb = mrepodb
         self.github = github
 
+    async def execute_get_monitored_repos(self, email: str) -> List[MonitoredRepo]:
+        try:
+            # Find userId from email
+
+            # Call db access module that does the followings:
+            # 1. List all active mrepos of the user
+            # 2. Loop through the mrepos and find parsed_comments for each mrepo
+
+            # Return the list of MonitoredRepo object, with parsedComments field filled
+            pass
+        except Exception as e:
+            raise e
+
     async def execute_add_monitored_repos(
         self, email: str, payload: AddMonitoredReposInput
     ) -> List[MonitoredRepo]:

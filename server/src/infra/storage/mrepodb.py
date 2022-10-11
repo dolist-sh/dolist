@@ -94,6 +94,18 @@ class MonitoredRepoDBAccess:
         except Exception as e:
             raise e
 
+    async def read_monitored_repos(self, email: str) -> List[MonitoredRepo]:
+        try:
+            # List all active monitored repositories of user
+            # Loop through the mrepos and find parsed_comments for each mrepo (careful with runtime performance)
+
+            # Puzzles:
+            # 1. Can first and second operation be combined into one query?
+            # 2. What is the best way to handle pagination?
+            pass
+        except Exception as e:
+            raise e
+
     async def create_parse_report(
         self, last_commit: str, payload: AddParsedResultInput
     ) -> None:

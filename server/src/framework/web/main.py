@@ -1,3 +1,4 @@
+from re import M
 from fastapi import FastAPI, Response, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -7,10 +8,6 @@ from .helpers import (
     get_json_body,
 )
 
-from app.domain.auth import CreateMachineTokenInput, MachineToken
-from app.domain.user import User
-from app.domain.mrepo import AddMonitoredReposInput, AddParsedResultInput
-
 from dependency import (
     auth_interactor,
     mrepo_interactor,
@@ -19,6 +16,10 @@ from dependency import (
     logger,
 )
 
+from app.domain.auth import CreateMachineTokenInput, MachineToken
+from app.domain.user import User
+from app.domain.mrepo import AddMonitoredReposInput, AddParsedResultInput, MonitoredRepo
+from typing import List
 
 app = FastAPI()
 
@@ -138,6 +139,22 @@ async def write_parse_result(
     except Exception as e:
         logger.critical(
             f"Unexpected exceptions at {write_parse_result.__name__}: {str(e)}"
+        )
+        raise e
+
+
+@app.get("/monitoredrepos", status_code=200)
+async def get_monitored_repos(
+    email: str = Depends(get_email_from_token), response_model=List[MonitoredRepo]
+):
+    try:
+        # Pass email address to the interactor
+        # Return the data to the client
+        # (Optionally apply the pagination)
+        pass
+    except Exception as e:
+        logger.critical(
+            f"Unexpected exceptions at {get_monitored_repos.__name__}: {str(e)}"
         )
         raise e
 
