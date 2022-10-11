@@ -94,7 +94,7 @@ class MonitoredRepoDBAccess:
         except Exception as e:
             raise e
 
-    async def read_monitored_repos(self, email: str) -> List[MonitoredRepo]:
+    async def read_monitored_repos(self, user_id: UUID) -> List[MonitoredRepo]:
         try:
             # List all active monitored repositories of user
             # Loop through the mrepos and find parsed_comments for each mrepo (careful with runtime performance)

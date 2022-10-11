@@ -26,14 +26,14 @@ class MonitoredRepoInteractor:
 
     async def execute_get_monitored_repos(self, email: str) -> List[MonitoredRepo]:
         try:
-            # Find userId from email
+            user = await self.userdb.read_user_by_email(email)
 
-            # Call db access module that does the followings:
-            # 1. List all active mrepos of the user
-            # 2. Loop through the mrepos and find parsed_comments for each mrepo
+            if user is None:
+                raise ValueError("unknown user")
 
-            # Return the list of MonitoredRepo object, with parsedComments field filled
-            pass
+            mrepos = await self.mrepodb.read_monitored_repos(user.id)
+
+            return mrepos
         except Exception as e:
             raise e
 
