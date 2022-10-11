@@ -8,7 +8,7 @@ from app.domain.mrepo import (
 )
 
 import sqlalchemy
-from typing import List
+from typing import List, Union
 from uuid import UUID
 from logging import Logger
 
@@ -62,7 +62,7 @@ class MonitoredRepoDBAccess:
 
     async def read_monitored_repo_by_fullname(
         self, full_name: str, provider: str
-    ) -> MonitoredRepo:
+    ) -> Union[MonitoredRepo, None] :
         try:
             select = self.mrepo_schema.select().where(
                 self.sql_driver.sql.and_(
@@ -80,7 +80,7 @@ class MonitoredRepoDBAccess:
         except Exception as e:
             raise e
 
-    async def read_monitored_repo(self, id: UUID) -> MonitoredRepo:
+    async def read_monitored_repo(self, id: UUID) -> Union[MonitoredRepo, None]:
         try:
             select = self.mrepo_schema.select().where(self.mrepo_schema.c.id == id)
 
