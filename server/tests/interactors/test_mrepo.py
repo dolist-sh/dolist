@@ -106,7 +106,11 @@ def mock_read_user_by_email(monkeypatch, userdb):
 @pytest.fixture
 def mock_read_monitored_repos(monkeypatch, mrepodb):
     async def mock_func(user_id: UUID):
-        return [repo for repo in MOCK_MREPOS if repo.userId == user_id]
+        return [
+            repo
+            for repo in MOCK_MREPOS
+            if repo.userId == user_id and repo.status == "active"
+        ]
 
     monkeypatch.setattr(mrepodb, "read_monitored_repos", mock_func)
 

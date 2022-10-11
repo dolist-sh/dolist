@@ -62,7 +62,7 @@ class MonitoredRepoDBAccess:
 
     async def read_monitored_repo_by_fullname(
         self, full_name: str, provider: str
-    ) -> Union[MonitoredRepo, None] :
+    ) -> Union[MonitoredRepo, None]:
         try:
             select = self.mrepo_schema.select().where(
                 self.sql_driver.sql.and_(
