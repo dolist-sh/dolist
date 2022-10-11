@@ -20,6 +20,7 @@ class AddMonitoredReposInput(BaseModel):
 
 class ParsedComment(BaseModel):
     id: UUID  # This field should be a checksum
+    mrepoId: UUID
     title: str
     type: Literal["TODO"]
     status: Literal["New", "Old", "Normal", "Resolved"]
@@ -27,6 +28,8 @@ class ParsedComment(BaseModel):
     fullComment: List[str]
     filePath: str
     lineNumber: int
+    createdAt: int
+    lastUpdated: int
 
 
 class MonitoredRepo(BaseModel):
