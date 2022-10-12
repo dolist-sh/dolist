@@ -12,7 +12,11 @@ from src.infra.storage.model import (
 from src.infra.storage.mrepodb import MonitoredRepoDBAccess
 from src.infra.storage.userdb import UserDBAccess
 
-from .helpers import generate_test_user_dataset, generate_test_mrepo_dataset
+from .helpers import (
+    generate_test_user_dataset,
+    generate_test_mrepo_dataset,
+    generate_test_parsed_comments_dataset,
+)
 from config import DB_HOST, DB_USER, DB_PWD
 
 
@@ -22,12 +26,19 @@ def test_user_dataset():
 
 
 @pytest.fixture
-def test_mrepo_dataset():
-    return generate_test_mrepo_dataset(5)
+def test_mrepo_dataset(test_user_dataset):
+    return generate_test_mrepo_dataset(test_user_dataset[1]["id"], 5)
 
 
 @pytest.fixture
-def test_db_session(test_user_dataset, test_mrepo_dataset):
+def test_parsed_comments_dataset(test_mrepo_dataset):
+    return generate_test_parsed_comments_dataset(test_mrepo_dataset[1]["id"], 10)
+
+
+@pytest.fixture
+def test_db_session(
+    test_user_dataset, test_mrepo_dataset, test_parsed_comments_dataset
+):
 
     test_db_engine = create_engine(
         f"postgresql://{DB_USER}:{DB_PWD}@{DB_HOST}:5432/testdb"
@@ -43,6 +54,7 @@ def test_db_session(test_user_dataset, test_mrepo_dataset):
     # Prepopulate DB with test dataset
     test_db_engine.execute(user_schema.insert(), test_user_dataset)
     test_db_engine.execute(monitored_repo_schema.insert(), test_mrepo_dataset)
+    test_db_engine.execute(parsed_comment_schema.insert(), test_parsed_comments_dataset)
 
     # Use yield instead of return to start the teardown process.
     yield test_db_engine
@@ -57,12 +69,12 @@ def test_db_session(test_user_dataset, test_mrepo_dataset):
 
 
 @pytest.fixture
-def userdb_adaptor(test_db_session):
+def userdb(test_db_session):
     return UserDBAccess(test_db_session, user_schema)
 
 
 @pytest.fixture
-def mrepodb_adaptor(test_db_session):
+def mrepodb(test_db_session):
     import sqlalchemy
     from src.logger import logger
 

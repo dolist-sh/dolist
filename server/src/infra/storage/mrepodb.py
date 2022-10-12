@@ -94,15 +94,32 @@ class MonitoredRepoDBAccess:
         except Exception as e:
             raise e
 
-    async def read_monitored_repos(self, user_id: UUID) -> List[MonitoredRepo]:
+    async def read_monitored_repos(
+        self, user_id: UUID, status="active"
+    ) -> List[MonitoredRepo]:
         try:
-            # List all active monitored repositories of user
-            # Loop through the mrepos and find parsed_comments for each mrepo (careful with runtime performance)
+            select_mrepos = self.mrepo_schema.select().where(
+                self.sql_driver.and_(
+                    self.mrepo_schema.c.userId == user_id,
+                    self.mrepo_schema.c.status == status,
+                )
+            )
+
+            mrepos = self.db_instance.execute(select_mrepos).fetchall()
+
+            output = []
+
+            for repo in mrepos:
+                select_comments = self.parsed_comment_schema.select().where(
+                    self.parsed_comment_schema.c.mrepoId == repo.id
+                )
+                comments = self.db_instance.execute(select_comments).fetchall()
+
+                output.append(MonitoredRepo(**repo, parsedComments=comments))
 
             # Puzzles:
-            # 1. Can first and second operation be combined into one query?
             # 2. What is the best way to handle pagination?
-            pass
+            return output
         except Exception as e:
             raise e
 
