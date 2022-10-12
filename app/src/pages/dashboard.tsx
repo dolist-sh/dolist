@@ -20,14 +20,14 @@ const DashboardPage: NextPage = () => {
   const [logoutIconUri, setLogoutIconUri] = useState(null);
   const [modalOpenCounter, setModalOpenCounter] = useState(0);
 
-  const [monitoredRepos, setMonitoredRepos] = useState<Repo[]>([]);
+  const [monitoredRepos, setMonitoredRepos] = useState<Array<Repo[]>>([]);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     !token
       ? push('/signin')
       : getMonitoredRepos(token).then((data) => {
-          setMonitoredRepos(data);
+          setMonitoredRepos(convertMreposToNestedArray(data));
           console.log(monitoredRepos);
         });
   }, []);
@@ -86,6 +86,26 @@ const DashboardPage: NextPage = () => {
     logoutHandler,
   };
 
+  function convertMreposToNestedArray(mrepos: Repo[]): Array<Repo[]> {
+    const output = [];
+    const remainder = mrepos.length % 3;
+
+    for (let i = 0; i < mrepos.length - remainder; i += 3) {
+      const nestedArr = [mrepos[i], mrepos[i + 1], mrepos[i + 2]];
+      output.push(nestedArr);
+    }
+
+    if (remainder !== 0) {
+      const nestedArr = [];
+      for (let y = mrepos.length - remainder; y < mrepos.length; y++) {
+        nestedArr.push(mrepos[y]);
+      }
+      output.push(nestedArr);
+    }
+
+    return output;
+  }
+
   return (
     <Layout {...layoutProps}>
       <AddRepoModal githubLogoUri={githubLogoUri} openCounter={modalOpenCounter} />
@@ -109,22 +129,16 @@ const DashboardPage: NextPage = () => {
       <div className="w-full h-3/4 pt-10 pb-5">
         <div className="w-5/6 min-h-full h-auto m-auto mt-0 mb-0">
           <h2 className="font-std font-bold text-black dark:text-dolist-cream">{`Monitored repositroies`}</h2>
-          <div className="flex flex-row h-auto mt-5 mb-5 ml-3 justify-evenly">
-            {console.log(monitoredRepos)}
-            <RepoOverview githubLogoUri={githubLogoUri} />
-            <RepoOverview githubLogoUri={githubLogoUri} />
-            <RepoOverview githubLogoUri={githubLogoUri} />
-          </div>
-          <div className="flex flex-row h-auto mt-5 mb-5 ml-3 justify-evenly">
-            <RepoOverview githubLogoUri={githubLogoUri} />
-            <RepoOverview githubLogoUri={githubLogoUri} />
-            <RepoOverview githubLogoUri={githubLogoUri} />
-          </div>
-          <div className="flex flex-row h-auto mt-5 mb-5 ml-3 justify-evenly">
-            <RepoOverview githubLogoUri={githubLogoUri} />
-            <RepoOverview githubLogoUri={githubLogoUri} />
-            <RepoOverview githubLogoUri={githubLogoUri} />
-          </div>
+          {monitoredRepos.map((nestedArr, index) => {
+            return (
+              <div key={index} className="flex flex-row h-auto mt-5 mb-5 ml-3 justify-evenly">
+                {nestedArr.map((repo, index) => {
+                  console.log(repo);
+                  return <RepoOverview key={index} githubLogoUri={githubLogoUri} />;
+                })}
+              </div>
+            );
+          })}
         </div>
       </div>
     </Layout>
