@@ -105,11 +105,11 @@ def mock_read_user_by_email(monkeypatch, userdb):
 
 @pytest.fixture
 def mock_read_monitored_repos(monkeypatch, mrepodb):
-    async def mock_func(user_id: UUID, limit=20, offset=0):
+    async def mock_func(user_id: UUID, status, limit, offset):
         return [
             repo
             for repo in MOCK_MREPOS
-            if repo.userId == user_id and repo.status == "active"
+            if repo.userId == user_id and repo.status == status
         ]
 
     monkeypatch.setattr(mrepodb, "read_monitored_repos", mock_func)
@@ -125,7 +125,7 @@ def mrepo_interactor(
 @pytest.mark.asyncio
 async def test_get_monitored_repos_success(mrepo_interactor: MonitoredRepoInteractor):
     result = await mrepo_interactor.execute_get_monitored_repos(
-        "awesome_user@email.com"
+        "awesome_user@email.com", 100, 0
     )
 
     assert len(result) == 3
@@ -138,5 +138,5 @@ async def test_get_monitored_repos_fail_invalid_email(
     mrepo_interactor: MonitoredRepoInteractor,
 ):
     with pytest.raises(ValueError) as exception:
-        await mrepo_interactor.execute_get_monitored_repos("null_email@email.com")
+        await mrepo_interactor.execute_get_monitored_repos("null_email@email.com", 100, 0)
         assert "unknown user" is str(exception.value)

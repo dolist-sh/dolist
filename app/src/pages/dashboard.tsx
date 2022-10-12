@@ -4,6 +4,9 @@ import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { Layout, AddRepoModal, RepoOverview } from '../components';
 
+import { getMonitoredRepos } from '../api';
+import { Repo } from '../types';
+
 const DashboardPage: NextPage = () => {
   const { push } = useRouter();
 
@@ -17,9 +20,16 @@ const DashboardPage: NextPage = () => {
   const [logoutIconUri, setLogoutIconUri] = useState(null);
   const [modalOpenCounter, setModalOpenCounter] = useState(0);
 
+  const [monitoredRepos, setMonitoredRepos] = useState<Repo[]>([]);
+
   useEffect(() => {
     const token = localStorage.getItem('token');
-    !token ? push('/signin') : null;
+    !token
+      ? push('/signin')
+      : getMonitoredRepos(token).then((data) => {
+          setMonitoredRepos(data);
+          console.log(monitoredRepos);
+        });
   }, []);
 
   useEffect(() => {
@@ -100,6 +110,7 @@ const DashboardPage: NextPage = () => {
         <div className="w-5/6 min-h-full h-auto m-auto mt-0 mb-0">
           <h2 className="font-std font-bold text-black dark:text-dolist-cream">{`Monitored repositroies`}</h2>
           <div className="flex flex-row h-auto mt-5 mb-5 ml-3 justify-evenly">
+            {console.log(monitoredRepos)}
             <RepoOverview githubLogoUri={githubLogoUri} />
             <RepoOverview githubLogoUri={githubLogoUri} />
             <RepoOverview githubLogoUri={githubLogoUri} />
