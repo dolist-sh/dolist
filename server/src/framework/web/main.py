@@ -145,13 +145,16 @@ async def write_parse_result(
 
 @app.get("/monitoredrepos", status_code=200)
 async def get_monitored_repos(
-    email: str = Depends(get_email_from_token), response_model=List[MonitoredRepo]
+    email: str = Depends(get_email_from_token),
+    limit: int = 20,
+    offset: int = 0,
+    response_model=List[MonitoredRepo],
 ):
     try:
-        # Pass email address to the interactor
-        # Return the data to the client
-        # (Optionally apply the pagination)
-        pass
+        result = await mrepo_interactor.execute_get_monitored_repos(
+            email, limit, offset
+        )
+        return result
     except Exception as e:
         logger.critical(
             f"Unexpected exceptions at {get_monitored_repos.__name__}: {str(e)}"
