@@ -105,7 +105,7 @@ def mock_read_user_by_email(monkeypatch, userdb):
 
 @pytest.fixture
 def mock_read_monitored_repos(monkeypatch, mrepodb):
-    async def mock_func(user_id: UUID):
+    async def mock_func(user_id: UUID, limit=20, offset=0):
         return [
             repo
             for repo in MOCK_MREPOS

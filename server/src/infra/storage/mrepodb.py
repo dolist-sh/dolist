@@ -95,14 +95,19 @@ class MonitoredRepoDBAccess:
             raise e
 
     async def read_monitored_repos(
-        self, user_id: UUID, status="active"
+        self, user_id: UUID, status="active", limit: int = 20, offset: int = 0
     ) -> List[MonitoredRepo]:
         try:
-            select_mrepos = self.mrepo_schema.select().where(
-                self.sql_driver.and_(
-                    self.mrepo_schema.c.userId == user_id,
-                    self.mrepo_schema.c.status == status,
+            select_mrepos = (
+                self.mrepo_schema.select()
+                .where(
+                    self.sql_driver.and_(
+                        self.mrepo_schema.c.userId == user_id,
+                        self.mrepo_schema.c.status == status,
+                    )
                 )
+                .limit(limit)
+                .offset(offset)
             )
 
             mrepos = self.db_instance.execute(select_mrepos).fetchall()
@@ -117,8 +122,8 @@ class MonitoredRepoDBAccess:
 
                 output.append(MonitoredRepo(**repo, parsedComments=comments))
 
-            # Puzzles:
-            # 2. What is the best way to handle pagination?
+                # Puzzles:
+                # 2. What is the best way to handle pagination?
             return output
         except Exception as e:
             raise e

@@ -24,14 +24,16 @@ class MonitoredRepoInteractor:
         self.mrepodb = mrepodb
         self.github = github
 
-    async def execute_get_monitored_repos(self, email: str) -> List[MonitoredRepo]:
+    async def execute_get_monitored_repos(
+        self, email: str, limit: int = 20, offset: int = 0
+    ) -> List[MonitoredRepo]:
         try:
             user = await self.userdb.read_user_by_email(email)
 
             if user is None:
                 raise ValueError("unknown user")
 
-            mrepos = await self.mrepodb.read_monitored_repos(user.id)
+            mrepos = await self.mrepodb.read_monitored_repos(user.id, limit, offset)
 
             return mrepos
         except Exception as e:
