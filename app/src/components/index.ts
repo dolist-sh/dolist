@@ -6,3 +6,4 @@ export { default as GithubAuthBtn } from './GithubAuthBtn';
 export { default as ColorThemeBtn } from './ColorThemeBtn';
 export { default as Layout } from './Layout';
 export { default as AddRepoModal } from './AddRepoModal';
+export { default as RepoOverview } from './RepoOverview';
