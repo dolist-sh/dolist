@@ -146,7 +146,7 @@ async def write_parse_result(
 @app.get("/monitoredrepos", status_code=200)
 async def get_monitored_repos(
     email: str = Depends(get_email_from_token),
-    limit: int = 20,
+    limit: int = 100,
     offset: int = 0,
     response_model=List[MonitoredRepo],
 ):

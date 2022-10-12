@@ -95,7 +95,7 @@ class MonitoredRepoDBAccess:
             raise e
 
     async def read_monitored_repos(
-        self, user_id: UUID, status="active", limit: int = 20, offset: int = 0
+        self, user_id: UUID, status="active", limit: int = 100, offset: int = 0
     ) -> List[MonitoredRepo]:
         try:
             select_mrepos = (
