@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { MonitoredRepo } from '../types';
+import React, { useEffect, useState } from 'react';
+import { MonitoredRepo, ParsedComment } from '../types';
 
 interface MonitoredRepoOverviewProps {
   githubLogoUri: string;
@@ -10,6 +10,10 @@ const MonitoredRepoOverview: React.FC<MonitoredRepoOverviewProps> = ({
   githubLogoUri,
   mrepo,
 }: MonitoredRepoOverviewProps) => {
+  const [newComments, setNewComments] = useState([]);
+  const [resolvedComments, setResolvedComments] = useState([]);
+  const [oldComments, setOldComments] = useState([]);
+
   function getShortSha1(input: string, num = 7): string {
     return input.slice(0, num);
   }
@@ -46,6 +50,17 @@ const MonitoredRepoOverview: React.FC<MonitoredRepoOverviewProps> = ({
     return `${hour}:${mintue}, ${month} ${date}, ${year}`;
   }
 
+  useEffect(() => {
+    if (mrepo.parsedComments.length > 0) {
+      setNewComments(mrepo.parsedComments.filter((e) => e.status == 'New'));
+      setResolvedComments(mrepo.parsedComments.filter((e) => e.status == 'Resolved'));
+      setOldComments(mrepo.parsedComments.filter((e) => e.status == 'Old'));
+      console.log(newComments);
+      console.log(resolvedComments);
+      console.log(oldComments);
+    }
+  }, [mrepo]);
+
   return (
     <div className="flex flex-col w-[30%] h-[200px] p-3 bg-dolist-cream dark:bg-dolist-darkblue border-[0.5px] border-dashed border-black dark:border-dolist-cream rounded">
       <div className="flex flex-row w-full h-1/4 justify-evenly">
@@ -75,19 +90,27 @@ const MonitoredRepoOverview: React.FC<MonitoredRepoOverviewProps> = ({
         <div className="flex flex-row mt-2 justify-between ml-1 mr-1">
           <div className="flex flex-col">
             <h4 className="font-std text-dolist-gray dark:text-dolist-cream text-[11px] text-center">{`Total`}</h4>
-            <p className="font-std font-bold text-black dark:text-white text-[11px] text-center underline">{`20`}</p>
+            <p className="font-std font-bold text-black dark:text-white text-[11px] text-center underline">
+              {mrepo.parsedComments.length > 0 ? mrepo.parsedComments.length : '--'}
+            </p>
           </div>
           <div className="flex flex-col">
             <h4 className="font-std text-dolist-gray dark:text-dolist-cream text-[11px] text-center">{`New`}</h4>
-            <p className="font-std font-bold text-black dark:text-white text-[11px] text-center underline">{`2`}</p>
+            <p className="font-std font-bold text-black dark:text-white text-[11px] text-center underline">
+              {newComments.length > 0 ? newComments.length : '--'}
+            </p>
           </div>
           <div className="flex flex-col">
             <h4 className="font-std text-dolist-gray dark:text-dolist-cream text-[11px] text-center">{`Resolved`}</h4>
-            <p className="font-std font-bold text-black dark:text-white text-[11px] text-center underline">{`3`}</p>
+            <p className="font-std font-bold text-black dark:text-white text-[11px] text-center underline">
+              {resolvedComments.length > 0 ? resolvedComments.length : '--'}
+            </p>
           </div>
           <div className="flex flex-col">
             <h4 className="font-std text-dolist-gray dark:text-dolist-cream text-[11px] text-center">{`Old`}</h4>
-            <p className="font-std font-bold text-black dark:text-white text-[11px] text-center underline">{`15`}</p>
+            <p className="font-std font-bold text-black dark:text-white text-[11px] text-center underline">
+              {oldComments.length > 0 ? oldComments.length : '--'}
+            </p>
           </div>
         </div>
       </div>
