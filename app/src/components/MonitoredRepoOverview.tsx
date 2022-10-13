@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { MonitoredRepo, ParsedComment } from '../types';
+import * as React from 'react';
+import { useEffect, useState } from 'react';
+import { MonitoredRepo } from '../types';
 
 interface MonitoredRepoOverviewProps {
   githubLogoUri: string;
@@ -55,9 +56,6 @@ const MonitoredRepoOverview: React.FC<MonitoredRepoOverviewProps> = ({
       setNewComments(mrepo.parsedComments.filter((e) => e.status == 'New'));
       setResolvedComments(mrepo.parsedComments.filter((e) => e.status == 'Resolved'));
       setOldComments(mrepo.parsedComments.filter((e) => e.status == 'Old'));
-      console.log(newComments);
-      console.log(resolvedComments);
-      console.log(oldComments);
     }
   }, [mrepo]);
 
