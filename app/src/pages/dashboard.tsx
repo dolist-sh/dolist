@@ -2,10 +2,10 @@ import React, { useEffect, useState, useContext } from 'react';
 import { GlobalContext } from '../contexts/global';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { Layout, AddRepoModal, RepoOverview } from '../components';
+import { Layout, AddRepoModal, MonitoredRepoOverview } from '../components';
 
 import { getMonitoredRepos } from '../api';
-import { Repo } from '../types';
+import { MonitoredRepo } from '../types';
 
 const DashboardPage: NextPage = () => {
   const { push } = useRouter();
@@ -20,7 +20,7 @@ const DashboardPage: NextPage = () => {
   const [logoutIconUri, setLogoutIconUri] = useState(null);
   const [modalOpenCounter, setModalOpenCounter] = useState(0);
 
-  const [monitoredRepos, setMonitoredRepos] = useState<Array<Repo[]>>([]);
+  const [monitoredRepos, setMonitoredRepos] = useState<Array<MonitoredRepo[]>>([]);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -86,7 +86,7 @@ const DashboardPage: NextPage = () => {
     logoutHandler,
   };
 
-  function convertMreposToNestedArray(mrepos: Repo[]): Array<Repo[]> {
+  function convertMreposToNestedArray(mrepos: MonitoredRepo[]): Array<MonitoredRepo[]> {
     const output = [];
     const remainder = mrepos.length % 3;
 
@@ -132,9 +132,8 @@ const DashboardPage: NextPage = () => {
           {monitoredRepos.map((nestedArr, index) => {
             return (
               <div key={index} className="flex flex-row h-auto mt-5 mb-5 ml-3 justify-evenly">
-                {nestedArr.map((repo, index) => {
-                  console.log(repo);
-                  return <RepoOverview key={index} githubLogoUri={githubLogoUri} />;
+                {nestedArr.map((mrepo, index) => {
+                  return <MonitoredRepoOverview mrepo={mrepo} key={index} githubLogoUri={githubLogoUri} />;
                 })}
               </div>
             );

@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Snapshot testing of ColorThemeBtn component renders correctly 1`] = `
+exports[`Snapshot testing of MonitoredRepoOverview component renders correctly 1`] = `
 <div
-  className="flex flex-col w-[30%] h-full p-3 bg-dolist-cream dark:bg-dolist-darkblue border-[0.5px] border-dashed border-black dark:border-dolist-cream rounded"
+  className="flex flex-col w-[30%] h-[200px] p-3 bg-dolist-cream dark:bg-dolist-darkblue border-[0.5px] border-dashed border-black dark:border-dolist-cream rounded"
 >
   <div
     className="flex flex-row w-full h-1/4 justify-evenly"
@@ -29,7 +29,7 @@ exports[`Snapshot testing of ColorThemeBtn component renders correctly 1`] = `
           <span
             className="font-std font-bold underline text-dolist-darkblue dark:text-white"
           >
-            main
+            master
           </span>
         </p>
       </div>
@@ -44,13 +44,13 @@ exports[`Snapshot testing of ColorThemeBtn component renders correctly 1`] = `
         <span
           className="font-std font-bold underline text-dolist-darkblue dark:text-white"
         >
-          694949
+          8ef75d8
         </span>
       </p>
     </div>
   </div>
   <div
-    className="flex flex-col pt-5 ml-2 mr-2"
+    className="flex flex-col pt-7 ml-2 mr-2"
   >
     <h4
       className="font-std font-bold text-dolist-gray dark:text-dolist-cream text-[11px]"
@@ -119,21 +119,21 @@ exports[`Snapshot testing of ColorThemeBtn component renders correctly 1`] = `
     </div>
   </div>
   <div
-    className="flex flex-row pt-5 ml-2 mr-2 justify-evenly"
+    className="flex flex-row pt-10 justify-evenly"
   >
     <a
-      className="w-1/2 font-std font-bold text-[10px] text-dolist-darkblue dark:text-white underline"
+      className="w-1/2 font-std font-bold text-[9px] text-dolist-darkblue dark:text-white underline"
     >
       view full report
     </a>
     <p
-      className="w-1/2 font-std font-bold text-[10px] text-dolist-gray dark:text-white text-right"
+      className="w-1/2 font-std font-bold text-[9px] text-dolist-gray dark:text-white text-right"
     >
       updated at: 
       <span
-        className="font-std text-[10px] text-dolist-lightgray dark:text-dolist-cream"
+        className="font-std text-[8px] text-dolist-lightgray dark:text-dolist-cream"
       >
-        --
+        7:32, January 20, 1970
       </span>
     </p>
   </div>
