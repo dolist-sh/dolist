@@ -33,7 +33,9 @@ class MonitoredRepoInteractor:
             if user is None:
                 raise ValueError("unknown user")
 
-            mrepos = await self.mrepodb.read_monitored_repos(user.id, "active", limit, offset)
+            mrepos = await self.mrepodb.read_monitored_repos(
+                user.id, "active", limit, offset
+            )
 
             return mrepos
         except Exception as e:

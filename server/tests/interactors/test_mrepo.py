@@ -34,7 +34,7 @@ MOCK_MREPOS: List[MonitoredRepo] = [
         lastCommit="4015b57a143aec5156fd1444a017a32137a3fd0f",
         parsedComments=[
             ParsedComment(
-                id=uuid4(),
+                id=str(uuid4()),
                 mrepoId=mrepo_id,
                 title="test comment",
                 type="TODO",
@@ -47,7 +47,7 @@ MOCK_MREPOS: List[MonitoredRepo] = [
                 lastUpdated=int(time()),
             ),
             ParsedComment(
-                id=uuid4(),
+                id=str(uuid4()),
                 mrepoId=mrepo_id,
                 title="second test comment",
                 type="TODO",
@@ -67,7 +67,7 @@ MOCK_MREPOS: List[MonitoredRepo] = [
         lastUpdated=int(time()),
     ),
     MonitoredRepo(
-        id=uuid4(),
+        id=str(uuid4()),
         name="repo_2",
         fullName="test_user/repo_2",
         defaultBranch="main",
@@ -80,7 +80,7 @@ MOCK_MREPOS: List[MonitoredRepo] = [
         lastUpdated=int(time()),
     ),
     MonitoredRepo(
-        id=uuid4(),
+        id=str(uuid4()),
         name="repo_3",
         fullName="test_user/repo_3",
         defaultBranch="main",
@@ -138,5 +138,7 @@ async def test_get_monitored_repos_fail_invalid_email(
     mrepo_interactor: MonitoredRepoInteractor,
 ):
     with pytest.raises(ValueError) as exception:
-        await mrepo_interactor.execute_get_monitored_repos("null_email@email.com", 100, 0)
+        await mrepo_interactor.execute_get_monitored_repos(
+            "null_email@email.com", 100, 0
+        )
         assert "unknown user" is str(exception.value)

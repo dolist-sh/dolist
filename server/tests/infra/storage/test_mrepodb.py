@@ -68,7 +68,9 @@ async def test_null_case_read_monitored_repo(mrepodb: MonitoredRepoDBAccess):
 async def test_read_monitored_repos(
     mrepodb: MonitoredRepoDBAccess, test_user_dataset, test_mrepo_dataset
 ):
-    result = await mrepodb.read_monitored_repos(test_user_dataset[1]["id"], "active", 100, 0)
+    result = await mrepodb.read_monitored_repos(
+        test_user_dataset[1]["id"], "active", 100, 0
+    )
 
     mrepo_with_comments = list(
         filter(

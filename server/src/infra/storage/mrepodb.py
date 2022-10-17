@@ -153,6 +153,7 @@ class MonitoredRepoDBAccess:
                     item["type"],
                     item["title"],
                     item["path"],
+                    item["lineNumber"],
                 )
                 mapped_result.append(item)
 
@@ -246,10 +247,14 @@ class MonitoredRepoDBAccess:
             transaction.rollback()
             raise e
 
-    def _generate_parsed_comment_id(self, type: str, title: str, filePath: str):
+    def _generate_parsed_comment_id(
+        self, type: str, title: str, file_path: str, line_number: int
+    ):
         import hashlib
 
-        hash_payload = bytes(f"{type}, {title}, {filePath}", encoding="utf-8")
+        hash_payload = bytes(
+            f"{type}, {title}, {file_path}, {line_number}", encoding="utf-8"
+        )
 
         return hashlib.sha1(hash_payload).hexdigest()
 
