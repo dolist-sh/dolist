@@ -15,8 +15,8 @@ describe('Snapshot testing of MonitoredRepoOverview component', () => {
     provider: 'github',
     visibility: 'private',
     status: 'active',
-    createdAt: 1664702808,
-    lastUpdated: 1665146875,
+    createdAt: 1666018951,
+    lastUpdated: 1666018951,
     parsedComments: [],
   };
 
