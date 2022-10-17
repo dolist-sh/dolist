@@ -24,7 +24,7 @@ const MonitoredRepoOverview: React.FC<MonitoredRepoOverviewProps> = ({
    * @param input: Unix timestamp
    * @returns string representation of the timestamp
    */
-  function getReadableTime(input: number): string {
+  function getReadableTime(timestamp: number): string {
     const months = [
       'January',
       'February',
@@ -40,15 +40,15 @@ const MonitoredRepoOverview: React.FC<MonitoredRepoOverviewProps> = ({
       'December',
     ];
 
-    const dateObj = new Date(input);
+    const dateObj = new Date(timestamp * 1000); //JavaScript counts epoch in Milliseconds
 
     const year = dateObj.getFullYear();
     const month = months[dateObj.getMonth()];
     const date = dateObj.getDate();
+    const minute = dateObj.getMinutes();
     const hour = dateObj.getHours();
-    const mintue = dateObj.getMinutes();
 
-    return `${hour}:${mintue}, ${month} ${date}, ${year}`;
+    return `${hour < 10 ? `0${hour}` : hour}:${minute < 10 ? `0${minute}` : minute}, ${month} ${date}, ${year}`;
   }
 
   useEffect(() => {
