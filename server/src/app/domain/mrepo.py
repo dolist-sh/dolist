@@ -19,7 +19,8 @@ class AddMonitoredReposInput(BaseModel):
 
 
 class ParsedComment(BaseModel):
-    id: UUID  # This field should be a checksum
+    id: str  # SHA-1 checksum
+    mrepoId: UUID
     title: str
     type: Literal["TODO"]
     status: Literal["New", "Old", "Normal", "Resolved"]
@@ -27,6 +28,8 @@ class ParsedComment(BaseModel):
     fullComment: List[str]
     filePath: str
     lineNumber: int
+    createdAt: int
+    lastUpdated: int
 
 
 class MonitoredRepo(BaseModel):
@@ -34,9 +37,9 @@ class MonitoredRepo(BaseModel):
     name: str
     fullName: str
     defaultBranch: str
-    language: str
     userId: UUID
     defaultBranch: str
+    language: Optional[str]
     lastCommit: Optional[str]
     provider: Literal["github"]
     visibility: Literal["private", "public"]

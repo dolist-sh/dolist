@@ -2,6 +2,7 @@
 import sqlalchemy
 from app.domain.user import User, CreateUserInput
 from uuid import UUID
+from typing import Union
 
 
 class UserDBAccess:
@@ -60,7 +61,7 @@ class UserDBAccess:
         except Exception as e:
             raise e
 
-    async def read_user(self, id: UUID) -> User:
+    async def read_user(self, id: UUID) -> Union[User, None]:
         try:
             select = self.user_schema.select().where(self.user_schema.c.id == id)
 
@@ -74,7 +75,7 @@ class UserDBAccess:
         except Exception as e:
             raise e
 
-    async def read_user_by_email(self, email: str) -> User:
+    async def read_user_by_email(self, email: str) -> Union[User, None]:
         try:
             select = self.user_schema.select().where(self.user_schema.c.email == email)
 

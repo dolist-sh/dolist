@@ -39,6 +39,17 @@ export const getGithubRepos = async (token: string) => {
   return response.json();
 };
 
+export const getMonitoredRepos = async (token: string) => {
+  const host = getApiHost();
+
+  const response = await fetch(`${host}/monitoredrepos`, {
+    method: 'GET',
+    mode: 'cors',
+    headers: { Authorization: `token ${token}` },
+  });
+  return response.json();
+};
+
 export const postMonitoredRepos = async (token: string, repos: Repo[]) => {
   const host = getApiHost();
 

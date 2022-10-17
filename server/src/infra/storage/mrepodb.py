@@ -8,7 +8,7 @@ from app.domain.mrepo import (
 )
 
 import sqlalchemy
-from typing import List
+from typing import List, Union
 from uuid import UUID
 from logging import Logger
 
@@ -62,7 +62,7 @@ class MonitoredRepoDBAccess:
 
     async def read_monitored_repo_by_fullname(
         self, full_name: str, provider: str
-    ) -> MonitoredRepo:
+    ) -> Union[MonitoredRepo, None]:
         try:
             select = self.mrepo_schema.select().where(
                 self.sql_driver.sql.and_(
@@ -80,7 +80,7 @@ class MonitoredRepoDBAccess:
         except Exception as e:
             raise e
 
-    async def read_monitored_repo(self, id: UUID) -> MonitoredRepo:
+    async def read_monitored_repo(self, id: UUID) -> Union[MonitoredRepo, None]:
         try:
             select = self.mrepo_schema.select().where(self.mrepo_schema.c.id == id)
 
@@ -91,6 +91,40 @@ class MonitoredRepoDBAccess:
             else:
                 return MonitoredRepo(**result)
 
+        except Exception as e:
+            raise e
+
+    async def read_monitored_repos(
+        self, user_id: UUID, status, limit: int, offset: int
+    ) -> List[MonitoredRepo]:
+        try:
+            select_mrepos = (
+                self.mrepo_schema.select()
+                .where(
+                    self.sql_driver.and_(
+                        self.mrepo_schema.c.userId == user_id,
+                        self.mrepo_schema.c.status == status,
+                    )
+                )
+                .limit(limit)
+                .offset(offset)
+            )
+
+            mrepos = self.db_instance.execute(select_mrepos).fetchall()
+
+            output = []
+
+            for repo in mrepos:
+                select_comments = self.parsed_comment_schema.select().where(
+                    self.parsed_comment_schema.c.mrepoId == repo.id
+                )
+                comments = self.db_instance.execute(select_comments).fetchall()
+
+                output.append(MonitoredRepo(**repo, parsedComments=comments))
+
+                # Puzzles:
+                # 2. What is the best way to handle pagination?
+            return output
         except Exception as e:
             raise e
 
@@ -119,6 +153,7 @@ class MonitoredRepoDBAccess:
                     item["type"],
                     item["title"],
                     item["path"],
+                    item["lineNumber"],
                 )
                 mapped_result.append(item)
 
@@ -212,10 +247,14 @@ class MonitoredRepoDBAccess:
             transaction.rollback()
             raise e
 
-    def _generate_parsed_comment_id(self, type: str, title: str, filePath: str):
+    def _generate_parsed_comment_id(
+        self, type: str, title: str, file_path: str, line_number: int
+    ):
         import hashlib
 
-        hash_payload = bytes(f"{type}, {title}, {filePath}", encoding="utf-8")
+        hash_payload = bytes(
+            f"{type}, {title}, {file_path}, {line_number}", encoding="utf-8"
+        )
 
         return hashlib.sha1(hash_payload).hexdigest()
 
