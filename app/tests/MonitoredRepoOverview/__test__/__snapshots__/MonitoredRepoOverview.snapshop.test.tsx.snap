@@ -2,10 +2,10 @@
 
 exports[`Snapshot testing of MonitoredRepoOverview component renders correctly 1`] = `
 <div
-  className="flex flex-col w-[30%] h-[200px] p-3 bg-dolist-cream dark:bg-dolist-darkblue border-[0.5px] border-dashed border-black dark:border-dolist-cream rounded"
+  className="flex flex-col w-[45%] h-[200px] p-3 pl-2 pr-2 bg-dolist-cream dark:bg-dolist-darkblue border-[0.5px] border-dashed border-black dark:border-dolist-cream rounded"
 >
   <div
-    className="flex flex-row w-full h-1/4 justify-evenly"
+    className="flex flex-row w-[95%] h-1/4 m-auto justify-evenly"
   >
     <div
       className="flex flex-row w-1/2"
@@ -50,7 +50,7 @@ exports[`Snapshot testing of MonitoredRepoOverview component renders correctly 1
     </div>
   </div>
   <div
-    className="flex flex-col pt-7 ml-2 mr-2"
+    className="flex flex-col pt-7 pl-6 pr-6"
   >
     <h4
       className="font-std font-bold text-dolist-gray dark:text-dolist-cream text-[11px]"
@@ -119,7 +119,7 @@ exports[`Snapshot testing of MonitoredRepoOverview component renders correctly 1
     </div>
   </div>
   <div
-    className="flex flex-row pt-10 justify-evenly"
+    className="flex flex-row pt-10 ml-3 mr-3 justify-evenly"
   >
     <a
       className="w-1/2 font-std font-bold text-[9px] text-dolist-darkblue dark:text-white underline"
@@ -133,7 +133,7 @@ exports[`Snapshot testing of MonitoredRepoOverview component renders correctly 1
       <span
         className="font-std text-[8px] text-dolist-lightgray dark:text-dolist-cream"
       >
-        7:32, January 20, 1970
+        14:47, October 7, 2022
       </span>
     </p>
   </div>

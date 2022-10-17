@@ -88,10 +88,10 @@ const DashboardPage: NextPage = () => {
 
   function convertMreposToNestedArray(mrepos: MonitoredRepo[]): Array<MonitoredRepo[]> {
     const output = [];
-    const remainder = mrepos.length % 3;
+    const remainder = mrepos.length % 2;
 
-    for (let i = 0; i < mrepos.length - remainder; i += 3) {
-      const nestedArr = [mrepos[i], mrepos[i + 1], mrepos[i + 2]];
+    for (let i = 0; i < mrepos.length - remainder; i += 2) {
+      const nestedArr = [mrepos[i], mrepos[i + 1]];
       output.push(nestedArr);
     }
 

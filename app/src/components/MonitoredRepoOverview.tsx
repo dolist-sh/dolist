@@ -60,8 +60,8 @@ const MonitoredRepoOverview: React.FC<MonitoredRepoOverviewProps> = ({
   }, [mrepo]);
 
   return (
-    <div className="flex flex-col w-[30%] h-[200px] p-3 bg-dolist-cream dark:bg-dolist-darkblue border-[0.5px] border-dashed border-black dark:border-dolist-cream rounded">
-      <div className="flex flex-row w-full h-1/4 justify-evenly">
+    <div className="flex flex-col w-[45%] h-[200px] p-3 pl-2 pr-2 bg-dolist-cream dark:bg-dolist-darkblue border-[0.5px] border-dashed border-black dark:border-dolist-cream rounded">
+      <div className="flex flex-row w-[95%] h-1/4 m-auto justify-evenly">
         <div className="flex flex-row w-1/2">
           <img src={githubLogoUri} className="w-7 h-7 self-center mr-1" />
           <div className="flex flex-col">
@@ -83,7 +83,7 @@ const MonitoredRepoOverview: React.FC<MonitoredRepoOverviewProps> = ({
           </p>
         </div>
       </div>
-      <div className="flex flex-col pt-7 ml-2 mr-2">
+      <div className="flex flex-col pt-7 pl-6 pr-6">
         <h4 className="font-std font-bold text-dolist-gray dark:text-dolist-cream text-[11px]">{`To-Do Report`}</h4>
         <div className="flex flex-row mt-2 justify-between ml-1 mr-1">
           <div className="flex flex-col">
@@ -112,7 +112,7 @@ const MonitoredRepoOverview: React.FC<MonitoredRepoOverviewProps> = ({
           </div>
         </div>
       </div>
-      <div className="flex flex-row pt-10 justify-evenly">
+      <div className="flex flex-row pt-10 ml-3 mr-3 justify-evenly">
         <a className="w-1/2 font-std font-bold text-[9px] text-dolist-darkblue dark:text-white underline">{`view full report`}</a>
         <p className="w-1/2 font-std font-bold text-[9px] text-dolist-gray dark:text-white text-right">
           {`updated at: `}
