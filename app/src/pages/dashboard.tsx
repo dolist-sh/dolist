@@ -4,12 +4,13 @@ import { useRouter } from 'next/router';
 import { Layout, AddRepoModal, MonitoredRepoOverview } from '../components';
 
 import { getMonitoredRepos } from '../api';
-import { useThemeProps } from '../hooks';
+import { useLayoutProps } from '../hooks';
 import { MonitoredRepo } from '../types';
 
 const DashboardPage: NextPage = () => {
   const { push } = useRouter();
 
+  const layoutProps = useLayoutProps();
   const [modalOpenCounter, setModalOpenCounter] = useState(0);
   const [monitoredRepos, setMonitoredRepos] = useState<Array<MonitoredRepo[]>>([]);
 
@@ -22,23 +23,10 @@ const DashboardPage: NextPage = () => {
         });
   }, []);
 
-  const logoutHandler = (event: React.MouseEvent) => {
-    event.preventDefault();
-    localStorage.removeItem('token');
-    window.location.assign('/signin');
-  };
-
   const modalOpenHandler = (event: React.MouseEvent) => {
     event.preventDefault();
     const counter = modalOpenCounter + 1;
     setModalOpenCounter(counter);
-  };
-
-  const themeProps = useThemeProps();
-
-  const layoutProps = {
-    ...themeProps,
-    logoutHandler,
   };
 
   function convertMreposToNestedArray(mrepos: MonitoredRepo[]): Array<MonitoredRepo[]> {
@@ -63,7 +51,7 @@ const DashboardPage: NextPage = () => {
 
   return (
     <Layout {...layoutProps}>
-      <AddRepoModal githubLogoUri={themeProps.githubLogoUri} openCounter={modalOpenCounter} />
+      <AddRepoModal githubLogoUri={layoutProps.githubLogoUri} openCounter={modalOpenCounter} />
       <div className="w-full h-1/4 pt-10 pb-5">
         <div className="w-5/6 h-full m-auto mt-0 mb-0">
           <h2 className="font-std font-bold text-black dark:text-dolist-cream">{`Start monitoring the repositories`}</h2>
@@ -74,7 +62,7 @@ const DashboardPage: NextPage = () => {
               className="flex flex-col w-[30%] h-full p-5 pt-7 pb-7 bg-dolist-cream dark:bg-dolist-darkblue border-[0.5px] border-dashed border-black dark:border-dolist-cream rounded"
             >
               <div className="flex flex-col w-1/4 h-1/4 m-auto">
-                <img src={themeProps.addGithubLogoUri} className="w-7 h-7 ml-2 self-center" />
+                <img src={layoutProps.addGithubLogoUri} className="w-7 h-7 ml-2 self-center" />
               </div>
               <p className="font-std font-bold text-xs text-black dark:text-dolist-cream pt-3">{`Monitor GitHub Repo`}</p>
             </button>
@@ -88,7 +76,7 @@ const DashboardPage: NextPage = () => {
             return (
               <div key={index} className="flex flex-row h-auto mt-5 mb-5 ml-3 justify-evenly">
                 {nestedArr.map((mrepo, index) => {
-                  return <MonitoredRepoOverview mrepo={mrepo} key={index} githubLogoUri={themeProps.githubLogoUri} />;
+                  return <MonitoredRepoOverview mrepo={mrepo} key={index} githubLogoUri={layoutProps.githubLogoUri} />;
                 })}
               </div>
             );

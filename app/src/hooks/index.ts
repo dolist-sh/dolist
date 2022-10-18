@@ -1,1 +1,1 @@
-export { default as useThemeProps } from './useThemeProps';
+export { default as useLayoutProps } from './useLayoutProps';

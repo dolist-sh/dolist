@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { GlobalContext } from '../contexts/global';
 
-export default function useThemeProps() {
+export default function useLayoutProps() {
   const globalcontext = useContext(GlobalContext);
 
   const [logoUri, setLogoUri] = useState<string>(null);
@@ -42,6 +42,12 @@ export default function useThemeProps() {
     }
   };
 
+  const logoutHandler = (event: React.MouseEvent) => {
+    event.preventDefault();
+    localStorage.removeItem('token');
+    window.location.assign('/signin');
+  };
+
   return {
     logoUri,
     theme: globalcontext.theme,
@@ -49,6 +55,7 @@ export default function useThemeProps() {
     githubLogoUri,
     colorThemeIconUri,
     changeColorThemeHandler,
+    logoutHandler,
     settingIconUri,
     logoutIconUri,
   };
