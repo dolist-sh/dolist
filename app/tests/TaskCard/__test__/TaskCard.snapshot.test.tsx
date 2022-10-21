@@ -4,6 +4,7 @@ import { TaskCard } from '../../../src/components';
 
 describe('Snapshot testing of TaskCard component', () => {
   const testData = {
+    theme: 'dark',
     type: 'TODO',
     commentStyle: 'oneline',
     title: 'This should be parsed',
@@ -15,6 +16,7 @@ describe('Snapshot testing of TaskCard component', () => {
   test('renders correctly', () => {
     const component = renderer.create(
       <TaskCard
+        theme={testData.theme}
         type={testData.type}
         title={testData.title}
         commentStyle={testData.commentStyle}

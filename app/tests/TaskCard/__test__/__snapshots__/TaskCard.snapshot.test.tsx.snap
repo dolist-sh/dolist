@@ -2,136 +2,235 @@
 
 exports[`Snapshot testing of TaskCard component renders correctly 1`] = `
 <div
-  className="w-[680px] h-auto border-0 border-dolist-lightgray rounded m-auto mt-4 mb-4 bg-dolist-cream"
+  className="w-[97%] h-auto m-auto mt-4 mb-4 bg-dolist-cream dark:bg-dolist-darkblue border-[0.5px] border-b border-black dark:border-dolist-cream rounded"
 >
   <div
-    className="w-5/6 h-full m-auto pt-3 pb-3"
+    className="w-[92%] h-full m-auto pt-5 pb-5"
   >
     <div
-      className="pt-4 pb-2"
+      className="relative pt-4 pb-3 border-b border-dolist-lightgray dark:border-dolist-cream"
     >
+      <p
+        className="absolute text-base text-[9px] top-[-1.5px]"
+      >
+        New
+      </p>
       <h3
-        className="text-lg font-bold"
+        className="text-base font-bold text-black dark:text-white"
       >
         This should be parsed
       </h3>
+      <p
+        className="text-[11px] pl-[1px] pt-1 text-dolist-gray dark:text-dolist-cream"
+      >
+        Type: TODO
+      </p>
     </div>
+  </div>
+  <div
+    className="flex flex-row w-[92%] h-full m-auto pt-3 pb-3 mb-9 border-b border-dolist-lightgray dark:border-dolist-cream"
+  >
     <div
-      className="flex flex-row justify-between pt-5 pb-5"
+      className="flex flex-col w-1/2 h-200px"
     >
       <div
-        className="text-left"
+        className="pb-3"
       >
-        <p
-          className="text-xs"
-        >
-          Type: TODO
-        </p>
-      </div>
-      <div
-        className="text-right"
-      >
-        <p
-          className="text-xs"
-        >
-          Path: /Users/yunjae/Desktop/engineering/comment-parser/input/folder_b/folder_b.ts
-        </p>
-        <p
-          className="text-xs"
-        >
-          Line: 1
-        </p>
-      </div>
-    </div>
-    <div
-      className="pb-3"
-    >
-      <pre
-        style={
-          Object {
-            "MozHyphens": "none",
-            "MozTabSize": "4",
-            "OTabSize": "4",
-            "WebkitHyphens": "none",
-            "background": "#011627",
-            "color": "white",
-            "fontFamily": "Consolas, Monaco, \\"Andale Mono\\", \\"Ubuntu Mono\\", monospace",
-            "fontSize": "1em",
-            "hyphens": "none",
-            "lineHeight": "1.5",
-            "margin": "0.5em 0",
-            "msHyphens": "none",
-            "overflow": "auto",
-            "padding": "1em",
-            "tabSize": "4",
-            "textAlign": "left",
-            "whiteSpace": "pre",
-            "wordBreak": "normal",
-            "wordSpacing": "normal",
-            "wordWrap": "normal",
-          }
-        }
-      >
-        <code
-          className="language-javascript"
+        <pre
           style={
             Object {
               "MozHyphens": "none",
-              "MozTabSize": "4",
-              "OTabSize": "4",
+              "MozTabSize": "2",
+              "OTabSize": "2",
               "WebkitHyphens": "none",
-              "color": "#d6deeb",
-              "fontFamily": "Consolas, Monaco, \\"Andale Mono\\", \\"Ubuntu Mono\\", monospace",
-              "fontSize": "1em",
+              "background": "hsl(230, 1%, 98%)",
+              "borderRadius": "0.3em",
+              "color": "hsl(230, 8%, 24%)",
+              "direction": "ltr",
+              "fontFamily": "\\"Fira Code\\", \\"Fira Mono\\", Menlo, Consolas, \\"DejaVu Sans Mono\\", monospace",
               "hyphens": "none",
               "lineHeight": "1.5",
+              "margin": "0.5em 0",
               "msHyphens": "none",
-              "tabSize": "4",
+              "overflow": "auto",
+              "padding": "1em",
+              "tabSize": "2",
               "textAlign": "left",
-              "whiteSpace": "pre-wrap",
+              "whiteSpace": "pre",
               "wordBreak": "normal",
               "wordSpacing": "normal",
-              "wordWrap": "normal",
             }
           }
         >
-          <span
+          <code
+            className="language-javascript"
             style={
               Object {
-                "display": "flex",
+                "MozHyphens": "none",
+                "MozTabSize": "2",
+                "OTabSize": "2",
+                "WebkitHyphens": "none",
+                "background": "hsl(230, 1%, 98%)",
+                "color": "hsl(230, 8%, 24%)",
+                "direction": "ltr",
+                "fontFamily": "\\"Fira Code\\", \\"Fira Mono\\", Menlo, Consolas, \\"DejaVu Sans Mono\\", monospace",
+                "hyphens": "none",
+                "lineHeight": "1.5",
+                "msHyphens": "none",
+                "tabSize": "2",
+                "textAlign": "left",
+                "whiteSpace": "pre-wrap",
+                "wordBreak": "normal",
+                "wordSpacing": "normal",
               }
             }
           >
             <span
-              className="linenumber react-syntax-highlighter-line-number"
               style={
                 Object {
-                  "color": "rgb(99, 119, 119)",
-                  "display": "inline-block",
-                  "fontStyle": "italic",
-                  "minWidth": "1.25em",
-                  "paddingRight": "1em",
-                  "textAlign": "right",
-                  "userSelect": "none",
+                  "display": "flex",
                 }
               }
             >
-              1
-            </span>
-            <span
-              className="token"
-              style={
-                Object {
-                  "color": "rgb(99, 119, 119)",
-                  "fontStyle": "italic",
+              <span
+                className="linenumber react-syntax-highlighter-line-number"
+                style={
+                  Object {
+                    "color": "hsl(230, 4%, 64%)",
+                    "display": "inline-block",
+                    "fontStyle": "italic",
+                    "minWidth": "1.25em",
+                    "paddingRight": "1em",
+                    "textAlign": "right",
+                    "userSelect": "none",
+                  }
                 }
-              }
-            >
-              // TODO: This should be parsed
+              >
+                1
+              </span>
+              <span
+                className="token"
+                style={
+                  Object {
+                    "color": "hsl(230, 4%, 64%)",
+                    "fontStyle": "italic",
+                  }
+                }
+              >
+                // TODO: This should be parsed
+              </span>
             </span>
-          </span>
-        </code>
-      </pre>
+          </code>
+        </pre>
+      </div>
+      <div>
+        <p
+          className="font-std font-bold text-[12px] text-dolist-gray dark:text-dolist-cream"
+        >
+          Note
+        </p>
+        <p
+          className="font-std text-[11px] text-dolist-gray dark:text-dolist-cream"
+        >
+          --
+        </p>
+      </div>
+    </div>
+    <div
+      className="flex flex-col w-1/2 h-200px ml-5"
+    >
+      <div
+        className="flex flex-row w-full m-auto"
+      >
+        <div
+          className="w-[32%] ml-[0.5%] mr-[0.5%]"
+        >
+          <p
+            className="font-std font-bold text-[12px] text-dolist-gray dark:text-dolist-cream"
+          >
+            File Path
+          </p>
+          <p
+            className="font-std text-[11px] text-dolist-gray dark:text-dolist-cream"
+          >
+            /src/input/example.py
+          </p>
+        </div>
+        <div
+          className="w-[32%] ml-[0.5%] mr-[0.5%]"
+        >
+          <p
+            className="font-std font-bold text-[12px] text-dolist-gray dark:text-dolist-cream"
+          >
+            Appeared in Commit
+          </p>
+          <p
+            className="font-std text-[11px] text-dolist-gray dark:text-dolist-cream"
+          >
+            85bdeb1
+          </p>
+        </div>
+        <div
+          className="w-[32%] ml-[0.5%] mr-[0.5%]"
+        >
+          <p
+            className="font-std font-bold text-[12px] text-dolist-gray dark:text-dolist-cream"
+          >
+            Created by
+          </p>
+          <p
+            className="font-std text-[11px] text-dolist-gray dark:text-dolist-cream"
+          >
+            Yunjae Oh
+          </p>
+        </div>
+      </div>
+      <div
+        className="flex flex-row w-full m-auto"
+      >
+        <div
+          className="w-[32%] ml-[0.5%] mr-[0.5%]"
+        >
+          <p
+            className="font-std font-bold text-[12px] text-dolist-gray dark:text-dolist-cream"
+          >
+            Linked Ticket
+          </p>
+          <p
+            className="font-std text-[11px] text-dolist-gray dark:text-dolist-cream"
+          >
+            --
+          </p>
+        </div>
+        <div
+          className="w-[32%] ml-[0.5%] mr-[0.5%]"
+        >
+          <p
+            className="font-std font-bold text-[12px] text-dolist-gray dark:text-dolist-cream"
+          >
+            Resolved in Commit
+          </p>
+          <p
+            className="font-std text-[11px] text-dolist-gray dark:text-dolist-cream"
+          >
+            --
+          </p>
+        </div>
+        <div
+          className="w-[32%] ml-[0.5%] mr-[0.5%]"
+        >
+          <p
+            className="font-std font-bold text-[12px] text-dolist-gray dark:text-dolist-cream"
+          >
+            Resolved by
+          </p>
+          <p
+            className="font-std text-[11px] text-dolist-gray dark:text-dolist-cream"
+          >
+            --
+          </p>
+        </div>
+      </div>
     </div>
   </div>
 </div>
