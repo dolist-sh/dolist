@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
+import { GlobalContext } from '../contexts/global';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { Layout, AddRepoModal, MonitoredRepoOverview } from '../components';
@@ -11,15 +12,15 @@ const DashboardPage: NextPage = () => {
   const { push } = useRouter();
 
   const layoutProps = useLayoutProps();
+  const globalContext = useContext(GlobalContext);
   const [modalOpenCounter, setModalOpenCounter] = useState(0);
-  const [monitoredRepos, setMonitoredRepos] = useState<Array<MonitoredRepo[]>>([]);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     !token
       ? push('/signin')
       : getMonitoredRepos(token).then((data) => {
-          setMonitoredRepos(convertMreposToNestedArray(data));
+          globalContext.setMonitoredRepos(data);
         });
   }, []);
 
@@ -72,7 +73,7 @@ const DashboardPage: NextPage = () => {
       <div className="w-full h-3/4 pt-10 pb-5">
         <div className="w-5/6 min-h-full h-auto m-auto mt-0 mb-0">
           <h2 className="font-std font-bold text-black dark:text-dolist-cream">{`Monitored repositroies`}</h2>
-          {monitoredRepos.map((nestedArr, index) => {
+          {convertMreposToNestedArray(globalContext.monitoredRepos).map((nestedArr, index) => {
             return (
               <div key={index} className="flex flex-row h-auto mt-5 mb-5 ml-3 justify-evenly">
                 {nestedArr.map((mrepo, index) => {

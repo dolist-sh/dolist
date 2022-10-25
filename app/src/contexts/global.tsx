@@ -1,9 +1,13 @@
 import React from 'react';
+import { MonitoredRepo } from '../types';
 
 export interface IGlobalContext {
   theme: 'light' | 'dark' | null;
+  monitoredRepos: MonitoredRepo[];
   switchToLight: () => void;
   switchToDark: () => void;
+  setMonitoredRepos: (data: MonitoredRepo[]) => void;
+  getMonitoredRepo: (fullName: string) => MonitoredRepo;
 }
 
 type ObjType = Record<string, unknown>;
@@ -17,8 +21,11 @@ export class GlobalContextProvider extends React.Component<ObjType, IGlobalConte
     super(props);
     this.state = {
       theme: null,
+      monitoredRepos: [],
       switchToLight: this.switchToLight.bind(this),
       switchToDark: this.switchToDark.bind(this),
+      setMonitoredRepos: this.setMonitoredRepos.bind(this),
+      getMonitoredRepo: this.getMonitoredRepo.bind(this),
     };
   }
 
@@ -44,6 +51,20 @@ export class GlobalContextProvider extends React.Component<ObjType, IGlobalConte
     document.documentElement.classList.add('dark');
 
     this.setState({ theme: 'dark' });
+  }
+
+  setMonitoredRepos(data: MonitoredRepo[]) {
+    this.setState({ monitoredRepos: data });
+  }
+
+  getMonitoredRepo(id: string): MonitoredRepo | null {
+    //TODO: if the monitored repo array is empty call the API
+
+    const result = this.state.monitoredRepos.find((mrepo) => mrepo.id == id);
+
+    if (!result) return null;
+
+    return result;
   }
 
   render(): React.ReactNode {

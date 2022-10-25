@@ -2,7 +2,7 @@
 
 exports[`Snapshot testing of TaskCard component renders correctly 1`] = `
 <div
-  className="w-[97%] h-auto m-auto mt-4 mb-4 bg-dolist-cream dark:bg-dolist-darkblue border-[0.5px] border-b border-black dark:border-dolist-cream rounded"
+  className="w-[97%] h-auto m-auto mt-4 mb-4 bg-dolist-cream dark:bg-dolist-darkblue border-[0.5px] border-black dark:border-dolist-cream rounded"
 >
   <div
     className="w-[92%] h-full m-auto pt-5 pb-5"
@@ -153,7 +153,7 @@ exports[`Snapshot testing of TaskCard component renders correctly 1`] = `
           <p
             className="font-std text-[11px] text-dolist-gray dark:text-dolist-cream"
           >
-            /src/input/example.py
+            /Users/yunjae/Desktop/engineering/comment-parser/input/folder_b/folder_b.ts
           </p>
         </div>
         <div

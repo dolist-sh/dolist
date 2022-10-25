@@ -1,5 +1,7 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { getShortSha1 } from '../utils';
 import { MonitoredRepo } from '../types';
 
 interface MonitoredRepoOverviewProps {
@@ -14,10 +16,6 @@ const MonitoredRepoOverview: React.FC<MonitoredRepoOverviewProps> = ({
   const [newComments, setNewComments] = useState([]);
   const [resolvedComments, setResolvedComments] = useState([]);
   const [oldComments, setOldComments] = useState([]);
-
-  function getShortSha1(input: string, num = 7): string {
-    return input.slice(0, num);
-  }
 
   /**
    *
@@ -113,7 +111,9 @@ const MonitoredRepoOverview: React.FC<MonitoredRepoOverviewProps> = ({
         </div>
       </div>
       <div className="flex flex-row pt-10 ml-3 mr-3 justify-evenly">
-        <a className="w-1/2 font-std font-bold text-[9px] text-dolist-darkblue dark:text-white underline">{`view full report`}</a>
+        <Link href={`/report/${mrepo.id}`}>
+          <a className="w-1/2 font-std font-bold text-[9px] text-dolist-darkblue dark:text-white underline">{`view full report`}</a>
+        </Link>
         <p className="w-1/2 font-std font-bold text-[9px] text-dolist-gray dark:text-white text-right">
           {`updated at: `}
           <span className="font-std text-[8px] text-dolist-lightgray dark:text-dolist-cream">
