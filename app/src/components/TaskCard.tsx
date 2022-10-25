@@ -8,12 +8,21 @@ interface TaskCardProps {
   title: string;
   commentStyle: string;
   type: string;
+  status: string;
   fullComment: string[];
   path: string;
   lineNumber: number;
 }
 
-const TaskCard: React.FC<TaskCardProps> = ({ theme, title, type, fullComment, path, lineNumber }: TaskCardProps) => {
+const TaskCard: React.FC<TaskCardProps> = ({
+  theme,
+  title,
+  type,
+  status,
+  fullComment,
+  path,
+  lineNumber,
+}: TaskCardProps) => {
   const codeStrings = fullComment.join('');
   const language = getLanguage(path);
 
@@ -21,7 +30,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ theme, title, type, fullComment, pa
     <div className="w-[97%] h-auto m-auto mt-4 mb-4 bg-dolist-cream dark:bg-dolist-darkblue border-[0.5px] border-black dark:border-dolist-cream rounded">
       <div className="w-[92%] h-full m-auto pt-5 pb-5">
         <div className="relative pt-4 pb-3 border-b border-dolist-lightgray dark:border-dolist-cream">
-          <p className="absolute text-base text-[9px] top-[-1.5px]">{`New`}</p>
+          <p className="absolute text-base text-[9px] top-[-1.5px]">{status}</p>
           <h3 className="text-base font-bold text-black dark:text-white">{`${title}`}</h3>
           <p className="text-[11px] pl-[1px] pt-1 text-dolist-gray dark:text-dolist-cream">{`Type: ${type}`}</p>
         </div>

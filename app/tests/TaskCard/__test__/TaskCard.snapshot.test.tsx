@@ -8,6 +8,7 @@ describe('Snapshot testing of TaskCard component', () => {
     type: 'TODO',
     commentStyle: 'oneline',
     title: 'This should be parsed',
+    status: 'New',
     fullComment: ['// TODO: This should be parsed'],
     path: '/Users/yunjae/Desktop/engineering/comment-parser/input/folder_b/folder_b.ts',
     lineNumber: 1,
@@ -19,6 +20,7 @@ describe('Snapshot testing of TaskCard component', () => {
         theme={testData.theme}
         type={testData.type}
         title={testData.title}
+        status={testData.status}
         commentStyle={testData.commentStyle}
         fullComment={testData.fullComment}
         path={testData.path}

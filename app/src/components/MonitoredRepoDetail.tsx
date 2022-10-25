@@ -56,6 +56,7 @@ const MonitoredRepoDetail: React.FC<MonitoredRepoDetailProps> = ({
                   key={index}
                   theme={theme}
                   title={comment.title}
+                  status={comment.status}
                   commentStyle={comment.commentStyle}
                   type={comment.type}
                   fullComment={comment.fullComment}
