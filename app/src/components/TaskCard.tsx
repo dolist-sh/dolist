@@ -26,11 +26,21 @@ const TaskCard: React.FC<TaskCardProps> = ({
   const codeStrings = fullComment.join('');
   const language = getLanguage(path);
 
+  function getStatusColor(status: string): string | null {
+    let result = null;
+
+    status === 'New' ? (result = 'text-orange-600') : null;
+    status === 'Old' ? (result = 'text-red-600') : null;
+    return result;
+  }
+
   return (
     <div className="w-[97%] h-auto m-auto mt-4 mb-4 bg-dolist-cream dark:bg-dolist-darkblue border-[0.5px] border-black dark:border-dolist-cream rounded">
       <div className="w-[92%] h-full m-auto pt-5 pb-5">
         <div className="relative pt-4 pb-3 border-b border-dolist-lightgray dark:border-dolist-cream">
-          <p className="absolute text-base text-[9px] top-[-1.5px]">{status}</p>
+          {status === 'New' || status === 'Old' ? (
+            <p className={`absolute text-base text-[9px] top-[-1.5px] ${getStatusColor(status)}`}>{status}</p>
+          ) : null}
           <h3 className="text-base font-bold text-black dark:text-white">{`${title}`}</h3>
           <p className="text-[11px] pl-[1px] pt-1 text-dolist-gray dark:text-dolist-cream">{`Type: ${type}`}</p>
         </div>
