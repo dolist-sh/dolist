@@ -1,9 +1,7 @@
-import { useState, useEffect, useContext } from 'react';
-import { GlobalContext } from '../contexts/global';
+import { useState, useEffect } from 'react';
+import { IGlobalContext } from '../contexts/global';
 
-export default function useLayoutProps() {
-  const globalcontext = useContext(GlobalContext);
-
+export default function useLayoutProps(context: IGlobalContext) {
   const [logoUri, setLogoUri] = useState<string>(null);
   const [colorThemeIconUri, setcolorThemeIconUri] = useState<string>(null);
   const [addGithubLogoUri, setAddGithubLogoUri] = useState<string>(null);
@@ -12,7 +10,7 @@ export default function useLayoutProps() {
   const [logoutIconUri, setLogoutIconUri] = useState<string>(null);
 
   useEffect(() => {
-    if (globalcontext.theme === 'dark') {
+    if (context.theme === 'dark') {
       setLogoUri('/images/logo_dark_multiline.png');
       setcolorThemeIconUri('/images/lightmode_cream.png');
       setGithubLogoUri('/images/github_white.png');
@@ -20,7 +18,7 @@ export default function useLayoutProps() {
       setLogoutIconUri('/images/logout_light.png');
       setSettingIconUri('/images/settings_light.png');
     }
-    if (globalcontext.theme === 'light') {
+    if (context.theme === 'light') {
       setLogoUri('/images/logo_light_multiline.png');
       setcolorThemeIconUri('/images/nightmode.png');
       setGithubLogoUri('/images/github_black.png');
@@ -28,17 +26,17 @@ export default function useLayoutProps() {
       setLogoutIconUri('/images/logout_dark.png');
       setSettingIconUri('/images/settings_dark.png');
     }
-  }, [globalcontext.theme]);
+  }, [context.theme]);
 
   const changeColorThemeHandler = (event: React.MouseEvent) => {
     event.preventDefault();
 
-    if (globalcontext.theme === 'dark') {
-      globalcontext.switchToLight();
+    if (context.theme === 'dark') {
+      context.switchToLight();
     }
 
-    if (globalcontext.theme === 'light') {
-      globalcontext.switchToDark();
+    if (context.theme === 'light') {
+      context.switchToDark();
     }
   };
 
@@ -50,7 +48,7 @@ export default function useLayoutProps() {
 
   return {
     logoUri,
-    theme: globalcontext.theme,
+    theme: context.theme,
     addGithubLogoUri,
     githubLogoUri,
     colorThemeIconUri,

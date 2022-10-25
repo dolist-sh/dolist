@@ -11,8 +11,8 @@ import { MonitoredRepo } from '../types';
 const DashboardPage: NextPage = () => {
   const { push } = useRouter();
 
-  const layoutProps = useLayoutProps();
   const globalContext = useContext(GlobalContext);
+  const layoutProps = useLayoutProps(globalContext);
   const [modalOpenCounter, setModalOpenCounter] = useState(0);
 
   useEffect(() => {

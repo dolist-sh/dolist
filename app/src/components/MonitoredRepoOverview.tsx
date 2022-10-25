@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useCommentsPerType } from '../hooks';
 import { getShortSha1 } from '../utils';
 import { MonitoredRepo } from '../types';
 
@@ -13,10 +13,6 @@ const MonitoredRepoOverview: React.FC<MonitoredRepoOverviewProps> = ({
   githubLogoUri,
   mrepo,
 }: MonitoredRepoOverviewProps) => {
-  const [newComments, setNewComments] = useState([]);
-  const [resolvedComments, setResolvedComments] = useState([]);
-  const [oldComments, setOldComments] = useState([]);
-
   /**
    *
    * @param input: Unix timestamp
@@ -49,13 +45,7 @@ const MonitoredRepoOverview: React.FC<MonitoredRepoOverviewProps> = ({
     return `${hour < 10 ? `0${hour}` : hour}:${minute < 10 ? `0${minute}` : minute}, ${month} ${date}, ${year}`;
   }
 
-  useEffect(() => {
-    if (mrepo.parsedComments.length > 0) {
-      setNewComments(mrepo.parsedComments.filter((e) => e.status == 'New'));
-      setResolvedComments(mrepo.parsedComments.filter((e) => e.status == 'Resolved'));
-      setOldComments(mrepo.parsedComments.filter((e) => e.status == 'Old'));
-    }
-  }, [mrepo]);
+  const filteredComments = useCommentsPerType(mrepo);
 
   return (
     <div className="flex flex-col w-[45%] h-[200px] p-3 pl-2 pr-2 bg-dolist-cream dark:bg-dolist-darkblue border-[0.5px] border-dashed border-black dark:border-dolist-cream rounded">
@@ -93,19 +83,19 @@ const MonitoredRepoOverview: React.FC<MonitoredRepoOverviewProps> = ({
           <div className="flex flex-col">
             <h4 className="font-std text-dolist-gray dark:text-dolist-cream text-[11px] text-center">{`New`}</h4>
             <p className="font-std font-bold text-black dark:text-white text-[11px] text-center underline">
-              {newComments.length > 0 ? newComments.length : '--'}
+              {filteredComments.newComments.length > 0 ? filteredComments.newComments.length : '--'}
             </p>
           </div>
           <div className="flex flex-col">
             <h4 className="font-std text-dolist-gray dark:text-dolist-cream text-[11px] text-center">{`Resolved`}</h4>
             <p className="font-std font-bold text-black dark:text-white text-[11px] text-center underline">
-              {resolvedComments.length > 0 ? resolvedComments.length : '--'}
+              {filteredComments.resolvedComments.length > 0 ? filteredComments.resolvedComments.length : '--'}
             </p>
           </div>
           <div className="flex flex-col">
             <h4 className="font-std text-dolist-gray dark:text-dolist-cream text-[11px] text-center">{`Old`}</h4>
             <p className="font-std font-bold text-black dark:text-white text-[11px] text-center underline">
-              {oldComments.length > 0 ? oldComments.length : '--'}
+              {filteredComments.oldComments.length > 0 ? filteredComments.oldComments.length : '--'}
             </p>
           </div>
         </div>

@@ -7,9 +7,9 @@ import { useLayoutProps } from '../../hooks';
 import { MonitoredRepo } from '../../types';
 
 const ReportPage: NextPage = () => {
-  const layoutProps = useLayoutProps();
   const { push, query } = useRouter();
   const globalContext = useContext(GlobalContext);
+  const layoutProps = useLayoutProps(globalContext);
   const [repo, setRepo] = useState<MonitoredRepo>(null);
   const { id } = query;
 

@@ -56,22 +56,22 @@ Array [
       <p
         className="cursor-pointer text-xs font-std font-bold text-dolist-gray dark:text-dolist-cream pr-6"
       >
-        Total (20)
+        Total 0
       </p>
       <p
         className="cursor-pointer text-xs font-std hover:font-bold text-dolist-gray dark:text-dolist-cream pr-6"
       >
-        New (2)
+        New 0
       </p>
       <p
         className="cursor-pointer text-xs font-std hover:font-bold text-dolist-gray dark:text-dolist-cream pr-6"
       >
-        Resolved (5)
+        Resolved 0
       </p>
       <p
         className="cursor-pointer text-xs font-std hover:font-bold text-dolist-gray dark:text-dolist-cream pr-6"
       >
-        Old (15)
+        Old 0
       </p>
     </div>
   </div>,

@@ -11,7 +11,7 @@ exports[`Snapshot testing of TaskCard component renders correctly 1`] = `
       className="relative pt-4 pb-3 border-b border-dolist-lightgray dark:border-dolist-cream"
     >
       <p
-        className="absolute text-base text-[9px] top-[-1.5px]"
+        className="absolute text-base text-[9px] top-[-1.5px] text-orange-600"
       >
         New
       </p>
