@@ -86,10 +86,15 @@ class MonitoredRepoDBAccess:
 
             result = self.db_instance.execute(select).fetchone()
 
+            select_comments = self.parsed_comment_schema.select().where(
+                self.parsed_comment_schema.c.mrepoId == id
+            )
+            comments = self.db_instance.execute(select_comments).fetchall()
+
             if result is None:
                 return None
             else:
-                return MonitoredRepo(**result)
+                return MonitoredRepo(**result, parsedComments=comments)
 
         except Exception as e:
             raise e
@@ -121,9 +126,6 @@ class MonitoredRepoDBAccess:
                 comments = self.db_instance.execute(select_comments).fetchall()
 
                 output.append(MonitoredRepo(**repo, parsedComments=comments))
-
-                # Puzzles:
-                # 2. What is the best way to handle pagination?
             return output
         except Exception as e:
             raise e

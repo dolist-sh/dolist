@@ -48,11 +48,12 @@ async def test_null_case_read_monitored_repo_by_fullname(
 
 @pytest.mark.asyncio
 async def test_read_monitored_repo(mrepodb: MonitoredRepoDBAccess, test_mrepo_dataset):
-    result = await mrepodb.read_monitored_repo(test_mrepo_dataset[3]["id"])
+    result = await mrepodb.read_monitored_repo(test_mrepo_dataset[1]["id"])
 
     assert (type(result).__name__) is MonitoredRepo.__name__
-    assert result.id == test_mrepo_dataset[3]["id"]
-    assert result.name == test_mrepo_dataset[3]["name"]
+    assert result.id == test_mrepo_dataset[1]["id"]
+    assert result.name == test_mrepo_dataset[1]["name"]
+    assert len(result.parsedComments) == 10
 
 
 @pytest.mark.asyncio
