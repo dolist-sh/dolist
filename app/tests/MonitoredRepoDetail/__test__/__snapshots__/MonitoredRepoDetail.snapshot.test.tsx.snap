@@ -53,26 +53,34 @@ Array [
     <div
       className="flex flex-row pl-2 pb-2"
     >
-      <p
-        className="cursor-pointer text-xs font-std font-bold text-dolist-gray dark:text-dolist-cream pr-6"
+      <a
+        className="cursor-pointer text-xs font-std text-dolist-gray dark:text-dolist-cream pr-6 font-bold"
+        data-filter-type="total"
+        onClick={[Function]}
       >
         Total 0
-      </p>
-      <p
-        className="cursor-pointer text-xs font-std hover:font-bold text-dolist-gray dark:text-dolist-cream pr-6"
+      </a>
+      <a
+        className="cursor-pointer text-xs font-std text-dolist-gray dark:text-dolist-cream pr-6 null"
+        data-filter-type="new"
+        onClick={[Function]}
       >
         New 0
-      </p>
-      <p
-        className="cursor-pointer text-xs font-std hover:font-bold text-dolist-gray dark:text-dolist-cream pr-6"
+      </a>
+      <a
+        className="cursor-pointer text-xs font-std text-dolist-gray dark:text-dolist-cream pr-6 null"
+        data-filter-type="resolved"
+        onClick={[Function]}
       >
         Resolved 0
-      </p>
-      <p
-        className="cursor-pointer text-xs font-std hover:font-bold text-dolist-gray dark:text-dolist-cream pr-6"
+      </a>
+      <a
+        className="cursor-pointer text-xs font-std text-dolist-gray dark:text-dolist-cream pr-6 null"
+        data-filter-type="old"
+        onClick={[Function]}
       >
         Old 0
-      </p>
+      </a>
     </div>
   </div>,
   <div

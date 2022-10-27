@@ -1,8 +1,9 @@
 import * as React from 'react';
+import { useState, useEffect } from 'react';
 import { TaskCard } from '../components';
 import { useCommentsPerType } from '../hooks';
 import { getShortSha1 } from '../utils';
-import { MonitoredRepo } from '../types';
+import { MonitoredRepo, ParsedComment } from '../types';
 
 interface MonitoredRepoDetailProps {
   theme: string;
@@ -16,6 +17,21 @@ const MonitoredRepoDetail: React.FC<MonitoredRepoDetailProps> = ({
   githubLogoUri,
 }: MonitoredRepoDetailProps) => {
   const filteredCommments = useCommentsPerType(repo);
+
+  const [selectedFilter, setSelectedFilter] = useState<'total' | 'new' | 'resolved' | 'old'>('total');
+  const [commentList, setCommentList] = useState<ParsedComment[]>(repo.parsedComments);
+
+  const filterClickHandler = (event): void => {
+    event.preventDefault();
+    setSelectedFilter(event.target.getAttribute('data-filter-type'));
+  };
+
+  useEffect(() => {
+    selectedFilter === 'total' ? setCommentList(repo.parsedComments) : null;
+    selectedFilter === 'new' ? setCommentList(filteredCommments.newComments) : null;
+    selectedFilter === 'resolved' ? setCommentList(filteredCommments.resolvedComments) : null;
+    selectedFilter === 'old' ? setCommentList(filteredCommments.oldComments) : null;
+  }, [selectedFilter]);
 
   return (
     <>
@@ -45,15 +61,39 @@ const MonitoredRepoDetail: React.FC<MonitoredRepoDetailProps> = ({
       </div>
       <div className="flex flex-col w-[76%] m-auto mt-9 border-b border-dolist-lightgray dark:border-dolist-cream">
         <div className="flex flex-row pl-2 pb-2">
-          <p className="cursor-pointer text-xs font-std font-bold text-dolist-gray dark:text-dolist-cream pr-6">{`Total ${repo.parsedComments.length}`}</p>
-          <p className="cursor-pointer text-xs font-std hover:font-bold text-dolist-gray dark:text-dolist-cream pr-6">{`New ${filteredCommments.newComments.length}`}</p>
-          <p className="cursor-pointer text-xs font-std hover:font-bold text-dolist-gray dark:text-dolist-cream pr-6">{`Resolved ${filteredCommments.resolvedComments.length}`}</p>
-          <p className="cursor-pointer text-xs font-std hover:font-bold text-dolist-gray dark:text-dolist-cream pr-6">{`Old ${filteredCommments.oldComments.length}`}</p>
+          <a
+            className={`cursor-pointer text-xs font-std text-dolist-gray dark:text-dolist-cream pr-6 ${
+              selectedFilter === 'total' ? 'font-bold' : null
+            }`}
+            data-filter-type="total"
+            onClick={filterClickHandler}
+          >{`Total ${repo.parsedComments.length}`}</a>
+          <a
+            className={`cursor-pointer text-xs font-std text-dolist-gray dark:text-dolist-cream pr-6 ${
+              selectedFilter === 'new' ? 'font-bold' : null
+            }`}
+            data-filter-type="new"
+            onClick={filterClickHandler}
+          >{`New ${filteredCommments.newComments.length}`}</a>
+          <a
+            className={`cursor-pointer text-xs font-std text-dolist-gray dark:text-dolist-cream pr-6 ${
+              selectedFilter === 'resolved' ? 'font-bold' : null
+            }`}
+            data-filter-type="resolved"
+            onClick={filterClickHandler}
+          >{`Resolved ${filteredCommments.resolvedComments.length}`}</a>
+          <a
+            className={`cursor-pointer text-xs font-std text-dolist-gray dark:text-dolist-cream pr-6 ${
+              selectedFilter === 'old' ? 'font-bold' : null
+            }`}
+            data-filter-type="old"
+            onClick={filterClickHandler}
+          >{`Old ${filteredCommments.oldComments.length}`}</a>
         </div>
       </div>
       <div className="flex flex-col w-[76%] m-auto mt-9">
         {repo
-          ? repo.parsedComments.map((comment, index) => {
+          ? commentList.map((comment, index) => {
               return (
                 <TaskCard
                   key={index}
