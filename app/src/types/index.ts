@@ -14,13 +14,13 @@ export type MonitoredRepo = {
   name: string;
   fullName: string;
   defaultBranch: string;
-  userId: string; // Is it a good idea to pass uuid to client?
+  userId: string;
   language: string | null;
   lastCommit: string | null;
   provider: 'github';
   visibility: 'private' | 'public';
   status: 'active' | 'inactive';
-  parsedComments: ParsedComment[] | null; // TODO: Write out a ParsedComment type
+  parsedComments: ParsedComment[];
   createdAt: number;
   lastUpdated: number;
 };
