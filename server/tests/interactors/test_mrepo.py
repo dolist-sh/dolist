@@ -125,19 +125,22 @@ def mock_read_monitored_repo(monkeypatch, mrepodb):
 
 @pytest.fixture
 def mrepo_interactor(
-    userdb,
-    mrepodb,
-    github_service,
+    get_mrepo,
+    get_mrepos,
+    add_mrepos,
+    write_parse_result,
     mock_read_user_by_email,
     mock_read_monitored_repos,
     mock_read_monitored_repo,
 ):
-    return MonitoredRepoInteractor(userdb, mrepodb, github_service)
+    return MonitoredRepoInteractor(
+        get_mrepo, get_mrepos, add_mrepos, write_parse_result
+    )
 
 
 @pytest.mark.asyncio
 async def test_get_monitored_repo_success(mrepo_interactor: MonitoredRepoInteractor):
-    result = await mrepo_interactor.execute_get_monitored_repo(
+    result = await mrepo_interactor.get_mrepo.execute(
         "awesome_user@email.com", mrepo_id
     )
 
@@ -150,9 +153,7 @@ async def test_get_monitored_repo_fail_invalid_email(
     mrepo_interactor: MonitoredRepoInteractor,
 ):
     with pytest.raises(ValueError) as exception:
-        await mrepo_interactor.execute_get_monitored_repo(
-            "null_email@email.com", mrepo_id
-        )
+        await mrepo_interactor.get_mrepo.execute("null_email@email.com", mrepo_id)
         assert "unknown user" is str(exception.value)
 
 
@@ -161,17 +162,13 @@ async def test_get_monitored_repo_fail_invalid_mrepo_id(
     mrepo_interactor: MonitoredRepoInteractor,
 ):
     with pytest.raises(ValueError) as exception:
-        await mrepo_interactor.execute_get_monitored_repo(
-            "awesome_user@email.com", uuid4()
-        )
+        await mrepo_interactor.get_mrepo.execute("awesome_user@email.com", uuid4())
         assert "unknown monitored repositry" is str(exception.value)
 
 
 @pytest.mark.asyncio
 async def test_get_monitored_repos_success(mrepo_interactor: MonitoredRepoInteractor):
-    result = await mrepo_interactor.execute_get_monitored_repos(
-        "awesome_user@email.com", 100, 0
-    )
+    result = await mrepo_interactor.get_mrepos.execute("awesome_user@email.com", 100, 0)
 
     assert len(result) == 3
     assert len(result[0].parsedComments) == 2
@@ -183,7 +180,5 @@ async def test_get_monitored_repos_fail_invalid_email(
     mrepo_interactor: MonitoredRepoInteractor,
 ):
     with pytest.raises(ValueError) as exception:
-        await mrepo_interactor.execute_get_monitored_repos(
-            "null_email@email.com", 100, 0
-        )
+        await mrepo_interactor.get_mrepos.execute("null_email@email.com", 100, 0)
         assert "unknown user" is str(exception.value)

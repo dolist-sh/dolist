@@ -91,9 +91,7 @@ async def add_monitored_repos(
     email: str = Depends(get_email_from_token),
 ):
     try:
-        new_monitored_repos = await mrepo_interactor.execute_add_monitored_repos(
-            email, payload
-        )
+        new_monitored_repos = await mrepo_interactor.add_mrepos.execute(email, payload)
 
         if len(new_monitored_repos) > 0:
             logger.info(f"{len(new_monitored_repos)} repositories added for monitoring")
@@ -124,7 +122,7 @@ async def write_parse_result(
         if is_auth_req is not True:
             raise HTTPException(status_code=401, detail="Unauthorized request")
 
-        result = await mrepo_interactor.execute_write_parse_result(payload)
+        result = await mrepo_interactor.write_parse_result.execute(payload)
 
         if result["status"] == "failed":
             logger.warning(
@@ -152,9 +150,7 @@ async def get_monitored_repos(
     response_model=List[MonitoredRepo],
 ):
     try:
-        result = await mrepo_interactor.execute_get_monitored_repos(
-            email, limit, offset
-        )
+        result = await mrepo_interactor.get_mrepos.execute(email, limit, offset)
         return result
     except Exception as e:
         logger.critical(
@@ -170,7 +166,7 @@ async def get_monitored_repo(
     response_model=MonitoredRepo,
 ):
     try:
-        result = await mrepo_interactor.execute_get_monitored_repo(email, mrepo_id)
+        result = await mrepo_interactor.get_mrepo.execute(email, mrepo_id)
         return result
     except Exception as e:
         logger.critical(

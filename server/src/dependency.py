@@ -35,6 +35,12 @@ publisher = ParseMsgPublisher(parse_queue, failed_hook_queue, mrepodb, userdb, l
 from app.interactors.auth import GitHubAuthUseCase, WorkerAuthUseCase
 from app.interactors.user import GetUserUseCase, GetUserGitHubReposUseCase
 from app.interactors.webhook import GitHubPushHookUseCase
+from app.interactors.mrepo import (
+    GetMonitoredRepoUseCase,
+    GetMonitoredReposUseCase,
+    WriteParseResultUseCase,
+    AddMonitoredReposUseCase,
+)
 
 github_auth_usecase = (
     GitHubAuthUseCase(userdb=userdb, github_auth=github_oauth_service, jwt=jwt_service),
@@ -48,7 +54,20 @@ get_user_usecase = (
 get_user_github_repos_usecase = GetUserGitHubReposUseCase(
     userdb=userdb, github=github_service, logger=logger
 )
-process_github_push_hook = GitHubPushHookUseCase(publisher=publisher)
+github_push_hook_usecase = GitHubPushHookUseCase(publisher=publisher)
+
+get_mrepo_usecase = GetMonitoredRepoUseCase(
+    userdb=userdb, mrepodb=mrepodb, github=github_service
+)
+get_mrepos_usecase = GetMonitoredReposUseCase(
+    userdb=userdb, mrepodb=mrepodb, github=github_service
+)
+write_parse_result_usecase = WriteParseResultUseCase(
+    userdb=userdb, mrepodb=mrepodb, github=github_service
+)
+add_mrepos_usecase = AddMonitoredReposUseCase(
+    userdb=userdb, mrepodb=mrepodb, github=github_service
+)
 
 
 from app.interactors.auth import AuthInteractor
@@ -64,5 +83,10 @@ auth_interactor = AuthInteractor(
 user_interactor = UserInteractor(
     get_user_github_repos=get_user_github_repos_usecase, get_user=get_user_usecase
 )
-mrepo_interactor = MonitoredRepoInteractor(userdb, mrepodb, github_service)
-webhook_interactor = WebhookInteractor(github_push_hook=process_github_push_hook)
+mrepo_interactor = MonitoredRepoInteractor(
+    get_mrepo=get_mrepo_usecase,
+    get_mrepos=get_mrepos_usecase,
+    add_mrepos=add_mrepos_usecase,
+    write_parse_result=write_parse_result_usecase,
+)
+webhook_interactor = WebhookInteractor(github_push_hook=github_push_hook_usecase)
