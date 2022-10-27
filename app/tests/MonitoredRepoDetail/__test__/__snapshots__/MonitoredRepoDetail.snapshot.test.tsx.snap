@@ -1,0 +1,90 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Snapshot testing of MonitoredRepoDetail component renders correctly 1`] = `
+Array [
+  <div
+    className="flex flex-row w-[80%] m-auto mt-7 pl-6 pr-6 justify-evenly"
+  >
+    <div
+      className="flex flex-row w-1/2"
+    >
+      <img
+        className="w-9 h-9 self-center mr-3"
+        src="http://awesomelogo"
+      />
+      <div
+        className="flex flex-col"
+      >
+        <h4
+          className="font-std font-bold text-[14px] text-black dark:text-dolist-cream"
+        >
+          whathecker/assignment-restapi
+        </h4>
+        <p
+          className="font-std font-bold text-[10px] text-dolist-gray dark:text-dolist-cream"
+        >
+          branch: 
+          <span
+            className="font-std font-bold underline text-dolist-darkblue dark:text-white"
+          >
+            main
+          </span>
+        </p>
+      </div>
+    </div>
+    <div
+      className="flex flex-row-reverse w-1/2"
+    >
+      <p
+        className="text-[11px] font-std font-bold text-right text-dolist-gray dark:text-dolist-cream"
+      >
+        from last commit: 
+        <span
+          className="font-std font-bold underline text-dolist-darkblue dark:text-white"
+        >
+          bfae010
+        </span>
+      </p>
+    </div>
+  </div>,
+  <div
+    className="flex flex-col w-[76%] m-auto mt-9 border-b border-dolist-lightgray dark:border-dolist-cream"
+  >
+    <div
+      className="flex flex-row pl-2 pb-2"
+    >
+      <a
+        className="cursor-pointer text-xs font-std text-dolist-gray dark:text-dolist-cream pr-6 font-bold"
+        data-filter-type="total"
+        onClick={[Function]}
+      >
+        Total 0
+      </a>
+      <a
+        className="cursor-pointer text-xs font-std text-dolist-gray dark:text-dolist-cream pr-6 null"
+        data-filter-type="new"
+        onClick={[Function]}
+      >
+        New 0
+      </a>
+      <a
+        className="cursor-pointer text-xs font-std text-dolist-gray dark:text-dolist-cream pr-6 null"
+        data-filter-type="resolved"
+        onClick={[Function]}
+      >
+        Resolved 0
+      </a>
+      <a
+        className="cursor-pointer text-xs font-std text-dolist-gray dark:text-dolist-cream pr-6 null"
+        data-filter-type="old"
+        onClick={[Function]}
+      >
+        Old 0
+      </a>
+    </div>
+  </div>,
+  <div
+    className="flex flex-col w-[76%] m-auto mt-9"
+  />,
+]
+`;

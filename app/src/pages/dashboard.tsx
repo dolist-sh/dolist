@@ -5,85 +5,29 @@ import { useRouter } from 'next/router';
 import { Layout, AddRepoModal, MonitoredRepoOverview } from '../components';
 
 import { getMonitoredRepos } from '../api';
+import { useLayoutProps } from '../hooks';
 import { MonitoredRepo } from '../types';
 
 const DashboardPage: NextPage = () => {
   const { push } = useRouter();
 
-  const globalcontext = useContext(GlobalContext);
-
-  const [logoUri, setLogoUri] = useState(null);
-  const [colorThemeIconUri, setcolorThemeIconUri] = useState(null);
-  const [addGithubLogoUri, setAddGithubLogoUri] = useState(null);
-  const [githubLogoUri, setGithubLogoUri] = useState(null);
-  const [settingIconUri, setSettingIconUri] = useState(null);
-  const [logoutIconUri, setLogoutIconUri] = useState(null);
+  const globalContext = useContext(GlobalContext);
+  const layoutProps = useLayoutProps(globalContext);
   const [modalOpenCounter, setModalOpenCounter] = useState(0);
-
-  const [monitoredRepos, setMonitoredRepos] = useState<Array<MonitoredRepo[]>>([]);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     !token
       ? push('/signin')
       : getMonitoredRepos(token).then((data) => {
-          setMonitoredRepos(convertMreposToNestedArray(data));
-          console.log(monitoredRepos);
+          globalContext.setMonitoredRepos(data);
         });
   }, []);
-
-  useEffect(() => {
-    if (globalcontext.theme === 'dark') {
-      setLogoUri('/images/logo_dark_multiline.png');
-      setcolorThemeIconUri('/images/lightmode_cream.png');
-      setGithubLogoUri('/images/github_white.png');
-      setAddGithubLogoUri('/images/add_github_white.png');
-      setLogoutIconUri('/images/logout_light.png');
-      setSettingIconUri('/images/settings_light.png');
-    }
-    if (globalcontext.theme === 'light') {
-      setLogoUri('/images/logo_light_multiline.png');
-      setcolorThemeIconUri('/images/nightmode.png');
-      setGithubLogoUri('/images/github_black.png');
-      setAddGithubLogoUri('/images/add_github_black.png');
-      setLogoutIconUri('/images/logout_dark.png');
-      setSettingIconUri('/images/settings_dark.png');
-    }
-  }, [globalcontext.theme]);
-
-  const changeColorThemeHandler = (event: React.MouseEvent) => {
-    event.preventDefault();
-
-    if (globalcontext.theme === 'dark') {
-      globalcontext.switchToLight();
-    }
-
-    if (globalcontext.theme === 'light') {
-      globalcontext.switchToDark();
-    }
-  };
-
-  const logoutHandler = (event: React.MouseEvent) => {
-    event.preventDefault();
-
-    localStorage.removeItem('token');
-    window.location.assign('/signin');
-  };
 
   const modalOpenHandler = (event: React.MouseEvent) => {
     event.preventDefault();
     const counter = modalOpenCounter + 1;
     setModalOpenCounter(counter);
-  };
-
-  const layoutProps = {
-    logoUri,
-    theme: globalcontext.theme,
-    colorThemeIconUri,
-    changeColorThemeHandler,
-    settingIconUri,
-    logoutIconUri,
-    logoutHandler,
   };
 
   function convertMreposToNestedArray(mrepos: MonitoredRepo[]): Array<MonitoredRepo[]> {
@@ -108,7 +52,7 @@ const DashboardPage: NextPage = () => {
 
   return (
     <Layout {...layoutProps}>
-      <AddRepoModal githubLogoUri={githubLogoUri} openCounter={modalOpenCounter} />
+      <AddRepoModal githubLogoUri={layoutProps.githubLogoUri} openCounter={modalOpenCounter} />
       <div className="w-full h-1/4 pt-10 pb-5">
         <div className="w-5/6 h-full m-auto mt-0 mb-0">
           <h2 className="font-std font-bold text-black dark:text-dolist-cream">{`Start monitoring the repositories`}</h2>
@@ -119,7 +63,7 @@ const DashboardPage: NextPage = () => {
               className="flex flex-col w-[30%] h-full p-5 pt-7 pb-7 bg-dolist-cream dark:bg-dolist-darkblue border-[0.5px] border-dashed border-black dark:border-dolist-cream rounded"
             >
               <div className="flex flex-col w-1/4 h-1/4 m-auto">
-                <img src={addGithubLogoUri} className="w-7 h-7 ml-2 self-center" />
+                <img src={layoutProps.addGithubLogoUri} className="w-7 h-7 ml-2 self-center" />
               </div>
               <p className="font-std font-bold text-xs text-black dark:text-dolist-cream pt-3">{`Monitor GitHub Repo`}</p>
             </button>
@@ -129,11 +73,11 @@ const DashboardPage: NextPage = () => {
       <div className="w-full h-3/4 pt-10 pb-5">
         <div className="w-5/6 min-h-full h-auto m-auto mt-0 mb-0">
           <h2 className="font-std font-bold text-black dark:text-dolist-cream">{`Monitored repositroies`}</h2>
-          {monitoredRepos.map((nestedArr, index) => {
+          {convertMreposToNestedArray(globalContext.monitoredRepos).map((nestedArr, index) => {
             return (
               <div key={index} className="flex flex-row h-auto mt-5 mb-5 ml-3 justify-evenly">
                 {nestedArr.map((mrepo, index) => {
-                  return <MonitoredRepoOverview mrepo={mrepo} key={index} githubLogoUri={githubLogoUri} />;
+                  return <MonitoredRepoOverview mrepo={mrepo} key={index} githubLogoUri={layoutProps.githubLogoUri} />;
                 })}
               </div>
             );

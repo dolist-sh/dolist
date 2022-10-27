@@ -7,3 +7,4 @@ export { default as ColorThemeBtn } from './ColorThemeBtn';
 export { default as Layout } from './Layout';
 export { default as AddRepoModal } from './AddRepoModal';
 export { default as MonitoredRepoOverview } from './MonitoredRepoOverview';
+export { default as MonitoredRepoDetail } from './MonitoredRepoDetail';
