@@ -9,12 +9,7 @@ from typing import Union, TypedDict, List
 from typing_extensions import Literal
 
 
-class WriteParseResultOutput(TypedDict):
-    status: Literal["success", "failed"]
-    error: Union[str, None]
-
-
-class MonitoredRepoInteractor:
+class MonitoredRepoBaseUseCase:
     def __init__(
         self,
         userdb: UserDBAccess,
@@ -25,9 +20,9 @@ class MonitoredRepoInteractor:
         self.mrepodb = mrepodb
         self.github = github
 
-    async def execute_get_monitored_repo(
-        self, email: str, mrepo_id: UUID
-    ) -> MonitoredRepo:
+
+class GetMonitoredRepoUseCase(MonitoredRepoBaseUseCase):
+    async def execute(self, email: str, mrepo_id: UUID) -> MonitoredRepo:
         try:
             user = await self.userdb.read_user_by_email(email)
 
@@ -45,9 +40,9 @@ class MonitoredRepoInteractor:
         except Exception as e:
             raise e
 
-    async def execute_get_monitored_repos(
-        self, email: str, limit: int, offset: int
-    ) -> List[MonitoredRepo]:
+
+class GetMonitoredReposUseCase(MonitoredRepoBaseUseCase):
+    async def execute(self, email: str, limit: int, offset: int) -> List[MonitoredRepo]:
         try:
             user = await self.userdb.read_user_by_email(email)
 
@@ -62,7 +57,9 @@ class MonitoredRepoInteractor:
         except Exception as e:
             raise e
 
-    async def execute_add_monitored_repos(
+
+class AddMonitoredReposUseCase(MonitoredRepoBaseUseCase):
+    async def execute(
         self, email: str, payload: AddMonitoredReposInput
     ) -> List[MonitoredRepo]:
         try:
@@ -112,9 +109,14 @@ class MonitoredRepoInteractor:
         except Exception as e:
             raise e
 
-    async def execute_write_parse_result(
-        self, payload: AddParsedResultInput
-    ) -> WriteParseResultOutput:
+
+class WriteParseResultOutput(TypedDict):
+    status: Literal["success", "failed"]
+    error: Union[str, None]
+
+
+class WriteParseResultUseCase(MonitoredRepoBaseUseCase):
+    async def execute(self, payload: AddParsedResultInput) -> WriteParseResultOutput:
         try:
             output: WriteParseResultOutput
 
@@ -156,3 +158,17 @@ class MonitoredRepoInteractor:
             return output
         except Exception as e:
             raise e
+
+
+class MonitoredRepoInteractor:
+    def __init__(
+        self,
+        get_mrepo: GetMonitoredRepoUseCase,
+        get_mrepos: GetMonitoredReposUseCase,
+        add_mrepos: AddMonitoredReposUseCase,
+        write_parse_result: WriteParseResultUseCase,
+    ) -> None:
+        self.get_mrepo = get_mrepo
+        self.get_mrepos = get_mrepos
+        self.add_mrepos = add_mrepos
+        self.write_parse_result = write_parse_result

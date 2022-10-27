@@ -51,7 +51,7 @@ async def get_user(
     email: str = Depends(get_email_from_token), status_code=200, response_model=User
 ):
     try:
-        user = await user_interactor.execute_get_user(email)
+        user = await user_interactor.get_user.execute(email)
         return user
 
     except ValueError as e:
@@ -69,7 +69,7 @@ async def get_user_github_repos(
     email: str = Depends(get_email_from_token), status_code=200
 ):
     try:
-        output = await user_interactor.execute_get_user_github_repos(email)
+        output = await user_interactor.get_user_github_repos.execute(email)
         return output
 
     except ValueError as e:
@@ -91,9 +91,7 @@ async def add_monitored_repos(
     email: str = Depends(get_email_from_token),
 ):
     try:
-        new_monitored_repos = await mrepo_interactor.execute_add_monitored_repos(
-            email, payload
-        )
+        new_monitored_repos = await mrepo_interactor.add_mrepos.execute(email, payload)
 
         if len(new_monitored_repos) > 0:
             logger.info(f"{len(new_monitored_repos)} repositories added for monitoring")
@@ -124,7 +122,7 @@ async def write_parse_result(
         if is_auth_req is not True:
             raise HTTPException(status_code=401, detail="Unauthorized request")
 
-        result = await mrepo_interactor.execute_write_parse_result(payload)
+        result = await mrepo_interactor.write_parse_result.execute(payload)
 
         if result["status"] == "failed":
             logger.warning(
@@ -152,9 +150,7 @@ async def get_monitored_repos(
     response_model=List[MonitoredRepo],
 ):
     try:
-        result = await mrepo_interactor.execute_get_monitored_repos(
-            email, limit, offset
-        )
+        result = await mrepo_interactor.get_mrepos.execute(email, limit, offset)
         return result
     except Exception as e:
         logger.critical(
@@ -170,7 +166,7 @@ async def get_monitored_repo(
     response_model=MonitoredRepo,
 ):
     try:
-        result = await mrepo_interactor.execute_get_monitored_repo(email, mrepo_id)
+        result = await mrepo_interactor.get_mrepo.execute(email, mrepo_id)
         return result
     except Exception as e:
         logger.critical(
@@ -183,7 +179,7 @@ async def get_monitored_repo(
 @app.get("/auth")
 async def handle_auth(session_code: str, status_code=200):
     try:
-        token = await auth_interactor.execute_github_auth(session_code)
+        token = await auth_interactor.auth_github.execute(session_code)
         return token
     except ValueError as e:
         logger.critical(f"Invalid auth request. {handle_auth.__name__}: {str(e)}")
@@ -201,7 +197,7 @@ async def handle_auth_worker(
     response_model=MachineToken,
 ):
     try:
-        token = await auth_interactor.execute_worker_auth(payload)
+        token = await auth_interactor.auth_worker.execute(payload)
         response.status_code = 201
         return token
     except ValueError as e:
@@ -217,7 +213,7 @@ async def handle_auth_worker(
 @app.post("/webhook/github/push")
 async def process_gh_push_hook(payload=Depends(get_json_body), status_code=200):
     try:
-        await webhook_interactor.execute_process_gh_push_hook(payload)
+        await webhook_interactor.github_push_hook.execute(payload)
     except Exception as e:
         logger.critical(
             f"Unexpected exceptions at {process_gh_push_hook.__name__}: {str(e)}"

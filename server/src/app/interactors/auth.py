@@ -5,15 +5,20 @@ from infra.storage.userdb import UserDBAccess
 from infra.auth.jwt import JWTService
 
 
-class AuthInteractor:
+class AuthBaseUseCase:
     def __init__(
-        self, userdb: UserDBAccess, github_auth: GitHubOAuthService, jwt: JWTService
+        self,
+        userdb: UserDBAccess,
+        github_auth: GitHubOAuthService,
+        jwt: JWTService,
     ) -> None:
         self.userdb = userdb
         self.github_auth = github_auth
         self.jwt = jwt
 
-    async def execute_github_auth(self, session_code: str):
+
+class GitHubAuthUseCase(AuthBaseUseCase):
+    async def execute(self, session_code: str):
         try:
             github_token = await self.github_auth.get_github_access_token(session_code)
 
@@ -64,9 +69,9 @@ class AuthInteractor:
         except Exception as e:
             raise e
 
-    async def execute_worker_auth(
-        self, payload: CreateMachineTokenInput
-    ) -> MachineToken:
+
+class WorkerAuthUseCase(AuthBaseUseCase):
+    async def execute(self, payload: CreateMachineTokenInput) -> MachineToken:
         try:
             from config import WORKER_OAUTH_CLIENT_ID, WORKER_OAUTH_CLIENT_SECRET
 
@@ -83,3 +88,11 @@ class AuthInteractor:
             raise e
         except Exception as e:
             raise e
+
+
+class AuthInteractor:
+    def __init__(
+        self, auth_github: GitHubAuthUseCase, auth_worker: WorkerAuthUseCase
+    ) -> None:
+        self.auth_github = auth_github
+        self.auth_worker = auth_worker
