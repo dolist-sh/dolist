@@ -1,5 +1,5 @@
 //TODO: Add return data type
-import { Repo } from '../types';
+import { MonitoredRepo, Repo } from '../types';
 import { getApiHost } from '../utils';
 
 export const getUser = async (token: string) => {
@@ -39,10 +39,21 @@ export const getGithubRepos = async (token: string) => {
   return response.json();
 };
 
-export const getMonitoredRepos = async (token: string) => {
+export const getMonitoredRepos = async (token: string): Promise<MonitoredRepo[]> => {
   const host = getApiHost();
 
   const response = await fetch(`${host}/monitoredrepos`, {
+    method: 'GET',
+    mode: 'cors',
+    headers: { Authorization: `token ${token}` },
+  });
+  return response.json();
+};
+
+export const getMonitoredRepo = async (token: string, mrepoId: string): Promise<MonitoredRepo> => {
+  const host = getApiHost();
+
+  const response = await fetch(`${host}/monitoredrepos/${mrepoId}`, {
     method: 'GET',
     mode: 'cors',
     headers: { Authorization: `token ${token}` },

@@ -57,10 +57,8 @@ export class GlobalContextProvider extends React.Component<ObjType, IGlobalConte
     this.setState({ monitoredRepos: data });
   }
 
-  getMonitoredRepo(id: string): MonitoredRepo | null {
-    //TODO: if the monitored repo array is empty call the API
-
-    const result = this.state.monitoredRepos.find((mrepo) => mrepo.id == id);
+  getMonitoredRepo(mrepoId: string): MonitoredRepo | null {
+    const result = this.state.monitoredRepos.find((mrepo) => mrepo.id == mrepoId);
 
     if (!result) return null;
 

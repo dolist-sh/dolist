@@ -116,10 +116,55 @@ def mock_read_monitored_repos(monkeypatch, mrepodb):
 
 
 @pytest.fixture
+def mock_read_monitored_repo(monkeypatch, mrepodb):
+    async def mock_func(mrepo_id: UUID):
+        return MOCK_MREPOS[0] if mrepo_id == MOCK_MREPOS[0].id else None
+
+    monkeypatch.setattr(mrepodb, "read_monitored_repo", mock_func)
+
+
+@pytest.fixture
 def mrepo_interactor(
-    userdb, mrepodb, github_service, mock_read_user_by_email, mock_read_monitored_repos
+    userdb,
+    mrepodb,
+    github_service,
+    mock_read_user_by_email,
+    mock_read_monitored_repos,
+    mock_read_monitored_repo,
 ):
     return MonitoredRepoInteractor(userdb, mrepodb, github_service)
+
+
+@pytest.mark.asyncio
+async def test_get_monitored_repo_success(mrepo_interactor: MonitoredRepoInteractor):
+    result = await mrepo_interactor.execute_get_monitored_repo(
+        "awesome_user@email.com", mrepo_id
+    )
+
+    assert result == MOCK_MREPOS[0]
+    assert type(result).__name__ is MonitoredRepo.__name__
+
+
+@pytest.mark.asyncio
+async def test_get_monitored_repo_fail_invalid_email(
+    mrepo_interactor: MonitoredRepoInteractor,
+):
+    with pytest.raises(ValueError) as exception:
+        await mrepo_interactor.execute_get_monitored_repo(
+            "null_email@email.com", mrepo_id
+        )
+        assert "unknown user" is str(exception.value)
+
+
+@pytest.mark.asyncio
+async def test_get_monitored_repo_fail_invalid_mrepo_id(
+    mrepo_interactor: MonitoredRepoInteractor,
+):
+    with pytest.raises(ValueError) as exception:
+        await mrepo_interactor.execute_get_monitored_repo(
+            "awesome_user@email.com", uuid4()
+        )
+        assert "unknown monitored repositry" is str(exception.value)
 
 
 @pytest.mark.asyncio
