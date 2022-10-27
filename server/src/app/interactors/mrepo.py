@@ -4,6 +4,7 @@ from infra.storage.mrepodb import MonitoredRepoDBAccess
 from infra.storage.userdb import UserDBAccess
 from infra.integration.github import GitHubService
 
+from uuid import UUID
 from typing import Union, TypedDict, List
 from typing_extensions import Literal
 
@@ -23,6 +24,24 @@ class MonitoredRepoInteractor:
         self.userdb = userdb
         self.mrepodb = mrepodb
         self.github = github
+
+    async def execute_get_monitored_repo(self, email: str, mrepo_id: UUID) -> MonitoredRepo:
+        try:
+            user = await self.userdb.read_user_by_email(email)
+
+            if user is None:
+                raise ValueError("unknown user")
+
+            mrepo = await self.mrepodb.read_monitored_repo(mrepo_id)
+
+            if mrepo is None:
+                raise ValueError("unknown monitored repositry")
+
+            return mrepo
+        except ValueError as e:
+            raise e
+        except Exception as e:
+            raise e
 
     async def execute_get_monitored_repos(
         self, email: str, limit: int, offset: int

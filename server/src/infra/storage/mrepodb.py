@@ -121,9 +121,6 @@ class MonitoredRepoDBAccess:
                 comments = self.db_instance.execute(select_comments).fetchall()
 
                 output.append(MonitoredRepo(**repo, parsedComments=comments))
-
-                # Puzzles:
-                # 2. What is the best way to handle pagination?
             return output
         except Exception as e:
             raise e
