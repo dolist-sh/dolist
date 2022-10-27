@@ -1,4 +1,5 @@
 from re import M
+from uuid import UUID
 from fastapi import FastAPI, Response, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -158,6 +159,22 @@ async def get_monitored_repos(
     except Exception as e:
         logger.critical(
             f"Unexpected exceptions at {get_monitored_repos.__name__}: {str(e)}"
+        )
+        raise e
+
+
+@app.get("/monitoredrepos/{mrepo_id}", status_code=200)
+async def get_monitored_repo(
+    mrepo_id: UUID,
+    email: str = Depends(get_email_from_token),
+    response_model=MonitoredRepo,
+):
+    try:
+        result = await mrepo_interactor.execute_get_monitored_repo(email, mrepo_id)
+        return result
+    except Exception as e:
+        logger.critical(
+            f"Unexpected exceptions at {get_monitored_repo.__name__}: {str(e)}"
         )
         raise e
 

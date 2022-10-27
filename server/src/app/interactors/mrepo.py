@@ -25,7 +25,9 @@ class MonitoredRepoInteractor:
         self.mrepodb = mrepodb
         self.github = github
 
-    async def execute_get_monitored_repo(self, email: str, mrepo_id: UUID) -> MonitoredRepo:
+    async def execute_get_monitored_repo(
+        self, email: str, mrepo_id: UUID
+    ) -> MonitoredRepo:
         try:
             user = await self.userdb.read_user_by_email(email)
 

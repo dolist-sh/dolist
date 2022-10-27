@@ -137,7 +137,9 @@ def mrepo_interactor(
 
 @pytest.mark.asyncio
 async def test_get_monitored_repo_success(mrepo_interactor: MonitoredRepoInteractor):
-    result = await mrepo_interactor.execute_get_monitored_repo("awesome_user@email.com", mrepo_id)
+    result = await mrepo_interactor.execute_get_monitored_repo(
+        "awesome_user@email.com", mrepo_id
+    )
 
     assert result == MOCK_MREPOS[0]
     assert type(result).__name__ is MonitoredRepo.__name__
