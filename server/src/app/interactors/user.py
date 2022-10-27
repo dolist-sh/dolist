@@ -6,7 +6,7 @@ from infra.integration.github import GitHubService, GetGitHubRepoOutput
 from logging import Logger
 
 
-class UserInteractor:
+class UserBaseUseCase:
     def __init__(
         self,
         userdb: UserDBAccess,
@@ -17,7 +17,9 @@ class UserInteractor:
         self.github = github
         self.logger = logger
 
-    async def execute_get_user(self, email: str) -> User:
+
+class GetUserUseCase(UserBaseUseCase):
+    async def execute(self, email: str) -> User:
         try:
             user = await self.userdb.read_user_by_email(email)
 
@@ -30,7 +32,9 @@ class UserInteractor:
         except Exception as e:
             raise e
 
-    async def execute_get_user_github_repos(self, email: str):
+
+class GetUserGitHubReposUseCase(UserBaseUseCase):
+    async def execute(self, email: str):
         try:
             user = await self.userdb.read_user_by_email(email)
             github_token = user.oauth[0]["token"]  # TODO: Replace this with find call
@@ -47,3 +51,11 @@ class UserInteractor:
             raise e
         except Exception as e:
             raise e
+
+
+class UserInteractor:
+    def __init__(
+        self, get_user_github_repos: GetUserGitHubReposUseCase, get_user: GetUserUseCase
+    ) -> None:
+        self.get_user_github_repos = get_user_github_repos
+        self.get_user = get_user

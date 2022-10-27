@@ -50,7 +50,7 @@ async def get_user(
     email: str = Depends(get_email_from_token), status_code=200, response_model=User
 ):
     try:
-        user = await user_interactor.execute_get_user(email)
+        user = await user_interactor.get_user.execute(email)
         return user
 
     except ValueError as e:
@@ -68,7 +68,7 @@ async def get_user_github_repos(
     email: str = Depends(get_email_from_token), status_code=200
 ):
     try:
-        output = await user_interactor.execute_get_user_github_repos(email)
+        output = await user_interactor.get_user_github_repos.execute(email)
         return output
 
     except ValueError as e:
