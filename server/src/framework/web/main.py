@@ -166,7 +166,7 @@ async def get_monitored_repos(
 @app.get("/auth")
 async def handle_auth(session_code: str, status_code=200):
     try:
-        token = await auth_interactor.execute_github_auth(session_code)
+        token = await auth_interactor.auth_github.execute(session_code)
         return token
     except ValueError as e:
         logger.critical(f"Invalid auth request. {handle_auth.__name__}: {str(e)}")
@@ -184,7 +184,7 @@ async def handle_auth_worker(
     response_model=MachineToken,
 ):
     try:
-        token = await auth_interactor.execute_worker_auth(payload)
+        token = await auth_interactor.auth_worker.execute(payload)
         response.status_code = 201
         return token
     except ValueError as e:
