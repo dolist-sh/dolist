@@ -34,14 +34,21 @@ publisher = ParseMsgPublisher(parse_queue, failed_hook_queue, mrepodb, userdb, l
 # Import all usecases
 from app.interactors.auth import GitHubAuthUseCase, WorkerAuthUseCase
 from app.interactors.user import GetUserUseCase, GetUserGitHubReposUseCase
+from app.interactors.webhook import GitHubPushHookUseCase
 
-github_auth_usecase, worker_auth_usecase = GitHubAuthUseCase(
-    userdb, github_oauth_service, jwt_service
-), WorkerAuthUseCase(userdb, github_oauth_service, jwt_service)
-
-get_user_usecase, get_user_github_repos_usecase = GetUserUseCase(
-    userdb, github_service, logger
-), GetUserGitHubReposUseCase(userdb, github_service, logger)
+github_auth_usecase = (
+    GitHubAuthUseCase(userdb=userdb, github_auth=github_oauth_service, jwt=jwt_service),
+)
+worker_auth_usecase = WorkerAuthUseCase(
+    userdb=userdb, github_auth=github_oauth_service, jwt=jwt_service
+)
+get_user_usecase = (
+    GetUserUseCase(userdb=userdb, github=github_service, logger=logger),
+)
+get_user_github_repos_usecase = GetUserGitHubReposUseCase(
+    userdb=userdb, github=github_service, logger=logger
+)
+process_github_push_hook = GitHubPushHookUseCase(publisher=publisher)
 
 
 from app.interactors.auth import AuthInteractor
@@ -51,7 +58,11 @@ from app.interactors.webhook import WebhookInteractor
 
 # All dependencies of interactors are instantiated classes from infra layer
 # Resolve dependencies of interactors
-auth_interactor = AuthInteractor(github_auth_usecase, worker_auth_usecase)
-user_interactor = UserInteractor(get_user_github_repos_usecase, get_user_usecase)
+auth_interactor = AuthInteractor(
+    auth_github=github_auth_usecase, auth_worker=worker_auth_usecase
+)
+user_interactor = UserInteractor(
+    get_user_github_repos=get_user_github_repos_usecase, get_user=get_user_usecase
+)
 mrepo_interactor = MonitoredRepoInteractor(userdb, mrepodb, github_service)
-webhook_interactor = WebhookInteractor(publisher)
+webhook_interactor = WebhookInteractor(github_push_hook=process_github_push_hook)

@@ -200,7 +200,7 @@ async def handle_auth_worker(
 @app.post("/webhook/github/push")
 async def process_gh_push_hook(payload=Depends(get_json_body), status_code=200):
     try:
-        await webhook_interactor.execute_process_gh_push_hook(payload)
+        await webhook_interactor.github_push_hook.execute(payload)
     except Exception as e:
         logger.critical(
             f"Unexpected exceptions at {process_gh_push_hook.__name__}: {str(e)}"
