@@ -42,15 +42,16 @@ from app.interactors.mrepo import (
     AddMonitoredReposUseCase,
 )
 
-github_auth_usecase = (
-    GitHubAuthUseCase(userdb=userdb, github_auth=github_oauth_service, jwt=jwt_service),
+github_auth_usecase = GitHubAuthUseCase(
+    userdb=userdb, github_auth=github_oauth_service, jwt=jwt_service
 )
+
 worker_auth_usecase = WorkerAuthUseCase(
     userdb=userdb, github_auth=github_oauth_service, jwt=jwt_service
 )
-get_user_usecase = (
-    GetUserUseCase(userdb=userdb, github=github_service, logger=logger),
-)
+
+get_user_usecase = GetUserUseCase(userdb=userdb, github=github_service, logger=logger)
+
 get_user_github_repos_usecase = GetUserGitHubReposUseCase(
     userdb=userdb, github=github_service, logger=logger
 )

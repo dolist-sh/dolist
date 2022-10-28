@@ -20,7 +20,9 @@ def run_parse():
         Timer(30, run_parse).start()
 
     if token != None:
-        print("Authentication token found, start pooling a message from the Parse queue.. 🚧 🚧 🔨🔨")
+        print(
+            "Authentication token found, start pooling a message from the Parse queue.. 🚧 🚧 🔨🔨"
+        )
 
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
@@ -29,6 +31,7 @@ def run_parse():
         Timer(30, run_parse).start()
 
         loop.close()
+
 
 if __name__ == "__main__":
     print("Worker has initialized, waiting 10 seconds for server to get up and running")
