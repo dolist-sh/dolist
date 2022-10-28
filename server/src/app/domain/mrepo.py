@@ -50,5 +50,4 @@ class MonitoredRepo(BaseModel):
 
 
 class AddParsedResultInput(BaseModel):
-    mrepoId: Union[str, UUID]
     parseResult: List[str]

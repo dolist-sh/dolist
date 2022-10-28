@@ -115,14 +115,15 @@ class WriteParseResultOutput(TypedDict):
     error: Union[str, None]
 
 
+# TODO: Add the test for below usecase.
 class WriteParseResultUseCase(MonitoredRepoBaseUseCase):
-    async def execute(self, payload: AddParsedResultInput) -> WriteParseResultOutput:
+    async def execute(
+        self, payload: AddParsedResultInput, mrepo_id: UUID
+    ) -> WriteParseResultOutput:
         try:
             output: WriteParseResultOutput
 
-            mrepo: MonitoredRepo = await self.mrepodb.read_monitored_repo(
-                payload["mrepoId"]
-            )
+            mrepo: MonitoredRepo = await self.mrepodb.read_monitored_repo(mrepo_id)
 
             if mrepo is None:
                 output = dict(

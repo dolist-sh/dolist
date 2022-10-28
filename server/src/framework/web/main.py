@@ -84,7 +84,7 @@ async def get_user_github_repos(
 
 
 # TODO: Rename this endpoint to improve readability of uri, using different term for monitored repo might be good idea
-@app.post("/monitoredrepo", status_code=200)
+@app.post("/monitoredrepos", status_code=200)
 async def add_monitored_repos(
     response: Response,
     payload: AddMonitoredReposInput = Depends(get_json_body),
@@ -112,9 +112,10 @@ async def add_monitored_repos(
         raise e
 
 
-@app.post("/monitoredrepo/parse/result", status_code=200)
+@app.post("/monitoredrepos/{mrepo_id}/parse/result", status_code=200)
 async def write_parse_result(
     response: Response,
+    mrepo_id: UUID,
     payload: AddParsedResultInput = Depends(get_json_body),
     is_auth_req: bool = Depends(verify_machine_token),
 ):
@@ -122,7 +123,7 @@ async def write_parse_result(
         if is_auth_req is not True:
             raise HTTPException(status_code=401, detail="Unauthorized request")
 
-        result = await mrepo_interactor.write_parse_result.execute(payload)
+        result = await mrepo_interactor.write_parse_result.execute(payload, mrepo_id)
 
         if result["status"] == "failed":
             logger.warning(

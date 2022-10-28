@@ -131,12 +131,11 @@ class MonitoredRepoDBAccess:
             raise e
 
     async def create_parse_report(
-        self, last_commit: str, payload: AddParsedResultInput
+        self, last_commit: str, payload: AddParsedResultInput, mrepo_id: UUID
     ) -> None:
         conn = self.db_instance.connect()
         transaction = conn.begin()
         try:
-            mrepo_id = payload["mrepoId"]
             timestamp = int(time())
 
             # Writing lastCommit as it's not known at the object is written to the DB.
