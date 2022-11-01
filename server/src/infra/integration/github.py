@@ -98,6 +98,10 @@ class GitHubService:
                     "GITHUB_WEBHOOK_CALLBACK cannot be None, check the env variable"
                 )
 
+            """
+                PubSubHubbub from GitHub API is used at this call.
+                https://docs.github.com/en/rest/webhooks#pubsubhubbub
+            """
             payload = {
                 "hub.mode": "subscribe",
                 "hub.topic": f"https://github.com/{repo_fullname}/events/push.json",
