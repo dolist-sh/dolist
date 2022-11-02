@@ -10,4 +10,3 @@ sqs = boto3.resource(
 
 parse_queue = sqs.get_queue_by_name(QueueName="Parse")
 parse_complete_queue = sqs.get_queue_by_name(QueueName="ParseComplete")
-

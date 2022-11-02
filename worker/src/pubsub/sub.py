@@ -21,7 +21,7 @@ async def consume_parse_queue(machine_token: MachineToken) -> None:
             github_oauth_token = data["token"]
             mrepo_id = data["mrepoId"]
             repo_name = data["repoName"]
-            branch = data["branch"] 
+            branch = data["branch"]
 
             # TODO: Check the provider field, when more integration GitLab, BitBucket is added
             parse_output = parse_github_repo(github_oauth_token, repo_name, branch)
@@ -35,17 +35,16 @@ async def consume_parse_queue(machine_token: MachineToken) -> None:
                 "Accept": "application/json",
                 "Authorization": f"token {machine_token['access_token']}",
             }
-            host = f"{SERVER_HOST}/monitoredrepo/parse/result"
+            host = f"{SERVER_HOST}/monitoredrepos/{mrepo_id}/parse/result"
 
-            payload = {
-                "mrepoId": mrepo_id,
-                "parseResult": parse_output,
-            }
+            payload = {"parseResult": parse_output}
 
             res = requests.post(host, headers=headers, data=json.dumps(payload))
 
             if res.status_code == 201:
-                logger.info(f"Parsing result has been processed | original message: {msg.body}")
+                logger.info(
+                    f"Parsing result has been processed | original message: {msg.body}"
+                )
                 msg.delete()
 
     except Exception as e:

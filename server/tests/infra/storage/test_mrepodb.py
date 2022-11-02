@@ -101,8 +101,8 @@ async def test_read_monitored_repos_nullcase(mrepodb: MonitoredRepoDBAccess):
 
 @pytest.mark.asyncio
 async def test_create_parse_report(mrepodb: MonitoredRepoDBAccess, test_mrepo_dataset):
+    mrepo_id = test_mrepo_dataset[3]["id"]
     payload = {
-        "mrepoId": test_mrepo_dataset[3]["id"],
         "parseResult": [
             {
                 "type": "TODO",
@@ -133,7 +133,7 @@ async def test_create_parse_report(mrepodb: MonitoredRepoDBAccess, test_mrepo_da
 
     dummy_commit = "bc62999e99df7576af9381d69d52d0c59f9bbe14"
 
-    await mrepodb.create_parse_report(dummy_commit, payload)
+    await mrepodb.create_parse_report(dummy_commit, payload, mrepo_id)
     mrepo = await mrepodb.read_monitored_repo(test_mrepo_dataset[3]["id"])
 
     assert mrepo.lastCommit == dummy_commit
