@@ -5,14 +5,15 @@ import { Transition } from '@headlessui/react';
 import { XIcon } from '@heroicons/react/outline';
 import { getGithubRepos, postMonitoredRepos } from '../api';
 import RepoCard from './RepoCard';
-import { Repo } from '../types';
+import { Repo, MonitoredRepo } from '../types';
 
 interface AddRepoModalProps {
   openCounter: number;
   githubLogoUri: string;
+  mrepos: MonitoredRepo[];
 }
 
-const AddRepoModal: React.FC<AddRepoModalProps> = ({ openCounter, githubLogoUri }: AddRepoModalProps) => {
+const AddRepoModal: React.FC<AddRepoModalProps> = ({ mrepos, openCounter, githubLogoUri }: AddRepoModalProps) => {
   const [open, setOpen] = useState(false);
   const [repos, setRepos] = useState(null);
   const [selectedRepos, setSelectedRepos] = useState<Repo[]>([]);
@@ -98,12 +99,7 @@ const AddRepoModal: React.FC<AddRepoModalProps> = ({ openCounter, githubLogoUri 
                     {`Add Repositories`}
                   </h3>
                 </div>
-                <div className="flex flex-col w-[95%] ml-4 mt-7 border-b border-dolist-lightgray dark:border-dolist-cream">
-                  <div className="flex flex-row pb-1">
-                    <p className="cursor-pointer text-xs font-std font-bold text-dolist-gray dark:text-dolist-cream pr-3">{`whathecker`}</p>
-                    <p className="cursor-pointer text-xs font-std hover:font-bold text-dolist-gray dark:text-dolist-cream pr-3">{`username_1`}</p>
-                  </div>
-                </div>
+                <span className="w-[95%] ml-4 mt-4 border-b border-dolist-lightgray dark:border-dolist-cream" />
               </div>
               <div className="flex flex-col w-[95%] ml-4 mt-4 min-h-[200px] max-h-[250px] overflow-hidden">
                 <div className="flex flex-col w-full overflow-y-scroll">
@@ -120,11 +116,15 @@ const AddRepoModal: React.FC<AddRepoModalProps> = ({ openCounter, githubLogoUri 
                           visibility: repo.visibility,
                           provider: 'github',
                         };
+
+                        const monitored = mrepos.find((mrepo) => mrepo.fullName == repository.fullName);
+
                         const selected = selectedRepos.find((repo) => repo.id === repository.id);
                         return (
                           <RepoCard
                             key={index}
                             isSelected={selected ? true : false}
+                            isMonitored={monitored ? true : false}
                             repository={repository}
                             githubLogoUri={githubLogoUri}
                             selectHandler={repoSelectHandler}
