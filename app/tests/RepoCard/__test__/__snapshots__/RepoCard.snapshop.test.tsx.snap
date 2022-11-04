@@ -22,7 +22,8 @@ exports[`Snapshot testing of RepoCard component renders correctly 1`] = `
   >
     <input
       checked={false}
-      className="bg-transparent h-4 w-4 text-dolist-green border-[0.5px] border-dolist-lightgray self-center rounded-[2px]"
+      className="bg-transparent h-4 w-4  text-dolist-green border-[0.5px] border-dolist-lightgray self-center rounded-[2px]"
+      disabled={false}
       onChange={[Function]}
       type="checkbox"
     />
@@ -52,7 +53,70 @@ exports[`Snapshot testing of RepoCard component renders correctly 2`] = `
   >
     <input
       checked={true}
-      className="bg-transparent h-4 w-4 text-dolist-green border-[0.5px] border-dolist-lightgray self-center rounded-[2px]"
+      className="bg-transparent h-4 w-4  text-dolist-green border-[0.5px] border-dolist-lightgray self-center rounded-[2px]"
+      disabled={false}
+      onChange={[Function]}
+      type="checkbox"
+    />
+  </div>
+</div>
+`;
+
+exports[`Snapshot testing of RepoCard component renders correctly 3`] = `
+<div
+  className="flex flex-row justify-between w-[97%] h-auto border-[0.5px] border-dolist-lightgray rounded m-auto mt-1 mb-2 p-2 bg-dolist-cream dark:bg-dolist-darkblue"
+>
+  <div
+    className="flex flex-row pl-2 pr-2 justify-start"
+  >
+    <img
+      className="w-6 h-6"
+      src="/images/github.png"
+    />
+    <p
+      className="font-std font-bold text-[12px] text-black dark:text-white pl-2 self-center"
+    >
+      /user/test
+    </p>
+  </div>
+  <div
+    className="flex flex-row self-center mr-2"
+  >
+    <input
+      checked={true}
+      className="bg-transparent h-4 w-4  text-dolist-gray border-[0.5px] border-dolist-lightgray self-center rounded-[2px]"
+      disabled={true}
+      onChange={[Function]}
+      type="checkbox"
+    />
+  </div>
+</div>
+`;
+
+exports[`Snapshot testing of RepoCard component renders correctly 4`] = `
+<div
+  className="flex flex-row justify-between w-[97%] h-auto border-[0.5px] border-dolist-lightgray rounded m-auto mt-1 mb-2 p-2 bg-dolist-cream dark:bg-dolist-darkblue"
+>
+  <div
+    className="flex flex-row pl-2 pr-2 justify-start"
+  >
+    <img
+      className="w-6 h-6"
+      src="/images/github.png"
+    />
+    <p
+      className="font-std font-bold text-[12px] text-black dark:text-white pl-2 self-center"
+    >
+      /user/test
+    </p>
+  </div>
+  <div
+    className="flex flex-row self-center mr-2"
+  >
+    <input
+      checked={true}
+      className="bg-transparent h-4 w-4  text-dolist-gray border-[0.5px] border-dolist-lightgray self-center rounded-[2px]"
+      disabled={true}
       onChange={[Function]}
       type="checkbox"
     />

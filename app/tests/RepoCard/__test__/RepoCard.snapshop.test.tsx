@@ -21,6 +21,7 @@ describe('Snapshot testing of RepoCard component', () => {
         selectHandler={() => {
           return;
         }}
+        isMonitored={false}
         isSelected={false}
         repository={repo}
         githubLogoUri="/images/github.png"
@@ -32,6 +33,31 @@ describe('Snapshot testing of RepoCard component', () => {
         selectHandler={() => {
           return;
         }}
+        isMonitored={false}
+        isSelected={true}
+        repository={repo}
+        githubLogoUri="/images/github.png"
+      />,
+    );
+
+    const componentDisabledState = renderer.create(
+      <RepoCard
+        selectHandler={() => {
+          return;
+        }}
+        isMonitored={true}
+        isSelected={false}
+        repository={repo}
+        githubLogoUri="/images/github.png"
+      />,
+    );
+
+    const componentSelectedAndDisabledState = renderer.create(
+      <RepoCard
+        selectHandler={() => {
+          return;
+        }}
+        isMonitored={true}
         isSelected={true}
         repository={repo}
         githubLogoUri="/images/github.png"
@@ -40,8 +66,12 @@ describe('Snapshot testing of RepoCard component', () => {
 
     const treeNotSelectedState = componentNotSelectedState.toJSON();
     const treeSelectedState = componentSelectedState.toJSON();
+    const treeSelectedAndDisabledState = componentSelectedAndDisabledState.toJSON();
+    const treeDisabledState = componentDisabledState.toJSON();
 
     expect(treeNotSelectedState).toMatchSnapshot();
     expect(treeSelectedState).toMatchSnapshot();
+    expect(treeSelectedAndDisabledState).toMatchSnapshot();
+    expect(treeDisabledState).toMatchSnapshot();
   });
 });

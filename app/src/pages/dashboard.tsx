@@ -52,7 +52,11 @@ const DashboardPage: NextPage = () => {
 
   return (
     <Layout {...layoutProps}>
-      <AddRepoModal githubLogoUri={layoutProps.githubLogoUri} openCounter={modalOpenCounter} />
+      <AddRepoModal
+        mrepos={globalContext.monitoredRepos}
+        githubLogoUri={layoutProps.githubLogoUri}
+        openCounter={modalOpenCounter}
+      />
       <div className="w-full h-1/4 pt-10 pb-5">
         <div className="w-5/6 h-full m-auto mt-0 mb-0">
           <h2 className="font-std font-bold text-black dark:text-dolist-cream">{`Start monitoring the repositories`}</h2>
