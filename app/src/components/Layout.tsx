@@ -1,4 +1,5 @@
 import * as React from 'react';
+import Link from 'next/link';
 import ColorThemeBtn from './ColorThemeBtn';
 
 interface LayoutProps {
@@ -26,9 +27,11 @@ const Layout: React.FC<LayoutProps> = ({
     <div className="flex flex-col w-full min-h-screen h-auto overflow-hidden justify-start content-center">
       <div className="fixed w-full h-[85px] border-b-[0.5px] border-dolist-lightgray dark:border-dolist-cream z-[5]">
         <header className="flex flex-row bg-dolist-bg-light dark:bg-dolist-bg-dark w-5/6 h-full m-auto mt-0 mb-0 p-2 justify-between">
-          <a className="cursor-pointer">
-            <img src={logoUri} className="w-16 h-16" />
-          </a>
+          <Link href="/">
+            <a className="cursor-pointer">
+              <img src={logoUri} className="w-16 h-16" />
+            </a>
+          </Link>
           <div className="w-auto flex flex-row self-center">
             <div className="self-center">
               <ColorThemeBtn
