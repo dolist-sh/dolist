@@ -1,12 +1,22 @@
-## DoList
-DoList is a web app that finds and reports the TODO comments in the repositories. It's currently under construction. 
+## dolist.sh
+dolist is a web app that finds and reports the TODO comments in the repositories. It's currently under construction. 
 
-- Check out the DoList in action at the [dev env](http://15.188.137.121/signin)
+ **check the app in action**: <a href="http://15.188.137.121" target="_blank">dev env</a>
 
+---
 
-### Run test locally
-Tests for database access module is run against the postgres instance. 
+### Features
+- Users can select their GitHub repostiories to start monitoring TODOs
+- The app will check the TODOs from the codebase at each push to the main branch of the repo
+- Users can see the TODO comments report, TODOs are grouped by status - NEW, OLD, RESOLVED
 
-Run the following commands before running tests locally.
-- export POSTGRES_USER=[your_db_user] POSTGRES_DB=[your_db_name]
-- ./scripts/init-db.sh
+### Ideas on roadmap
+- Support more languages than only JS/TS and Python
+- Email notification for a new report
+- Create/link issues in the 3rd party ticketing system
+- Add a note to the TODO
+
+### Design, Architecture, Data Model
+- [Design Library](https://www.figma.com/file/lSDHziGxwbopLfoL8p43Cb/Design-System?node-id=0%3A1)
+- [System Architecture](https://drive.google.com/file/d/1QEfP89Zb5kh3Bgez4r786wvwnbHva9Z7/view?usp=sharing)
+- [Data Model Diagram](https://drive.google.com/file/d/1MlEYuoKS7iMn3ZGHOVMeb6cs8FxjBBII/view)
