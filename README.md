@@ -1,3 +1,4 @@
+## dolist.sh
 dolist is a web app that finds and reports the TODO comments in the repositories. It's currently under construction. 
 
 ---
@@ -6,17 +7,16 @@ dolist is a web app that finds and reports the TODO comments in the repositories
 
 ---
 
-### Features
-- Users can choose the GitHub repositories to monitor TODO comments
-- The app will monitor the push event to the main branch of the repository, and check the TODOs from the code change
-- Users can see a report of TODOs that are grouped by status - NEW, OLD, RESOLVED
-
+### What is currently possible
+- Users can select their GitHub repostiories to start monitoring TODOs
+- The app will check the TODOs from the codebase at each push to the main branch of the repo
+- Users can see the TODO comments report, TODOs are grouped by status - NEW, OLD, RESOLVED
 
 ### Ideas on roadmap
-- Support more language than only JS/TS and Python
-- Email notification for new report
+- Support more languages than only JS/TS and Python
+- Email notification for a new report
 - Create/link issues in the 3rd party ticketing system
-- Add note to the TODO comment
+- Add a note to the TODO
 
 ### Design, Architecture, Data Model
 - [Design Library](https://www.figma.com/file/lSDHziGxwbopLfoL8p43Cb/Design-System?node-id=0%3A1)
