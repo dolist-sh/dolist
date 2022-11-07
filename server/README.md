@@ -45,3 +45,16 @@ Before commiting the code, run the following command:
 ```
 
 The source code will be re-formatted by Black's sensible default config
+
+
+---
+
+### Run tests locally
+Tests for DB access modules make the call to the PG instance, thus a local installation of PostgresSQL is required (Ver 12+)
+
+Before testing locally, ensure the database is initiated by running the following commands.
+
+```
+export POSTGRES_USER=[your_db_user] POSTGRES_DB=[your_db_name]
+./scripts/init-db.sh
+```
