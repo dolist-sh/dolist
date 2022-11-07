@@ -8,7 +8,7 @@ dolist is a web app that finds and reports the TODO comments in the repositories
 ### Features
 - Users can select their GitHub repostiories to start monitoring TODOs
 - The app will check the TODOs from the codebase at each push to the main branch of the repo
-- Users can see the TODO comments report, TODOs are grouped by status - NEW, OLD, RESOLVED
+- Users can see the report of TODO comments, grouped by status - NEW, OLD, RESOLVED
 
 ### Ideas on roadmap
 - Support more languages than only JS/TS and Python
