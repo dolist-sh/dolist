@@ -1,8 +1,6 @@
 ## dolist.sh
 dolist is a web app that finds and reports the TODO comments in the repositories. It's currently under construction. 
 
----
-
  **check the app in action**: <a href="http://15.188.137.121" target="_blank">dev env</a>
 
 ---
